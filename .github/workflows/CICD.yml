@@ -35,8 +35,10 @@ jobs:
         run: ./gradlew build
 
       #docker build & push to dev
+      - name: Docker Hub Login
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USER_NAME }}" --password-stdin
+
       - name: Docker build & push to dev
         run: |
-          docker login -u ${{ secrets.DOCKER_USER_NAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -t ${{ secrets.DOCKER_USER_NAME }}/carrot:latest .
-          docker push ${{ secrets.DOCKER_USER_NAME }}/carrot:latest
+          docker build -t "${{ secrets.DOCKER_USER_NAME }}/carrot:latest" .
+          docker push "${{ secrets.DOCKER_USER_NAME }}/carrot:latest"
