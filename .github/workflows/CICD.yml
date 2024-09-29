@@ -57,4 +57,4 @@ jobs:
             sudo docker pull "${{ secrets.DOCKER_USER_NAME }}"/carrot:latest
             sudo docker stop carrot || true
             sudo docker rm carrot || true
-            sudo docker run -d -p 8080:8080 --name carrot "${{ secrets.DOCKER_USER_NAME }}"/carrot:latest
+            sudo docker run -d -p 8081:8080 --name carrot "${{ secrets.DOCKER_USER_NAME }}"/carrot:latest
