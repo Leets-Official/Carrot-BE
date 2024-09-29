@@ -45,6 +45,7 @@ jobs:
 
       - name: Push Docker image
         run: docker push "${{ secrets.DOCKER_USER_NAME }}/carrot:latest"
+      #deploy to develop
       - name: Deploy to Server
         uses: appleboy/ssh-action@master
         with:
@@ -53,7 +54,7 @@ jobs:
           key: "${{ secrets.EC2_SECRET_PEM }}"
           port: 22
           script: |
-            docker pull "${{ secrets.DOCKER_USER_NAME }}"/carrot:latest
-            docker stop carrot || true
-            docker rm carrot || true
-            docker run -d -p 8080:8080 --name carrot "${{ secrets.DOCKER_USER_NAME }}"/carrot:latest
+            sudo docker pull "${{ secrets.DOCKER_USER_NAME }}"/carrot:latest
+            sudo docker stop carrot || true
+            sudo docker rm carrot || true
+            sudo docker run -d -p 8080:8080 --name carrot "${{ secrets.DOCKER_USER_NAME }}"/carrot:latest
