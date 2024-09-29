@@ -32,12 +32,28 @@ jobs:
       - name: Build with Gradle Wrapper
         run: ./gradlew build
 
-      #docker build & push to dev
+      #docker login
       - name: Docker Hub Login
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USER_NAME }}" --password-stdin
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USER_NAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
+      #docker build & push to dev
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_USER_NAME }}/carrot:latest .
+        run: docker build -t "${{ secrets.DOCKER_USER_NAME }}/carrot:latest" .
 
       - name: Push Docker image
-        run: docker push ${{ secrets.DOCKER_USER_NAME }}/carrot:latest
+        run: docker push "${{ secrets.DOCKER_USER_NAME }}/carrot:latest"
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: "${{ secrets.EC2_SECRET_HOST }}"
+          username: ubuntu
+          key: "${{ secrets.EC2_SECRET_PEM }}"
+          port: 22
+          script: |
+            docker pull ${{ secrets.DOCKER_USER_NAME }}/carrot:latest
+            docker stop carrot || true
+            docker rm carrot || true
+            docker run -d -p 8080:8080 --name carrot ${{ secrets.DOCKER_USER_NAME }}/carrot:latest
