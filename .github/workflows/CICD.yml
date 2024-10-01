@@ -54,7 +54,17 @@ jobs:
           key: "${{ secrets.EC2_SECRET_PEM }}"
           port: 22
           script: |
-            sudo docker pull "${{ secrets.DOCKER_USER_NAME }}"/carrot:latest
-            sudo docker stop carrot || true
-            sudo docker rm carrot || true
-            sudo docker run -d -p 8080:8080 --name carrot "${{ secrets.DOCKER_USER_NAME }}"/carrot:latest
+            EXISTING_CONTAINER_ID=$(sudo docker ps -q -f "publish=8080" -f "status=running")
+            if [ ! -z "$EXISTING_CONTAINER_ID" ]; then
+              sudo docker stop $EXISTING_CONTAINER_ID
+              sudo docker rm $EXISTING_CONTAINER_ID
+            fi
+
+            EXISTING_CONTAINER_ID=$(sudo docker ps -q -f "status=exited")
+            if [ ! -z "$EXISTING_CONTAINER_ID" ]; then
+              sudo docker rm $EXISTING_CONTAINER_ID
+            fi
+            
+            sudo docker pull ${{ secrets.DOCKER_USER_NAME }}/carrot:latest
+            sudo docker run --name spring -d -p 8080:8080 -e TZ=Asia/Seoul ${{ secrets.DOCKER_USER_NAME }}/carrot:latest
+            sudo docker image prune -a -f
