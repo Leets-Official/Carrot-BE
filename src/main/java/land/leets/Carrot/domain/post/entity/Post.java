@@ -1,12 +1,14 @@
 package land.leets.Carrot.domain.post.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import java.sql.Timestamp;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import java.sql.Timestamp;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -24,9 +26,6 @@ public class Post {
 
     @Column(name = "create_at", nullable = false)
     private Timestamp createAt;
-
-    @Column(name = "category", nullable = false)
-    private String category;
 
     //조회수 기능 mvp 이후 구현
     private Long view;
