@@ -9,8 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
 public class StrengthMatch {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

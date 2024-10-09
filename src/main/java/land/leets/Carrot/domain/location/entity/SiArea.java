@@ -6,8 +6,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
 
-@Entity
 @Getter
+@Entity
 public class SiArea {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
