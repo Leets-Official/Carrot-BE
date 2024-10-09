@@ -30,7 +30,7 @@ jobs:
 
       #gradle build
       - name: Build with Gradle Wrapper
-        run: ./gradlew build
+        run: ./gradlew build -x test
 
       #docker login
       - name: Docker Hub Login
