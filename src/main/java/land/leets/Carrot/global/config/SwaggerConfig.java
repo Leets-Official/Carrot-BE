@@ -32,11 +32,15 @@ public class SwaggerConfig {
     }
 
     private SecurityScheme getSecurityScheme() {
-        return new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")
-                .in(SecurityScheme.In.HEADER).name("Authorization");
+        return new SecurityScheme()
+                .type(SecurityScheme.Type.HTTP)
+                .scheme("bearer")
+                .bearerFormat("JWT")
+                .in(SecurityScheme.In.HEADER)
+                .name("Authorization");
     }
 
     private SecurityRequirement getSecurityRequireMent() {
-        return new SecurityRequirement().addList("bearer");
+        return new SecurityRequirement().addList("jwt token");
     }
 }
