@@ -4,11 +4,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.sql.Timestamp;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -62,7 +61,7 @@ public class PostSnapshot {
 
     private boolean isShortTimeJob;
 
-    private Timestamp updatedTime;
+    private LocalDateTime updatedTime;
 
     private boolean isLastest = true;
 

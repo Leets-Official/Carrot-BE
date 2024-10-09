@@ -5,7 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,7 +25,7 @@ public class Post {
     private long storeName;
 
     @Column(name = "create_at", nullable = false)
-    private Timestamp createAt;
+    private LocalDateTime createAt;
 
     //조회수 기능 mvp 이후 구현
     private Long view;

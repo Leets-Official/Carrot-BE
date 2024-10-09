@@ -4,7 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import land.leets.Carrot.domain.review.entity.enums.WorkType;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -24,9 +24,9 @@ public class Review {
 
     private boolean isRecommend;
 
-    private Timestamp createAt;
+    private LocalDateTime createAt;
 
-    private Timestamp updateAt;
+    private LocalDateTime updateAt;
 
     private WorkType worktype;
 }
