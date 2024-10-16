@@ -15,6 +15,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -27,7 +29,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
     private final JwtProvider jwtProvider;
-    private final CustomAuthentication CustomAuthentication;
+    private final CustomAuthentication customAuthentication;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -53,12 +55,13 @@ public class SecurityConfig {
                                                 // Swagger API 문서
                                                 "/swagger-ui/**", "/swagger/**").permitAll() // Swagger UI 경로 허용
                                         .requestMatchers("/api/v1/users/login").permitAll() // 로그인
+                                        .requestMatchers("/api/v1/users/signup").permitAll() // 회원가입
                                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exceptioHandling ->
                         exceptioHandling
-                                .authenticationEntryPoint(CustomAuthentication))
+                                .authenticationEntryPoint(customAuthentication))
 
                 .build();
     }
@@ -72,6 +75,11 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
             throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
