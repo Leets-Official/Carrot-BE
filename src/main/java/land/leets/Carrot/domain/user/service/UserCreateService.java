@@ -24,7 +24,8 @@ public class UserCreateService {
         // 이메일과 전화번호 중복 검사
         Stream.of(
                         checkEmailExists(request.getEmail()),
-                        checkTelExists(request.getPhoneNumber())
+                        checkTelExists(request.getPhoneNumber()),
+                        checkNicknameExists(request.getNickname())
                 ).filter(Optional::isPresent)
                 .findFirst()
                 .ifPresent(dup -> {
@@ -51,6 +52,12 @@ public class UserCreateService {
     private Optional<RuntimeException> checkTelExists(String phoneNumber) {
         return userRepository.existsByPhoneNumber(phoneNumber)
                 ? Optional.of(new UserAlreadyExistsException(ErrorMessage.TEL_ALREADY_EXISTS))
+                : Optional.empty();
+    }
+
+    private Optional<RuntimeException> checkNicknameExists(String nickname) {
+        return userRepository.existsByNickname(nickname)
+                ? Optional.of(new UserAlreadyExistsException(ErrorMessage.NICKNAME_ALREADY_EXISTS))
                 : Optional.empty();
     }
 }
