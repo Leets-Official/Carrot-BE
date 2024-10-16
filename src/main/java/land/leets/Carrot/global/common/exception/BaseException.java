@@ -1,4 +1,8 @@
 package land.leets.Carrot.global.common.exception;
 
-public class BaseException {
+public class BaseException extends RuntimeException {
+    public BaseException(String message) {
+        super(message);
+        // 나중에 UserNotFoundException, InvalidInputException 등 예외처리
+    }
 }
