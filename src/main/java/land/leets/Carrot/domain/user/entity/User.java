@@ -1,9 +1,13 @@
 package land.leets.Carrot.domain.user.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -17,12 +21,15 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = false)
     private String pw;
 
     private String phoneNumber;
 
+    @Enumerated(EnumType.STRING)
     private Gender gender;
 
     private int birthYear;
@@ -38,6 +45,14 @@ public class User {
     private LocalDateTime lastAccessTime;
 
     private String selfIntroduction;
+
+    private String ceoNumber;
+
+    private String ceoName;
+    
+    private LocalDate openDate;
+
+    private boolean isBusiness = false; // 사업자인지 체크
 
     private boolean isSmoke = false;
 
