@@ -5,6 +5,7 @@ import static land.leets.Carrot.domain.user.controller.ResponseMessage.USER_SAVE
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import land.leets.Carrot.domain.user.dto.request.LoginRequest;
 import land.leets.Carrot.domain.user.dto.request.UserSignupRequest;
 import land.leets.Carrot.domain.user.service.LoginService;
 import land.leets.Carrot.domain.user.service.UserCreateService;
@@ -34,7 +35,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseDto<Void>> login(@RequestBody UserSignupRequest request) {
+    public ResponseEntity<ResponseDto<Void>> login(@RequestBody LoginRequest request) {
         loginService.authenticate(request.getEmail(), request.getPassword());
         return ResponseEntity.ok(
                 ResponseDto.response(LOGIN_SUCCESS.getCode(), LOGIN_SUCCESS.getMessage())
