@@ -3,6 +3,8 @@ package land.leets.Carrot.global.config;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 import land.leets.Carrot.global.auth.authentication.CustomAuthentication;
+import land.leets.Carrot.global.auth.handler.LoginFailureHandler;
+import land.leets.Carrot.global.auth.handler.LoginSuccessHandler;
 import land.leets.Carrot.global.auth.jwt.dto.JwtFilter;
 import land.leets.Carrot.global.auth.jwt.dto.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -30,11 +32,18 @@ public class SecurityConfig {
 
     private final JwtProvider jwtProvider;
     private final CustomAuthentication customAuthentication;
+    private final LoginSuccessHandler loginSuccessHandler;
+    private final LoginFailureHandler loginFailureHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                .formLogin(AbstractHttpConfigurer::disable)
+                .formLogin(form ->
+                        form
+                                .loginProcessingUrl("/api/v1/users/login")
+                                .successHandler(loginSuccessHandler)
+                                .failureHandler(loginFailureHandler)
+                )
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .cors(withDefaults())
                 .csrf(AbstractHttpConfigurer::disable) // 기본 로그인 + CSRF 비활성화
