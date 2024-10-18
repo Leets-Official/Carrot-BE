@@ -34,7 +34,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .cors(withDefaults())
                 .csrf(AbstractHttpConfigurer::disable) // 기본 로그인 + CSRF 비활성화
@@ -59,8 +58,8 @@ public class SecurityConfig {
                                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(exceptioHandling ->
-                        exceptioHandling
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling
                                 .authenticationEntryPoint(customAuthentication))
 
                 .build();

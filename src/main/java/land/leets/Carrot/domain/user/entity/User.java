@@ -25,7 +25,7 @@ public class User {
     private String email;
 
     @Column(nullable = false)
-    private String pw;
+    private String password;
 
     private String phoneNumber;
 
@@ -72,7 +72,7 @@ public class User {
                                                  String phoneNumber, String name) {
         User user = new User();
         user.email = email;
-        user.pw = encodedPassword;
+        user.password = encodedPassword;
         user.phoneNumber = phoneNumber;
         user.nickname = name;
         user.createdAt = LocalDateTime.now();
