@@ -26,12 +26,12 @@ public class CustomAuthentication implements AuthenticationEntryPoint {
         Integer exceptionCode = (Integer) request.getAttribute(
                 "jwtException"); // jwt 유효하지 않은 경우 jwtException 값 가져오기(jwt 필터)
 
-        if (exceptionCode != null) { //exceptionCode가 null -> jwt 유효성 검사 실패
-            if (exceptionCode == INVALID_TOKEN.getCode()) { // 유효하지 않은 토큰으로 예외처리
-                setResponse(response, INVALID_TOKEN.getCode(), INVALID_TOKEN.getMessage());
-            }
-        } else { //exceptionCode가 null -> 인증 정보가 존재하지 않음
-            setResponse(response, UNAUTHORIZED.getCode(), UNAUTHORIZED.getMessage()); // 인증 정보가 존재하지 않는 걸로 예외처리
+        if (exceptionCode != null) { // JWT 예외 처리
+            log.info("Authentication failed: JWT Exception with code {}", exceptionCode);
+            setResponse(response, INVALID_TOKEN.getCode(), INVALID_TOKEN.getMessage());
+        } else { // 그 외 인증 정보 누락 처리
+            log.info("Authentication failed: Unauthorized access.");
+            setResponse(response, UNAUTHORIZED.getCode(), UNAUTHORIZED.getMessage());
         }
     }
 

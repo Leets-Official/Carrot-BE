@@ -1,9 +1,9 @@
 package land.leets.Carrot.domain.user.controller;
 
-import static land.leets.Carrot.domain.user.controller.ResponseMessage.LOGIN_SUCCESS;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.USER_SAVE_SUCCESS;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import land.leets.Carrot.domain.user.dto.request.LoginRequest;
 import land.leets.Carrot.domain.user.dto.request.UserSignupRequest;
@@ -35,10 +35,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseDto<Void>> login(@RequestBody LoginRequest request) {
-        loginService.authenticate(request.getEmail(), request.getPassword());
-        return ResponseEntity.ok(
-                ResponseDto.response(LOGIN_SUCCESS.getCode(), LOGIN_SUCCESS.getMessage())
-        );
+    public ResponseEntity<ResponseDto<Void>> login(@RequestBody LoginRequest request, HttpServletResponse response) {
+        ResponseDto<Void> result = loginService.authenticate(request.getEmail(), request.getPassword(), response);
+        return ResponseEntity.status(result.getCode()).body(result);
     }
 }
