@@ -34,8 +34,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
                 .cors(withDefaults())
                 .csrf(AbstractHttpConfigurer::disable) // 기본 로그인 + CSRF 비활성화
                 .headers(
@@ -56,11 +56,12 @@ public class SecurityConfig {
                                                 "/swagger-ui/**", "/swagger/**").permitAll() // Swagger UI 경로 허용
                                         .requestMatchers("/api/v1/users/login").permitAll() // 로그인
                                         .requestMatchers("/api/v1/users/signup").permitAll() // 회원가입
+                                        .requestMatchers("/api/v1/protected-resource").permitAll()
                                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(exceptioHandling ->
-                        exceptioHandling
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling
                                 .authenticationEntryPoint(customAuthentication))
 
                 .build();
