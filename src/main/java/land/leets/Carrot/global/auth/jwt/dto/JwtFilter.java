@@ -1,5 +1,7 @@
 package land.leets.Carrot.global.auth.jwt.dto;
 
+import static land.leets.Carrot.global.auth.exception.ErrorMessage.INVALID_TOKEN;
+
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,13 +28,15 @@ public class JwtFilter extends OncePerRequestFilter {
 
         try {
             if (token != null) { // 추출한 토큰이 null이 아니면
+                jwtProvider.validateToken(token);
                 Authentication authentication = jwtProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication); // 인증 정보 설정
                 log.info("유효한 JWT로 인증되었습니다: {}", authentication.getName());
             }
         } catch (JwtException e) {
-            handleJwtException(request, response, e); // JWT 예외 처리
-            return; // 예외 발생 시 필터 체인 중단
+            // JWT 예외 발생 시 SecurityContext 초기화
+            log.info("유효하지 않은 JWT: {}", e.getMessage());
+            request.setAttribute("jwtException", INVALID_TOKEN.getCode()); // 예외 정보 설정
         }
         filterChain.doFilter(request, response); //request, response 호출함
     }
@@ -44,19 +48,5 @@ public class JwtFilter extends OncePerRequestFilter {
             return token.substring(7);
         }
         return null;
-    }
-
-    private void handleJwtException(HttpServletRequest request, HttpServletResponse response, JwtException e)
-            throws IOException {
-        log.warn("유효하지 않은 JWT: {}", e.getMessage());
-        SecurityContextHolder.clearContext(); // SecurityContext 초기화
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 상태 코드 설정
-        response.setContentType("application/json"); // 응답 타입 설정
-        response.setCharacterEncoding("UTF-8");
-
-        // 에러 응답 생성 및 전송
-        String errorResponse = String.format("{\"code\": %d, \"message\": \"%s\"}",
-                HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않은 JWT 토큰");
-        response.getWriter().write(errorResponse);
     }
 }
