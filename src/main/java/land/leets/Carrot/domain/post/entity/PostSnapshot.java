@@ -1,9 +1,14 @@
 package land.leets.Carrot.domain.post.entity;
 
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.util.EnumSet;
+import java.util.Set;
 import land.leets.Carrot.global.common.domain.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -45,21 +50,21 @@ public class PostSnapshot extends BaseTimeEntity {
 
     private long phoneNumber;
 
-    private boolean isMondaySelected;
+    @ElementCollection
+    @Enumerated(EnumType.STRING)
+    private Set<DayOfWeek> selectedDays = EnumSet.noneOf(DayOfWeek.class);
 
-    private boolean isTuesdaySelected;
+    public void selectDay(DayOfWeek day) {
+        selectedDays.add(day);
+    }
 
-    private boolean isWednesdaySelected;
+    public void deselectDay(DayOfWeek day) {
+        selectedDays.remove(day);
+    }
 
-    private boolean isThursdaySelected;
-
-    private boolean isFridaySelected;
-
-    private boolean isSaturdaySelected;
-
-    private boolean isSundaySelected;
-
-    private boolean isShortTimeJob;
+    public boolean isDaySelected(DayOfWeek day) {
+        return selectedDays.contains(day);
+    }
 
     private boolean isLastest = true;
 
