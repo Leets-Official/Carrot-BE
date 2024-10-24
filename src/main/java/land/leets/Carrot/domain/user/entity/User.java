@@ -7,7 +7,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.Email;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
@@ -21,13 +20,14 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Email
-    @Column(nullable = false, unique = true)
+
+    @Column(nullable = false, unique = true, length = 50)
     private String email;
 
     @Column(nullable = false)
     private String password;
 
+    @Column(length = 20)
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
@@ -39,11 +39,9 @@ public class User {
 
     private long uuid;
 
-    private String profile;
+    private String profileUrl;
 
     private double temperature;
-
-    private LocalDateTime lastAccessTime;
 
     private LocalDateTime createdAt;
 
@@ -77,7 +75,6 @@ public class User {
         user.phoneNumber = phoneNumber;
         user.nickname = name;
         user.createdAt = LocalDateTime.now();
-        user.lastAccessTime = LocalDateTime.now();
         return user;
     }
 }

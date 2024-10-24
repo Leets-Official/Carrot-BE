@@ -31,7 +31,7 @@ public class PostSnapshot {
 
     private String content;
 
-    private String image;
+    private String postImageUrl;
 
     private int pay;
 
