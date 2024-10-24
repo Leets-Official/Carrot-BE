@@ -21,12 +21,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 50)
     private String email;
 
     @Column(nullable = false)
     private String password;
 
+    @Column(length = 20)
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
@@ -38,11 +39,9 @@ public class User {
 
     private long uuid;
 
-    private String profile;
+    private String profileUrl;
 
     private double temperature;
-
-    private LocalDateTime lastAccessTime;
 
     private LocalDateTime createdAt;
 
@@ -76,7 +75,6 @@ public class User {
         user.phoneNumber = phoneNumber;
         user.nickname = name;
         user.createdAt = LocalDateTime.now();
-        user.lastAccessTime = LocalDateTime.now();
         return user;
     }
 }
