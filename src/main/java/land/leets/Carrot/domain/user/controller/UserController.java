@@ -5,6 +5,7 @@ import static land.leets.Carrot.domain.user.controller.ResponseMessage.USER_SAVE
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import land.leets.Carrot.domain.user.dto.request.CeoSignupRequest;
 import land.leets.Carrot.domain.user.dto.request.EmployeeSignupRequest;
 import land.leets.Carrot.domain.user.dto.request.LoginRequest;
 import land.leets.Carrot.domain.user.service.LoginService;
@@ -29,6 +30,14 @@ public class UserController {
     @PostMapping("/employeeSignup")
     public ResponseEntity<ResponseDto<Void>> employeeSignup(@RequestBody @Valid EmployeeSignupRequest request) {
         userCreateService.employeeSignup(request);
+        return ResponseEntity.ok(
+                ResponseDto.response(USER_SAVE_SUCCESS.getCode(), USER_SAVE_SUCCESS.getMessage())
+        );
+    }
+
+    @PostMapping("/ceoSignup")
+    public ResponseEntity<ResponseDto<Void>> ceoSignup(@RequestBody @Valid CeoSignupRequest request) {
+        userCreateService.ceoSignup(request);
         return ResponseEntity.ok(
                 ResponseDto.response(USER_SAVE_SUCCESS.getCode(), USER_SAVE_SUCCESS.getMessage())
         );
