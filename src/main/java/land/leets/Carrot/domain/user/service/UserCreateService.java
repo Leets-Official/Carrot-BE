@@ -2,7 +2,7 @@ package land.leets.Carrot.domain.user.service;
 
 import java.util.Optional;
 import java.util.stream.Stream;
-import land.leets.Carrot.domain.user.dto.request.UserSignupRequest;
+import land.leets.Carrot.domain.user.dto.request.EmployeeSignupRequest;
 import land.leets.Carrot.domain.user.dto.response.UserInfoResponse;
 import land.leets.Carrot.domain.user.entity.User;
 import land.leets.Carrot.domain.user.exception.ErrorMessage;
@@ -20,7 +20,7 @@ public class UserCreateService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public UserInfoResponse signup(UserSignupRequest request) {
+    public UserInfoResponse employeeSignup(EmployeeSignupRequest request) {
         // 이메일과 전화번호 중복 검사
         Stream.of(
                         checkEmailExists(request.getEmail()),
