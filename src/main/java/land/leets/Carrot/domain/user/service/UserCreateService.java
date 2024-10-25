@@ -2,6 +2,7 @@ package land.leets.Carrot.domain.user.service;
 
 import java.util.Optional;
 import java.util.stream.Stream;
+import land.leets.Carrot.domain.user.dto.request.CeoSignupRequest;
 import land.leets.Carrot.domain.user.dto.request.EmployeeSignupRequest;
 import land.leets.Carrot.domain.user.dto.response.UserInfoResponse;
 import land.leets.Carrot.domain.user.entity.User;
@@ -43,6 +44,29 @@ public class UserCreateService {
         return new UserInfoResponse(user);
     }
 
+    @Transactional
+    public UserInfoResponse ceoSignup(CeoSignupRequest request) {
+        // 이메일, 사업자번호, 사업자 이름 중복 검사
+        Stream.of(
+                        checkEmailExists(request.getEmail()),
+                        checkCeoNumberExists(request.getCeoNumber()),
+                        checkCeoNameExists(request.getCeoName())
+                ).filter(Optional::isPresent)
+                .findFirst()
+                .ifPresent(dup -> {
+                    throw dup.get();
+                });
+
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        User user = User.createWithEncodedPassword(
+                request.getEmail(), encodedPassword,
+                null, request.getCeoName()
+        );
+
+        userRepository.save(user);
+        return new UserInfoResponse(user);
+    }
+
     private Optional<RuntimeException> checkEmailExists(String email) {
         return userRepository.existsByEmail(email)
                 ? Optional.of(new UserAlreadyExistsException(ErrorMessage.EMAIL_ALREADY_EXISTS))
@@ -60,4 +84,17 @@ public class UserCreateService {
                 ? Optional.of(new UserAlreadyExistsException(ErrorMessage.NICKNAME_ALREADY_EXISTS))
                 : Optional.empty();
     }
+
+    private Optional<RuntimeException> checkCeoNumberExists(String ceoNumber) {
+        return userRepository.existsByCeoNumber(ceoNumber)
+                ? Optional.of(new UserAlreadyExistsException(ErrorMessage.CEONUMBER_ALREADY_EXISTS))
+                : Optional.empty();
+    }
+
+    private Optional<RuntimeException> checkCeoNameExists(String ceoName) {
+        return userRepository.existsByCeoName(ceoName)
+                ? Optional.of(new UserAlreadyExistsException(ErrorMessage.CEONAME_ALREADY_EXISTS))
+                : Optional.empty();
+    }
+
 }
