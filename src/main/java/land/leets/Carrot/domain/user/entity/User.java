@@ -7,7 +7,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -46,11 +45,12 @@ public class User {
 
     @Column(nullable = false)
     private String ceoNumber;
-    
+
     @Column(nullable = false)
     private String ceoName;
 
-    private LocalDate openDate;
+    @Column(nullable = false)
+    private String openDate;
 
     private boolean isSmoke = false;
 
