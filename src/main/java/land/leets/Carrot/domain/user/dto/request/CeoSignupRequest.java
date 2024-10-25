@@ -2,8 +2,12 @@ package land.leets.Carrot.domain.user.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-public class CeoSingupRequest {
+@Getter
+@NoArgsConstructor
+public class CeoSignupRequest {
     @NotNull
     private String email;
     @NotNull
