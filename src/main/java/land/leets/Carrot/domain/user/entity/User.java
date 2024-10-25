@@ -7,8 +7,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,17 +41,16 @@ public class User {
 
     private double temperature;
 
-    private LocalDateTime createdAt;
-
     private String selfIntroduction;
 
+    @Column(nullable = false)
     private String ceoNumber;
 
+    @Column(nullable = false)
     private String ceoName;
 
-    private LocalDate openDate;
-
-    private boolean isBusiness = false; // 사업자인지 체크
+    @Column(nullable = false)
+    private String openDate;
 
     private boolean isSmoke = false;
 
@@ -74,7 +71,6 @@ public class User {
         user.password = encodedPassword;
         user.phoneNumber = phoneNumber;
         user.nickname = name;
-        user.createdAt = LocalDateTime.now();
         return user;
     }
 }
