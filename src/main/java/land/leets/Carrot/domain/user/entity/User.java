@@ -44,8 +44,10 @@ public class User {
 
     private String selfIntroduction;
 
+    @Column(nullable = false)
     private String ceoNumber;
-
+    
+    @Column(nullable = false)
     private String ceoName;
 
     private LocalDate openDate;
