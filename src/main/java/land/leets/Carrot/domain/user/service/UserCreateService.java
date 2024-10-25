@@ -60,7 +60,7 @@ public class UserCreateService {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         User user = User.createWithEncodedPassword(
                 request.getEmail(), encodedPassword,
-                null, request.getCeoName()
+                request.getCeoNumber(), request.getCeoName()
         );
 
         userRepository.save(user);
