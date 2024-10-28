@@ -1,6 +1,8 @@
 package land.leets.Carrot.domain.post.service;
 
 import java.time.LocalDateTime;
+import land.leets.Carrot.domain.career.entity.WorkType;
+import land.leets.Carrot.domain.career.repository.WorkTypeRepository;
 import land.leets.Carrot.domain.location.entity.DetailArea;
 import land.leets.Carrot.domain.location.repository.LocationRepository;
 import land.leets.Carrot.domain.post.domain.PostData;
@@ -19,11 +21,20 @@ public class PostService {
     PostSnapshotRepository postSnapshotRepository;
     LocationRepository locationRepository;
 
+    WorkTypeRepository workTypeRepository;
+
     public void saveNewPost(PostPostRequest postPostRequest) {
         PostData postData = postPostRequest.postData();
         Integer doAreaId = getAreaId(postData.doName());
         Integer siAreaId = getAreaId(postData.siName());
         Integer detailAreaId = getAreaId(postData.detailName());
+
+        Long jobTypeId = workTypeRepository.findByType(postData.workType())
+                .orElse(workTypeRepository.save(new WorkType(postData.workType())))
+                .getId();
+
+        PostSnapshot postSnapshot = PostDataMapper.postDataToPostSnapshot(postData, doAreaId, siAreaId, detailAreaId,
+                jobTypeId);
 
         Post post = new Post(postPostRequest.userId(), postPostRequest.storeName(), LocalDateTime.now(), "Recruting");
         postRepository.save(post);
