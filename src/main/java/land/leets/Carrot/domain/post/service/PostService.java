@@ -55,4 +55,16 @@ public class PostService {
 
         return postResponse;
     }
+
+    public String getAreaName(Integer areaId){
+        return locationRepository.findById(areaId)
+                .orElseThrow()
+                .getName();
+    }
+
+    public String getWorkTypeName(Long workTypeId){
+        return workTypeRepository.findById(workTypeId)
+                .orElseThrow()
+                .getType();
+    }
 }

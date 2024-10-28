@@ -11,6 +11,7 @@ import java.util.EnumSet;
 import java.util.Set;
 import land.leets.Carrot.global.common.domain.BaseTimeEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -30,7 +31,7 @@ public class PostSnapshot extends BaseTimeEntity {
 
     private long postId;
 
-    private int joyTypeId;
+    private Integer jobTypeId;
 
     private String title;
 
