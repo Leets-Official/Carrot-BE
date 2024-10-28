@@ -1,7 +1,7 @@
 package land.leets.Carrot.domain.post.dto.request;
 
 import jakarta.validation.constraints.NotNull;
-import land.leets.Carrot.domain.post.entity.PostData;
+import land.leets.Carrot.domain.post.domain.PostData;
 
 public record PostPostRequest(
         Long postId,

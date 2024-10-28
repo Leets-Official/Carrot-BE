@@ -6,7 +6,7 @@ import land.leets.Carrot.domain.post.entity.PostSnapshot;
 import land.leets.Carrot.domain.post.repository.PostRepository;
 import land.leets.Carrot.domain.post.dto.request.PostPostRequest;
 import land.leets.Carrot.domain.post.entity.Post;
-import land.leets.Carrot.domain.post.entity.PostData;
+import land.leets.Carrot.domain.post.domain.PostData;
 import land.leets.Carrot.domain.post.repository.PostSnapshotRepository;
 import land.leets.Carrot.global.common.exception.BaseException;
 
