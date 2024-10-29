@@ -34,7 +34,7 @@ public class PostService {
                 .getId();
 
         PostSnapshot postSnapshot = PostDataMapper.postDataToPostSnapshot(postData, doAreaId, siAreaId, detailAreaId,
-                jobTypeId);
+                jobTypeId, postPostRequest.postId());
 
         Post post = new Post(postPostRequest.userId(), postPostRequest.storeName(), LocalDateTime.now(), "Recruting");
         postRepository.save(post);
@@ -56,13 +56,13 @@ public class PostService {
         return postResponse;
     }
 
-    public String getAreaName(Integer areaId){
+    public String getAreaName(Integer areaId) {
         return locationRepository.findById(areaId)
                 .orElseThrow()
                 .getName();
     }
 
-    public String getWorkTypeName(Long workTypeId){
+    public String getWorkTypeName(Integer workTypeId) {
         return workTypeRepository.findById(workTypeId)
                 .orElseThrow()
                 .getType();

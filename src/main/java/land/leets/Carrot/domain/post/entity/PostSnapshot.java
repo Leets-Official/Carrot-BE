@@ -31,7 +31,7 @@ public class PostSnapshot extends BaseTimeEntity {
 
     private long postId;
 
-    private Integer jobTypeId;
+    private Integer workTypeId;
 
     private String title;
 
@@ -49,7 +49,7 @@ public class PostSnapshot extends BaseTimeEntity {
     private int workEndMinute;
     private boolean isNegotiable;
 
-    private long phoneNumber;
+    private long applyNumber;
 
     @ElementCollection
     @Enumerated(EnumType.STRING)

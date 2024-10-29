@@ -5,7 +5,6 @@ import lombok.Getter;
 
 @Getter
 public record PostData(
-        //주소 어떻게 념겨주느냐에 따라서 do, si, detail관련 attribute 작업
         String doName,
         String siName,
         String detailName,
@@ -19,10 +18,11 @@ public record PostData(
         Integer workEndHour,
         Integer workEndTimeMinute,
         Boolean isNegotiable,
-        Long phoneNumber,
-        String workDays, //","로 구분해서 String 으로 받는 가정
+        Long applyNumber,
+        String workDays, //","로 구분해서 String 으로 받는 가정, 단기알바인 경우
         Boolean isShortTermJob,
         LocalDateTime updatedTime,
-        String payType) {
+        String payType,
+        Boolean isNumberPublic) {
 
 }
