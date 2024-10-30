@@ -26,10 +26,10 @@ public class LoginService {
     public ResponseDto<Void> authenticate(String email, String password, HttpServletResponse response) {
         try {
             User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
+                    .orElseThrow(UserNotFoundException::new);
 
             if (!passwordEncoder.matches(password, user.getPassword())) {
-                throw new InvalidPasswordException(ErrorMessage.INVALID_PASSWORD);
+                throw new InvalidPasswordException();
             }
 
             String token = jwtProvider.generateAccessToken(user.getEmail());
