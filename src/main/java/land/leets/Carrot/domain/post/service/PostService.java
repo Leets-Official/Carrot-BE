@@ -51,9 +51,19 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(() -> new BaseException()); //TODO Exception 어떻게 던질지 고민
         PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndLastestTrue(postId);
 
-        PostResponse postResponse = new PostResponse(postId, post.getUserId(),post.getStoreName(),PostData.mapper(postSnapshot)); //대충 postSnapshot ->PostData   매퍼 만들기
+        String workType = getWorkTypeString(postSnapshot);
+        PostResponse postResponse = new PostResponse(postId, post.getUserId(), post.getStoreName(),
+                PostSnapshotMapper.postSnaphotToPostData(postSnapshot, getAreaName(postSnapshot.getDoAreaId())
+                        , getAreaName(postSnapshot.getSiAreaId()), getAreaName(postSnapshot.getDetailAreaId()),
+                        getWorkTypeName(postSnapshot.getWorkTypeId()), workType));
 
         return postResponse;
+    }
+
+    private String getWorkTypeString(PostSnapshot postSnapshot) {
+        return workTypeRepository.findById(postSnapshot.getWorkTypeId())
+                .orElseThrow()
+                .getType();
     }
 
     public String getAreaName(Integer areaId) {
