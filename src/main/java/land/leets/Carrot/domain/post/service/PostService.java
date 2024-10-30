@@ -1,21 +1,30 @@
 package land.leets.Carrot.domain.post.service;
 
+import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import land.leets.Carrot.domain.career.entity.WorkType;
 import land.leets.Carrot.domain.career.repository.WorkTypeRepository;
 import land.leets.Carrot.domain.location.entity.DetailArea;
 import land.leets.Carrot.domain.location.repository.LocationRepository;
+import land.leets.Carrot.domain.post.controller.SuccessMessage;
 import land.leets.Carrot.domain.post.domain.PostData;
 import land.leets.Carrot.domain.post.dto.request.PostPostRequest;
 import land.leets.Carrot.domain.post.dto.response.PostResponse;
 import land.leets.Carrot.domain.post.entity.Post;
 import land.leets.Carrot.domain.post.entity.PostSnapshot;
+import land.leets.Carrot.domain.post.exception.ErrorMessage;
 import land.leets.Carrot.domain.post.mapper.PostDataMapper;
 import land.leets.Carrot.domain.post.mapper.PostSnapshotMapper;
 import land.leets.Carrot.domain.post.repository.PostRepository;
 import land.leets.Carrot.domain.post.repository.PostSnapshotRepository;
 import land.leets.Carrot.global.common.exception.BaseException;
+import land.leets.Carrot.global.common.response.ResponseDto;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
+@Service
+@Transactional
+@RequiredArgsConstructor
 public class PostService {
     PostRepository postRepository;
     PostSnapshotRepository postSnapshotRepository;
@@ -47,8 +56,10 @@ public class PostService {
                 .getAreaId();
     }
 
-    public PostResponse getPost(Long postId){
-        Post post = postRepository.findById(postId).orElseThrow(() -> new BaseException()); //TODO Exception 어떻게 던질지 고민
+    public ResponseDto<PostResponse> getPost(Long postId) {
+        //존재 여부 조회
+        Post post = postRepository.findById(postId).orElseThrow(() -> new BaseException(ErrorMessage.POST_NOT_FOUND.getCode(), ErrorMessage.POST_NOT_FOUND.getErrorMessage()));
+        //스냅샷 db에서 검색
         PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndLastestTrue(postId);
 
         String workType = getWorkTypeString(postSnapshot);
@@ -57,7 +68,7 @@ public class PostService {
                         , getAreaName(postSnapshot.getSiAreaId()), getAreaName(postSnapshot.getDetailAreaId()),
                         getWorkTypeName(postSnapshot.getWorkTypeId()), workType));
 
-        return postResponse;
+        return new ResponseDto(SuccessMessage.GET_POST_DETAIL_SUCCESS.getCode(), SuccessMessage.GET_POST_DETAIL_SUCCESS.getMessage(), postResponse);
     }
 
     private String getWorkTypeString(PostSnapshot postSnapshot) {
