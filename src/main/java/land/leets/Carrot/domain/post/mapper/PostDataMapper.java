@@ -6,8 +6,27 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PostDataMapper {
-    public PostSnapshot postDataToPostSnapshot(PostData postData, Integer doAreaId, Integer siAreaId, Integer detailAreaId){
-        return PostSnapshot.builder
-                .//TODO postSnapshot 빌더 생성
+    //단기 알바인 경우는 미반영, 일단 장기 알바만을 고려 isShortTerm 은 아직 고려안함
+    public PostSnapshot postDataToPostSnapshot(PostData postData, Integer doAreaId, Integer siAreaId, Integer detailAreaId, Integer jobTypeId, Long postId){
+        return PostSnapshot.builder()
+                .doAreaId(doAreaId)
+                .siAreaId(siAreaId)
+                .detailAreaId(detailAreaId)
+                .postId(postId)
+                .workTypeId(jobTypeId)
+                .title(postData.title())
+                .content(postData.content())
+                .postImageUrl(postData.imageUrl())
+                .pay(postData.pay())
+                .workStartHour(postData.workStartHour())
+                .workStartMinute(postData.workStartMinute())
+                .workEndHour(postData.workEndHour())
+                .workEndMinute(postData.workEndTimeMinute())
+                .isNegotiable(postData.isNegotiable())
+                .applyNumber(postData.applyNumber())
+                .isLastest(true)
+                .isNumberPublic(postData.isNumberPublic()).build();
+        //TODO 선택한 날짜 enum Set 이전필요
+
     }
 }

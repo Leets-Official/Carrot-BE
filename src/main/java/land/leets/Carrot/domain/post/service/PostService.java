@@ -29,9 +29,9 @@ public class PostService {
         Integer siAreaId = getAreaId(postData.siName());
         Integer detailAreaId = getAreaId(postData.detailName());
 
-        Long jobTypeId = workTypeRepository.findByType(postData.workType())
+        Integer jobTypeId = Math.toIntExact(workTypeRepository.findByType(postData.workType())
                 .orElse(workTypeRepository.save(new WorkType(postData.workType())))
-                .getId();
+                .getId());
 
         PostSnapshot postSnapshot = PostDataMapper.postDataToPostSnapshot(postData, doAreaId, siAreaId, detailAreaId,
                 jobTypeId, postPostRequest.postId());
