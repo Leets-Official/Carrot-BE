@@ -55,7 +55,8 @@ public class SecurityConfig {
                                                 // Swagger API 문서
                                                 "/swagger-ui/**", "/swagger/**").permitAll() // Swagger UI 경로 허용
                                         .requestMatchers("/api/v1/users/login").permitAll() // 로그인
-                                        .requestMatchers("/api/v1/users/signup").permitAll() // 회원가입
+                                        .requestMatchers("/api/v1/users/employeeSignup").permitAll() // 회원가입
+                                        .requestMatchers("/api/v1/users/ceoSignup").permitAll() // 회원가입
                                         .requestMatchers("/api/v1/protected-resource").permitAll()
                                         .anyRequest().authenticated()
                 )

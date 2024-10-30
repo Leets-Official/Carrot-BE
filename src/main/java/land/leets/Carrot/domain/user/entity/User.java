@@ -2,17 +2,17 @@ package land.leets.Carrot.domain.user.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.AccessLevel;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
+@Inheritance(strategy = InheritanceType.JOINED)
 @Entity
 public class User {
     @Id
@@ -25,52 +25,8 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(length = 20)
-    private String phoneNumber;
-
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
-
-    private int birthYear;
-
-    private String nickname;
-
-    private long uuid;
-
-    private String profileUrl;
-
-    private double temperature;
-
-    private String selfIntroduction;
-
-    @Column(nullable = false)
-    private String ceoNumber;
-
-    @Column(nullable = false)
-    private String ceoName;
-
-    @Column(nullable = false)
-    private String openDate;
-
-    private boolean isSmoke = false;
-
-    private boolean isLongWork = false;
-
-    private boolean isCarLicence = false;
-
-    private boolean isEnglish = false;
-
-    private boolean isMilitary = false;
-
-    private boolean isCookLicence = false;
-
-    public static User createWithEncodedPassword(String email, String encodedPassword,
-                                                 String phoneNumber, String name) {
-        User user = new User();
-        user.email = email;
-        user.password = encodedPassword;
-        user.phoneNumber = phoneNumber;
-        user.nickname = name;
-        return user;
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
     }
 }
