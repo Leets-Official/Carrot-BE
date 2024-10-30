@@ -71,4 +71,43 @@ public class PostSnapshot extends BaseTimeEntity {
 
     private boolean isNumberPublic;
 
+    private String payType;
+
+    @Builder
+    public PostSnapshot(int doAreaId,
+                        int siAreaId,
+                        int detailAreaId,
+                        long postId,
+                        Integer workTypeId,
+                        String title,
+                        String content,
+                        String postImageUrl,
+                        int pay,
+                        int workStartHour,
+                        int workStartMinute,
+                        int workEndHour, int workEndMinute, boolean isNegotiable,
+                        long applyNumber,
+                        boolean isLastest,
+                        boolean isNumberPublic) {
+        this.doAreaId = doAreaId;
+        this.siAreaId = siAreaId;
+        this.detailAreaId = detailAreaId;
+        this.postId = postId;
+        this.workTypeId = workTypeId;
+        this.title = title;
+        this.content = content;
+        this.postImageUrl = postImageUrl;
+        this.pay = pay;
+        this.workStartHour = workStartHour;
+        this.workStartMinute = workStartMinute;
+        this.workEndHour = workEndHour;
+        this.workEndMinute = workEndMinute;
+        this.isNegotiable = isNegotiable;
+        this.applyNumber = applyNumber;
+        this.isLastest = isLastest;
+        this.isNumberPublic = isNumberPublic;
+        this.selectedDays = selectedDays != null ? selectedDays : EnumSet.noneOf(DayOfWeek.class);
+
+    }
+
 }
