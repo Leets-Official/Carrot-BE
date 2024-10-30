@@ -4,6 +4,6 @@ import land.leets.Carrot.global.common.exception.BaseException;
 
 public class UserNotFoundException extends BaseException {
     public UserNotFoundException(ErrorMessage errorMessage) {
-        super(errorMessage.getMessage());
+        super(errorMessage.getCode(), errorMessage.getMessage());
     }
 }

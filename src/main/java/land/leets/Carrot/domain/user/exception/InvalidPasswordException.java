@@ -5,6 +5,6 @@ import land.leets.Carrot.global.common.exception.BaseException;
 public class InvalidPasswordException extends BaseException {
 
     public InvalidPasswordException(ErrorMessage errorMessage) {
-        super(errorMessage.getMessage());
+        super(errorMessage.getCode(), errorMessage.getMessage());
     }
 }
