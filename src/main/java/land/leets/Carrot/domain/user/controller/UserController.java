@@ -1,15 +1,19 @@
 package land.leets.Carrot.domain.user.controller;
 
+import static land.leets.Carrot.domain.user.controller.ResponseMessage.LOGIN_SUCCESS;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.USER_SAVE_SUCCESS;
+import static land.leets.Carrot.global.common.response.ResponseDto.response;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import land.leets.Carrot.domain.user.dto.request.CeoSignupRequest;
 import land.leets.Carrot.domain.user.dto.request.EmployeeSignupRequest;
 import land.leets.Carrot.domain.user.dto.request.LoginRequest;
+import land.leets.Carrot.domain.user.service.CeoSignupService;
+import land.leets.Carrot.domain.user.service.EmployeeSignupService;
 import land.leets.Carrot.domain.user.service.LoginService;
-import land.leets.Carrot.domain.user.service.UserCreateService;
 import land.leets.Carrot.global.common.response.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,28 +28,34 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/users")
 public class UserController {
 
-    private final UserCreateService userCreateService;
+    private final EmployeeSignupService employeeSignupService;
+    private final CeoSignupService ceoSignupService;
     private final LoginService loginService;
 
     @PostMapping("/employeeSignup")
+    @Operation(summary = "구직자 회원가입")
     public ResponseEntity<ResponseDto<Void>> employeeSignup(@RequestBody @Valid EmployeeSignupRequest request) {
-        userCreateService.employeeSignup(request);
+        employeeSignupService.employeeSignup(request);
         return ResponseEntity.ok(
-                ResponseDto.response(USER_SAVE_SUCCESS.getCode(), USER_SAVE_SUCCESS.getMessage())
+                response(USER_SAVE_SUCCESS.getCode(), USER_SAVE_SUCCESS.getMessage())
         );
     }
 
     @PostMapping("/ceoSignup")
+    @Operation(summary = "고용자 회원가입")
     public ResponseEntity<ResponseDto<Void>> ceoSignup(@RequestBody @Valid CeoSignupRequest request) {
-        userCreateService.ceoSignup(request);
+        ceoSignupService.ceoSignup(request);
         return ResponseEntity.ok(
-                ResponseDto.response(USER_SAVE_SUCCESS.getCode(), USER_SAVE_SUCCESS.getMessage())
+                response(USER_SAVE_SUCCESS.getCode(), USER_SAVE_SUCCESS.getMessage())
         );
     }
 
     @PostMapping("/login")
+    @Operation(summary = "구직자, 고용자 로그인")
     public ResponseEntity<ResponseDto<Void>> login(@RequestBody LoginRequest request, HttpServletResponse response) {
-        ResponseDto<Void> result = loginService.authenticate(request.getEmail(), request.getPassword(), response);
-        return ResponseEntity.status(result.getCode()).body(result);
+        loginService.authenticate(request.getEmail(), request.getPassword(), response);
+        return ResponseEntity.ok(
+                ResponseDto.response(LOGIN_SUCCESS.getCode(), LOGIN_SUCCESS.getMessage())
+        );
     }
 }
