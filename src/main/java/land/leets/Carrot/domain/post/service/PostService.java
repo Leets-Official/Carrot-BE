@@ -8,6 +8,7 @@ import land.leets.Carrot.domain.location.entity.DetailArea;
 import land.leets.Carrot.domain.location.repository.LocationRepository;
 import land.leets.Carrot.domain.post.controller.SuccessMessage;
 import land.leets.Carrot.domain.post.domain.PostData;
+import land.leets.Carrot.domain.post.dto.request.PostDeleteRequest;
 import land.leets.Carrot.domain.post.dto.request.PostPostRequest;
 import land.leets.Carrot.domain.post.dto.response.PostResponse;
 import land.leets.Carrot.domain.post.entity.Post;
@@ -69,6 +70,14 @@ public class PostService {
                         getWorkTypeName(postSnapshot.getWorkTypeId()), workType));
 
         return new ResponseDto(SuccessMessage.GET_POST_DETAIL_SUCCESS.getCode(), SuccessMessage.GET_POST_DETAIL_SUCCESS.getMessage(), postResponse);
+    }
+
+    @Transactional
+    public void updatePostStatusDelete(PostDeleteRequest postDeleteRequest){
+        Post post = postRepository.findById(postDeleteRequest.postId())
+                .orElseThrow();
+        post.setStatus("deleted");
+        postRepository.save(post);
     }
 
     private String getWorkTypeString(PostSnapshot postSnapshot) {
