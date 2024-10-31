@@ -33,6 +33,9 @@ public class PostService {
 
     WorkTypeRepository workTypeRepository;
 
+    private static final String POST_STATUS_RECRUITING = "recruiting";
+    private static final String POST_STATUS_DELETED = "deleted";
+
     public void saveNewPost(PostPostRequest postPostRequest) {
         PostData postData = postPostRequest.postData();
         Integer doAreaId = getAreaId(postData.doName());
@@ -46,7 +49,7 @@ public class PostService {
         PostSnapshot postSnapshot = PostDataMapper.postDataToPostSnapshot(postData, doAreaId, siAreaId, detailAreaId,
                 jobTypeId, postPostRequest.postId());
 
-        Post post = new Post(postPostRequest.userId(), postPostRequest.storeName(), LocalDateTime.now(), "Recruiting");
+        Post post = new Post(postPostRequest.userId(), postPostRequest.storeName(), LocalDateTime.now(), POST_STATUS_RECRUITING);
         postRepository.save(post);
         postSnapshotRepository.save(postSnapshot);
     }
@@ -76,7 +79,7 @@ public class PostService {
     public void updatePostStatusDelete(PostDeleteRequest postDeleteRequest){
         Post post = postRepository.findById(postDeleteRequest.postId())
                 .orElseThrow();
-        post.setStatus("deleted");
+        post.setStatus(POST_STATUS_DELETED);
         postRepository.save(post);
     }
 

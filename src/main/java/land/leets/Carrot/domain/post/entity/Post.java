@@ -32,7 +32,7 @@ public class Post extends BaseTimeEntity {
     @Column(name = "create_at", nullable = false)
     private LocalDateTime createAt;
 
-    //deleted, recruting, done, illegal
+    //deleted, recruiting, done, illegal
     @Column(name = "status", nullable = false)
     private String status;
 
