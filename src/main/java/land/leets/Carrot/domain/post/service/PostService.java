@@ -2,15 +2,20 @@ package land.leets.Carrot.domain.post.service;
 
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import land.leets.Carrot.domain.career.entity.WorkType;
 import land.leets.Carrot.domain.career.repository.WorkTypeRepository;
 import land.leets.Carrot.domain.location.entity.DetailArea;
 import land.leets.Carrot.domain.location.repository.LocationRepository;
 import land.leets.Carrot.domain.post.controller.SuccessMessage;
 import land.leets.Carrot.domain.post.domain.PostData;
+import land.leets.Carrot.domain.post.domain.PostedPost;
+import land.leets.Carrot.domain.post.dto.request.GetPostedPostRequest;
 import land.leets.Carrot.domain.post.dto.request.PostDeleteRequest;
 import land.leets.Carrot.domain.post.dto.request.PostPostRequest;
 import land.leets.Carrot.domain.post.dto.response.PostResponse;
+import land.leets.Carrot.domain.post.dto.response.PostedPostResponse;
 import land.leets.Carrot.domain.post.entity.Post;
 import land.leets.Carrot.domain.post.entity.PostSnapshot;
 import land.leets.Carrot.domain.post.exception.ErrorMessage;
@@ -82,6 +87,22 @@ public class PostService {
                 .orElseThrow();
         post.setStatus(POST_STATUS_DELETED);
         postRepository.save(post);
+    }
+
+    //유저가 작성한 게시글 조회
+    public ResponseDto<PostedPostResponse> getPostedPostList(GetPostedPostRequest getPostedPostRequest) {
+        List<Post> postedPostList = postRepository.findByWriterId(getPostedPostRequest.userId())
+                .orElseThrow();
+        List<PostedPost> postedPostDataList = new ArrayList<>();
+        for (Post post : postedPostList) {
+            PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndLastestTrue(post.getPostId())
+                    .orElseThrow();
+            PostedPost postedPost = new PostedPost(post.getPostId(), postSnapshot.getTitle(),
+                    getAreaName(postSnapshot.getDetailAreaId()), post.getStatus().equals(POST_STATUS_RECRUITING));
+            postedPostDataList.add(postedPost);
+        }
+        return new ResponseDto(SuccessMessage.GET_POSTED_POST_LIST_SUCCESS.getCode(),
+                SuccessMessage.GET_POSTED_POST_LIST_SUCCESS.getMessage(), new PostedPostResponse(postedPostDataList));
     }
 
     private String getWorkTypeString(PostSnapshot postSnapshot) {
