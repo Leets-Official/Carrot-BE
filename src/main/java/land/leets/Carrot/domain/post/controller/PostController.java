@@ -2,9 +2,11 @@ package land.leets.Carrot.domain.post.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import land.leets.Carrot.domain.post.dto.request.GetPostedPostRequest;
 import land.leets.Carrot.domain.post.dto.request.PostDeleteRequest;
 import land.leets.Carrot.domain.post.dto.request.PostPostRequest;
 import land.leets.Carrot.domain.post.dto.response.PostResponse;
+import land.leets.Carrot.domain.post.dto.response.PostedPostResponse;
 import land.leets.Carrot.domain.post.service.PostService;
 import land.leets.Carrot.global.common.response.ResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -39,5 +41,11 @@ public class PostController {
     public ResponseEntity<Void> deletePost(@RequestBody PostDeleteRequest requestBody) {
         postService.updatePostStatusDelete(requestBody);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/user/posted")
+    public ResponseEntity<ResponseDto<PostedPostResponse>> getPostedPostList(
+            @RequestBody GetPostedPostRequest requestBody) {
+        return ResponseEntity.ok(postService.getPostedPostList(requestBody));
     }
 }
