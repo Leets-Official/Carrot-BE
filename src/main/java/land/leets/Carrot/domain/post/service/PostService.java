@@ -45,7 +45,7 @@ public class PostService {
         PostSnapshot postSnapshot = PostDataMapper.postDataToPostSnapshot(postData, doAreaId, siAreaId, detailAreaId,
                 jobTypeId, postPostRequest.postId());
 
-        Post post = new Post(postPostRequest.userId(), postPostRequest.storeName(), LocalDateTime.now(), "Recruting");
+        Post post = new Post(postPostRequest.userId(), postPostRequest.storeName(), LocalDateTime.now(), "Recruiting");
         postRepository.save(post);
         postSnapshotRepository.save(postSnapshot);
     }

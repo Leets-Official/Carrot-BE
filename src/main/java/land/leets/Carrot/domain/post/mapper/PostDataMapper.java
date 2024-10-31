@@ -7,7 +7,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class PostDataMapper {
     //단기 알바인 경우는 미반영, 일단 장기 알바만을 고려 isShortTerm 은 아직 고려안함
-    public PostSnapshot postDataToPostSnapshot(PostData postData, Integer doAreaId, Integer siAreaId, Integer detailAreaId, Integer jobTypeId, Long postId){
+    public static PostSnapshot postDataToPostSnapshot(PostData postData, Integer doAreaId, Integer siAreaId,
+                                                      Integer detailAreaId, Integer jobTypeId, Long postId) {
         return PostSnapshot.builder()
                 .doAreaId(doAreaId)
                 .siAreaId(siAreaId)

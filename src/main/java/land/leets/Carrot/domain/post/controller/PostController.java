@@ -29,7 +29,7 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<ResponseDto<PostResponse>> getPost(@RequestParam Long postId){
+    public ResponseEntity<ResponseDto<PostResponse>> getPost(@RequestParam Long postId) {
         return ResponseEntity.ok(postService.getPost(postId));
     }
 }
