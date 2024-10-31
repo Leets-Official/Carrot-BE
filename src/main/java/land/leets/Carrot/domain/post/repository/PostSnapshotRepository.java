@@ -8,5 +8,5 @@ public interface PostSnapshotRepository extends JpaRepository<PostSnapshot, Long
     @Override
     Optional<PostSnapshot> findById(Long aLong);
 
-    PostSnapshot findByPostIdAndLastestTrue(Long postId);
+    Optional<PostSnapshot> findByPostIdAndLastestTrue(Long postId);
 }

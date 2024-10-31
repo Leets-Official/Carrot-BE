@@ -64,7 +64,8 @@ public class PostService {
         //존재 여부 조회
         Post post = postRepository.findById(postId).orElseThrow(() -> new BaseException(ErrorMessage.POST_NOT_FOUND.getCode(), ErrorMessage.POST_NOT_FOUND.getErrorMessage()));
         //스냅샷 db에서 검색
-        PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndLastestTrue(postId);
+        PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndLastestTrue(postId)
+                .orElseThrow();
 
         String workType = getWorkTypeString(postSnapshot);
         PostResponse postResponse = new PostResponse(postId, post.getUserId(), post.getStoreName(),

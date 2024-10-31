@@ -13,4 +13,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("SELECT post FROM Post post WHERE post.status=:recuiting")
     Optional<List<Post>> findByStatus(@Param("status") String status);
+
+    @Query("SELECT post FROM Post post WHERE post.userId=:userId")
+    Optional<List<Post>> findByWriterId(@Param("userId") Long userId);
 }
