@@ -5,7 +5,7 @@ public record ShortPostData(
         String storeName,
         String location,
         String payType,
-        int pay,
+        Long pay,
         String postStatus,
         String imageUrl
 ) {
