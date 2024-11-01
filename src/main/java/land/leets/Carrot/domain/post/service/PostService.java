@@ -44,6 +44,10 @@ public class PostService {
     private static final String POST_STATUS_DELETED = "deleted";
 
     public void saveNewPost(PostPostRequest postPostRequest) {
+        Post post = new Post(postPostRequest.userId(), postPostRequest.storeName(), LocalDateTime.now(),
+                POST_STATUS_RECRUITING);
+        Post savedPost = postRepository.save(post);
+
         PostData postData = postPostRequest.postData();
         Integer doAreaId = getAreaId(postData.doName());
         Integer siAreaId = getAreaId(postData.siName());
@@ -54,11 +58,8 @@ public class PostService {
                 .getId());
 
         PostSnapshot postSnapshot = PostDataMapper.postDataToPostSnapshot(postData, doAreaId, siAreaId, detailAreaId,
-                jobTypeId, postPostRequest.postId());
+                jobTypeId, savedPost.getPostId());
 
-        Post post = new Post(postPostRequest.userId(), postPostRequest.storeName(), LocalDateTime.now(),
-                POST_STATUS_RECRUITING);
-        postRepository.save(post);
         postSnapshotRepository.save(postSnapshot);
     }
 
