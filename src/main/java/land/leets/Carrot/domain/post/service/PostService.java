@@ -83,6 +83,24 @@ public class PostService {
         return new ResponseDto(SuccessMessage.GET_POST_DETAIL_SUCCESS.getCode(), SuccessMessage.GET_POST_DETAIL_SUCCESS.getMessage(), postResponse);
     }
 
+    public ResponseDto<ShortPostResponse> getPostByKeywordSearch(String keyword) {
+        List<PostSnapshot> postSnapshotList = postSnapshotRepository.findByKeywordAndLastestTrue(keyword)
+                .orElseThrow();
+        List<ShortPostData> shortPostDataList = new ArrayList<>();
+
+        for (PostSnapshot postSnapshot : postSnapshotList) {
+            Post post = postRepository.findById(postSnapshot.getPostId()).orElseThrow();
+            ShortPostData shortPostData = new ShortPostData(postSnapshot.getTitle(), post.getStoreName(), getAreaName
+                    (postSnapshot.getDetailAreaId()),
+                    postSnapshot.getPayType(), (long) postSnapshot.getPay(), post.getStatus(), ""//TODO 이미지 작업 추후 진행 예정
+            );
+            shortPostDataList.add(shortPostData);
+        }
+        return new ResponseDto(SuccessMessage.GET_POST_KEYWORD_SEARCH_SUCCESS.getCode(),
+                SuccessMessage.GET_POST_KEYWORD_SEARCH_SUCCESS.getMessage(), new ShortPostResponse(shortPostDataList));
+
+    }
+
     @Transactional
     public void updatePostStatusDelete(PostDeleteRequest postDeleteRequest){
         Post post = postRepository.findById(postDeleteRequest.postId())
