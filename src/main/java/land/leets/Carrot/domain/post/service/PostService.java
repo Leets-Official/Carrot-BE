@@ -11,11 +11,13 @@ import land.leets.Carrot.domain.location.repository.LocationRepository;
 import land.leets.Carrot.domain.post.controller.SuccessMessage;
 import land.leets.Carrot.domain.post.domain.PostData;
 import land.leets.Carrot.domain.post.domain.PostedPost;
+import land.leets.Carrot.domain.post.domain.ShortPostData;
 import land.leets.Carrot.domain.post.dto.request.GetPostedPostRequest;
 import land.leets.Carrot.domain.post.dto.request.PostDeleteRequest;
 import land.leets.Carrot.domain.post.dto.request.PostPostRequest;
 import land.leets.Carrot.domain.post.dto.response.PostResponse;
 import land.leets.Carrot.domain.post.dto.response.PostedPostResponse;
+import land.leets.Carrot.domain.post.dto.response.ShortPostResponse;
 import land.leets.Carrot.domain.post.entity.Post;
 import land.leets.Carrot.domain.post.entity.PostSnapshot;
 import land.leets.Carrot.domain.post.exception.ErrorMessage;
@@ -87,6 +89,22 @@ public class PostService {
                 .orElseThrow();
         post.setStatus(POST_STATUS_DELETED);
         postRepository.save(post);
+    }
+
+    //홈 화면에서 간략한 게시글 데이터 리스트 조회
+    public ResponseDto<ShortPostResponse> getShortPostData() {
+        List<Post> postList = postRepository.findByStatus(POST_STATUS_RECRUITING)
+                .orElseThrow();
+        List<ShortPostData> shortPostDataList = new ArrayList<>();
+        for (Post post : postList) {
+            PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndLastestTrue(post.getPostId())
+                    .orElseThrow();
+            ShortPostData shortPostData = new ShortPostData(postSnapshot.getTitle(), post.getStoreName(), getAreaName(
+                    postSnapshot.getDetailAreaId()), postSnapshot.getPayType(), (long) postSnapshot.getPay(), post.getStatus(),
+                    "");    //TODO 이미지 관련 작업 차후 구현 예정
+            shortPostDataList.add(shortPostData);
+        }
+        return new ResponseDto(SuccessMessage.GET_POST_LIST_SHORT_DATA_VER.getCode(), SuccessMessage.GET_POST_LIST_SHORT_DATA_VER.getMessage(), shortPostDataList);
     }
 
     //유저가 작성한 게시글 조회
