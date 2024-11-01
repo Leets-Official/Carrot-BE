@@ -96,7 +96,7 @@ public class PostService {
         PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndLastestTrue(postId)
                 .orElseThrow();
 
-        String workType = getWorkTypeString(postSnapshot);
+        String workType = getWorkTypeName(postSnapshot.getWorkTypeId());
         PostResponse postResponse = new PostResponse(postId, post.getUserId(), post.getStoreName(),
                 PostSnapshotMapper.postSnaphotToPostData(postSnapshot, getAreaName(postSnapshot.getDoAreaId())
                         , getAreaName(postSnapshot.getSiAreaId()), getAreaName(postSnapshot.getDetailAreaId()),
@@ -166,11 +166,6 @@ public class PostService {
                 SuccessMessage.GET_POSTED_POST_LIST_SUCCESS.getMessage(), new PostedPostResponse(postedPostDataList));
     }
 
-    private String getWorkTypeString(PostSnapshot postSnapshot) {
-        return workTypeRepository.findById(postSnapshot.getWorkTypeId())
-                .orElseThrow()
-                .getType();
-    }
 
     public String getAreaName(Integer areaId) {
         return locationRepository.findById(areaId)
