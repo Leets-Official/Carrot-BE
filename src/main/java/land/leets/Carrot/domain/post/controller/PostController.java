@@ -33,6 +33,13 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
+
+    @PostMapping("/{postId}")
+    public ResponseEntity<Void> updatePost(@RequestParam Long postId, @RequestBody @Valid PostPostRequest requestBody) {
+        postService.saveNewPostSnapshot(postId, requestBody);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/{postId}")
     public ResponseEntity<ResponseDto<PostResponse>> getPost(@RequestParam Long postId) {
         return ResponseEntity.ok(postService.getPost(postId));
