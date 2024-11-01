@@ -11,7 +11,7 @@ public enum ErrorMessage {
     EMAIL_ALREADY_EXISTS(400, "이미 존재하는 이메일입니다."),
     TEL_ALREADY_EXISTS(400, "이미 등록된 전화번호입니다."),
     CEONUMBER_ALREADY_EXISTS(400, "이미 존재하는 사업자 번호입니다"),
-    CEONAME_ALREADY_EXISTS(400, "이미 존재하는 사업자 이름입니다."),
+    CEONAME_ALREADY_EXISTS(400, "이미 존재하는 대표자명입니다."),
 
     // 로그인 관련
     USER_NOT_FOUND(404, "존재하지 않는 유저입니다."),
