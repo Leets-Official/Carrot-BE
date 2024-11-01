@@ -12,9 +12,13 @@ public class CeoSignupRequest {
     @NotNull
     private String password;
     @NotNull
+    private String ceoName;
+    @NotNull
+    private String ceoPhoneNumber;
+    @NotNull
     private String ceoNumber;
     @NotNull
-    private String ceoName;
+    private String storeName;
     @NotNull
     private String openDate;
 }
