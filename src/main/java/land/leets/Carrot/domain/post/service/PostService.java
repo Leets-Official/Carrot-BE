@@ -48,6 +48,12 @@ public class PostService {
                 POST_STATUS_RECRUITING);
         Post savedPost = postRepository.save(post);
 
+        PostSnapshot postSnapshot = getPostSnapshot(postPostRequest, savedPost.getPostId());
+
+        postSnapshotRepository.save(postSnapshot);
+    }
+
+    private PostSnapshot getPostSnapshot(PostPostRequest postPostRequest, Long postId) {
         PostData postData = postPostRequest.postData();
         Integer doAreaId = getAreaId(postData.doName());
         Integer siAreaId = getAreaId(postData.siName());
@@ -58,10 +64,10 @@ public class PostService {
                 .getId());
 
         PostSnapshot postSnapshot = PostDataMapper.postDataToPostSnapshot(postData, doAreaId, siAreaId, detailAreaId,
-                jobTypeId, savedPost.getPostId());
-
-        postSnapshotRepository.save(postSnapshot);
+                jobTypeId, postId);
+        return postSnapshot;
     }
+
 
     public Integer getAreaId(String areaName) {
         return locationRepository.findByName(areaName)
