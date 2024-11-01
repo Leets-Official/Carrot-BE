@@ -68,6 +68,18 @@ public class PostService {
         return postSnapshot;
     }
 
+    @Transactional
+    public void saveNewPostSnapshot(Long postId, PostPostRequest postPostRequest) {
+        //기존 snapshot isLastest false로 수정
+        PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndLastestTrue(postId)
+                .orElseThrow();
+        postSnapshot.setLastest(false);
+        postSnapshotRepository.save(postSnapshot);
+
+        //PostSnapshot 생성해서 새 PostSnapshot 저장
+        PostSnapshot newPostSnapshot = getPostSnapshot(postPostRequest, postId);
+        postSnapshotRepository.save(newPostSnapshot);
+    }
 
     public Integer getAreaId(String areaName) {
         return locationRepository.findByName(areaName)
