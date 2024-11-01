@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import land.leets.Carrot.domain.user.dto.request.EmployeeSignupRequest;
 import land.leets.Carrot.domain.user.entity.Employee;
 import land.leets.Carrot.domain.user.exception.EmailAlreadyExistsException;
-import land.leets.Carrot.domain.user.exception.NicknameAlreadyExistsException;
 import land.leets.Carrot.domain.user.exception.TelAlreadyExistsException;
 import land.leets.Carrot.domain.user.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +21,8 @@ public class EmployeeSignupService {
         validateEmployee(request);
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         Employee employee = new Employee(
-                request.getEmail(), encodedPassword, request.getPhoneNumber(), request.getNickname()
+                request.getEmail(), encodedPassword, request.getPhoneNumber(),
+                request.getEmployeeName(), request.getEmployeeAddress()
         );
         employeeRepository.save(employee);
     }
@@ -33,9 +33,6 @@ public class EmployeeSignupService {
         }
         if (employeeRepository.existsByPhoneNumber(request.getPhoneNumber())) {
             throw new TelAlreadyExistsException();
-        }
-        if (employeeRepository.existsByNickname(request.getNickname())) {
-            throw new NicknameAlreadyExistsException();
         }
     }
 }

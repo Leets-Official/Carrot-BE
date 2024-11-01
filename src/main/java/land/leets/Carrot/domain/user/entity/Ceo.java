@@ -9,8 +9,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 public class Ceo extends User {
+
     @Column(nullable = false)
     private String ceoName;
+
+    @Column(nullable = false)
+    private String storeName;
+
+    @Column(length = 20, nullable = false)
+    private String ceoPhoneNumber;
 
     @Column(nullable = false)
     private String ceoNumber;
@@ -18,10 +25,13 @@ public class Ceo extends User {
     @Column(nullable = false)
     private String openDate;
 
-    public Ceo(String email, String password, String ceoNumber, String ceoName, String openDate) {
+    public Ceo(String email, String password, String ceoName, String ceoPhoneNumber, String ceoNumber, String storeName,
+               String openDate) {
         super(email, password);
-        this.ceoNumber = ceoNumber;
         this.ceoName = ceoName;
+        this.ceoPhoneNumber = ceoPhoneNumber;
+        this.ceoNumber = ceoNumber;
+        this.storeName = storeName;
         this.openDate = openDate;
     }
 }

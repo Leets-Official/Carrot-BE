@@ -14,5 +14,7 @@ public class EmployeeSignupRequest {
     @NotNull
     private String phoneNumber;
     @NotNull
-    private String nickname;
+    private String employeeName;
+    @NotNull
+    private String employeeAddress;
 }
