@@ -13,6 +13,7 @@ public class PostSnapshotMapper {
                 postSnapshot.getPay(), postSnapshot.getWorkStartHour(), postSnapshot.getWorkStartMinute(),
                 postSnapshot.getWorkEndHour(), postSnapshot.getWorkEndMinute(), postSnapshot.isNegotiable(),
                 postSnapshot.getApplyNumber(), workDays, false, null, postSnapshot.getPayType(),
-                postSnapshot.isNumberPublic());
+                postSnapshot.isNumberPublic(), null//TODO 이미지 관련 작업 추후 진행 예정
+        );
     }
 }

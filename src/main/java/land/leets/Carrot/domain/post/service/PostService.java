@@ -98,7 +98,7 @@ public class PostService {
             PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndLastestTrue(post.getPostId())
                     .orElseThrow();
             PostedPost postedPost = new PostedPost(post.getPostId(), postSnapshot.getTitle(),
-                    getAreaName(postSnapshot.getDetailAreaId()), post.getStatus().equals(POST_STATUS_RECRUITING));
+                    getAreaName(postSnapshot.getDetailAreaId()), post.getStatus().equals(POST_STATUS_RECRUITING), "");
             postedPostDataList.add(postedPost);
         }
         return new ResponseDto(SuccessMessage.GET_POSTED_POST_LIST_SUCCESS.getCode(),

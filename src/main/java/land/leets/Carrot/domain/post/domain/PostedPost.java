@@ -4,6 +4,7 @@ public record PostedPost(
         Long postId,
         String title,
         String detailAreaName,
-        boolean isRecruiting
+        boolean isRecruiting,
+        String imageUrl
 ) {
 }

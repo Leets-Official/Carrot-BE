@@ -1,7 +1,7 @@
 package land.leets.Carrot.domain.post.domain;
 
 import java.time.LocalDateTime;
-import lombok.Getter;
+import java.util.List;
 
 public record PostData(
         String doName,
@@ -22,6 +22,7 @@ public record PostData(
         Boolean isShortTermJob,
         LocalDateTime updatedTime,
         String payType,
-        Boolean isNumberPublic) {
+        Boolean isNumberPublic,
+        List<String> imageUrlList) {
 
 }

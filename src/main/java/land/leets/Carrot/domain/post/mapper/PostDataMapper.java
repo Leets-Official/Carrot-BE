@@ -17,7 +17,7 @@ public class PostDataMapper {
                 .workTypeId(jobTypeId)
                 .title(postData.title())
                 .content(postData.content())
-                .postImageUrl(postData.imageUrl())
+                .postImageUrl("")   //TODO 이미지 관련 기능 차후 구현 예정
                 .pay(postData.pay())
                 .workStartHour(postData.workStartHour())
                 .workStartMinute(postData.workStartMinute())
