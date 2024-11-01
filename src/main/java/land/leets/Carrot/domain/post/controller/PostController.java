@@ -7,6 +7,7 @@ import land.leets.Carrot.domain.post.dto.request.PostDeleteRequest;
 import land.leets.Carrot.domain.post.dto.request.PostPostRequest;
 import land.leets.Carrot.domain.post.dto.response.PostResponse;
 import land.leets.Carrot.domain.post.dto.response.PostedPostResponse;
+import land.leets.Carrot.domain.post.dto.response.ShortPostResponse;
 import land.leets.Carrot.domain.post.service.PostService;
 import land.leets.Carrot.global.common.response.ResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,11 @@ public class PostController {
     public ResponseEntity<Void> deletePost(@RequestBody PostDeleteRequest requestBody) {
         postService.updatePostStatusDelete(requestBody);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping()
+    public ResponseEntity<ResponseDto<ShortPostResponse>> getShortPostData() {
+        return ResponseEntity.ok(postService.getShortPostData());
     }
 
     @GetMapping("/user/posted")
