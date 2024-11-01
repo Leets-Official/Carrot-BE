@@ -2,12 +2,14 @@ package land.leets.Carrot.domain.post.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import land.leets.Carrot.domain.career.service.WorkTypeService;
 import land.leets.Carrot.domain.post.dto.request.GetPostedPostRequest;
 import land.leets.Carrot.domain.post.dto.request.PostDeleteRequest;
 import land.leets.Carrot.domain.post.dto.request.PostPostRequest;
 import land.leets.Carrot.domain.post.dto.response.PostResponse;
 import land.leets.Carrot.domain.post.dto.response.PostedPostResponse;
 import land.leets.Carrot.domain.post.dto.response.ShortPostResponse;
+import land.leets.Carrot.domain.post.dto.response.WorkTypeResponse;
 import land.leets.Carrot.domain.post.service.PostService;
 import land.leets.Carrot.global.common.response.ResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/post")
 public class PostController {
     PostService postService;
+    WorkTypeService workTypeService;
 
     @PostMapping
     public ResponseEntity<Void> postNewPost(@RequestBody @Valid PostPostRequest requestBody) {
@@ -65,5 +68,10 @@ public class PostController {
     @GetMapping("/search")
     public ResponseEntity<ResponseDto<ShortPostResponse>> getPostsByKeywordSearch(@RequestParam String keyword) {
         return ResponseEntity.ok(postService.getPostByKeywordSearch(keyword));
+    }
+
+    @GetMapping("/work/type")
+    public ResponseEntity<ResponseDto<WorkTypeResponse>> getCurrentExistWorkType() {
+        return ResponseEntity.ok(workTypeService.getWorkType());
     }
 }
