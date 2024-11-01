@@ -1,5 +1,13 @@
 package land.leets.Carrot.domain.post.service;
 
+import static land.leets.Carrot.domain.post.exception.ErrorMessage.LATEST_SNAPSHOT_NOT_FOUND;
+import static land.leets.Carrot.domain.post.exception.ErrorMessage.LOCATION_NOT_FOUND;
+import static land.leets.Carrot.domain.post.exception.ErrorMessage.NO_RECRUITING_POST;
+import static land.leets.Carrot.domain.post.exception.ErrorMessage.POST_NOT_FOUND;
+import static land.leets.Carrot.domain.post.exception.ErrorMessage.SEARCH_RESULT_NOT_FOUND;
+import static land.leets.Carrot.domain.post.exception.ErrorMessage.WORK_TYPE_NOT_FOUND;
+import static land.leets.Carrot.domain.post.exception.ErrorMessage.WROTE_POST_NOT_FOUND;
+
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -72,7 +80,8 @@ public class PostService {
     public void saveNewPostSnapshot(Long postId, PostPostRequest postPostRequest) {
         //기존 snapshot isLastest false로 수정
         PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndLastestTrue(postId)
-                .orElseThrow();
+                .orElseThrow(() -> new BaseException(LATEST_SNAPSHOT_NOT_FOUND.getCode(),
+                        LATEST_SNAPSHOT_NOT_FOUND.getErrorMessage()));
         postSnapshot.setLastest(false);
         postSnapshotRepository.save(postSnapshot);
 
@@ -94,7 +103,7 @@ public class PostService {
                         ErrorMessage.POST_NOT_FOUND.getErrorMessage()));
         //스냅샷 db에서 검색
         PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndLastestTrue(postId)
-                .orElseThrow();
+                .orElseThrow(() -> new BaseException(LATEST_SNAPSHOT_NOT_FOUND));
 
         String workType = getWorkTypeName(postSnapshot.getWorkTypeId());
         PostResponse postResponse = new PostResponse(postId, post.getUserId(), post.getStoreName(),
@@ -108,11 +117,12 @@ public class PostService {
 
     public ResponseDto<ShortPostResponse> getPostByKeywordSearch(String keyword) {
         List<PostSnapshot> postSnapshotList = postSnapshotRepository.findByKeywordAndLastestTrue(keyword)
-                .orElseThrow();
+                .orElseThrow(() -> new BaseException(SEARCH_RESULT_NOT_FOUND));
         List<ShortPostData> shortPostDataList = new ArrayList<>();
 
         for (PostSnapshot postSnapshot : postSnapshotList) {
-            Post post = postRepository.findById(postSnapshot.getPostId()).orElseThrow();
+            Post post = postRepository.findById(postSnapshot.getPostId())
+                    .orElseThrow(() -> new BaseException(POST_NOT_FOUND));
             ShortPostData shortPostData = new ShortPostData(postSnapshot.getTitle(), post.getStoreName(), getAreaName
                     (postSnapshot.getDetailAreaId()),
                     postSnapshot.getPayType(), (long) postSnapshot.getPay(), post.getStatus(), ""//TODO 이미지 작업 추후 진행 예정
@@ -127,7 +137,7 @@ public class PostService {
     @Transactional
     public void updatePostStatusDelete(PostDeleteRequest postDeleteRequest) {
         Post post = postRepository.findById(postDeleteRequest.postId())
-                .orElseThrow();
+                .orElseThrow(() -> new BaseException(POST_NOT_FOUND));
         post.setStatus(POST_STATUS_DELETED);
         postRepository.save(post);
     }
@@ -135,11 +145,11 @@ public class PostService {
     //홈 화면에서 간략한 게시글 데이터 리스트 조회
     public ResponseDto<ShortPostResponse> getShortPostData() {
         List<Post> postList = postRepository.findByStatus(POST_STATUS_RECRUITING)
-                .orElseThrow();
+                .orElseThrow(() -> new BaseException(NO_RECRUITING_POST));
         List<ShortPostData> shortPostDataList = new ArrayList<>();
         for (Post post : postList) {
             PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndLastestTrue(post.getPostId())
-                    .orElseThrow();
+                    .orElseThrow(() -> new BaseException(LATEST_SNAPSHOT_NOT_FOUND));
             ShortPostData shortPostData = new ShortPostData(postSnapshot.getTitle(), post.getStoreName(), getAreaName(
                     postSnapshot.getDetailAreaId()), postSnapshot.getPayType(), (long) postSnapshot.getPay(),
                     post.getStatus(),
@@ -153,11 +163,11 @@ public class PostService {
     //유저가 작성한 게시글 조회
     public ResponseDto<PostedPostResponse> getPostedPostList(GetPostedPostRequest getPostedPostRequest) {
         List<Post> postedPostList = postRepository.findByWriterId(getPostedPostRequest.userId())
-                .orElseThrow();
+                .orElseThrow(() -> new BaseException(WROTE_POST_NOT_FOUND));
         List<PostedPost> postedPostDataList = new ArrayList<>();
         for (Post post : postedPostList) {
             PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndLastestTrue(post.getPostId())
-                    .orElseThrow();
+                    .orElseThrow(() -> new BaseException(LATEST_SNAPSHOT_NOT_FOUND));
             PostedPost postedPost = new PostedPost(post.getPostId(), postSnapshot.getTitle(),
                     getAreaName(postSnapshot.getDetailAreaId()), post.getStatus().equals(POST_STATUS_RECRUITING), "");
             postedPostDataList.add(postedPost);
@@ -169,13 +179,13 @@ public class PostService {
 
     public String getAreaName(Integer areaId) {
         return locationRepository.findById(areaId)
-                .orElseThrow()
+                .orElseThrow(() -> new BaseException(LOCATION_NOT_FOUND))
                 .getName();
     }
 
     public String getWorkTypeName(Integer workTypeId) {
         return workTypeRepository.findById(workTypeId)
-                .orElseThrow()
+                .orElseThrow(() -> new BaseException(WORK_TYPE_NOT_FOUND))
                 .getType();
     }
 }
