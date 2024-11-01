@@ -56,7 +56,8 @@ public class PostService {
         PostSnapshot postSnapshot = PostDataMapper.postDataToPostSnapshot(postData, doAreaId, siAreaId, detailAreaId,
                 jobTypeId, postPostRequest.postId());
 
-        Post post = new Post(postPostRequest.userId(), postPostRequest.storeName(), LocalDateTime.now(), POST_STATUS_RECRUITING);
+        Post post = new Post(postPostRequest.userId(), postPostRequest.storeName(), LocalDateTime.now(),
+                POST_STATUS_RECRUITING);
         postRepository.save(post);
         postSnapshotRepository.save(postSnapshot);
     }
@@ -80,7 +81,8 @@ public class PostService {
                         , getAreaName(postSnapshot.getSiAreaId()), getAreaName(postSnapshot.getDetailAreaId()),
                         getWorkTypeName(postSnapshot.getWorkTypeId()), workType));
 
-        return new ResponseDto(SuccessMessage.GET_POST_DETAIL_SUCCESS.getCode(), SuccessMessage.GET_POST_DETAIL_SUCCESS.getMessage(), postResponse);
+        return new ResponseDto(SuccessMessage.GET_POST_DETAIL_SUCCESS.getCode(),
+                SuccessMessage.GET_POST_DETAIL_SUCCESS.getMessage(), postResponse);
     }
 
     public ResponseDto<ShortPostResponse> getPostByKeywordSearch(String keyword) {
@@ -102,7 +104,7 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePostStatusDelete(PostDeleteRequest postDeleteRequest){
+    public void updatePostStatusDelete(PostDeleteRequest postDeleteRequest) {
         Post post = postRepository.findById(postDeleteRequest.postId())
                 .orElseThrow();
         post.setStatus(POST_STATUS_DELETED);
@@ -118,11 +120,13 @@ public class PostService {
             PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndLastestTrue(post.getPostId())
                     .orElseThrow();
             ShortPostData shortPostData = new ShortPostData(postSnapshot.getTitle(), post.getStoreName(), getAreaName(
-                    postSnapshot.getDetailAreaId()), postSnapshot.getPayType(), (long) postSnapshot.getPay(), post.getStatus(),
+                    postSnapshot.getDetailAreaId()), postSnapshot.getPayType(), (long) postSnapshot.getPay(),
+                    post.getStatus(),
                     "");    //TODO 이미지 관련 작업 차후 구현 예정
             shortPostDataList.add(shortPostData);
         }
-        return new ResponseDto(SuccessMessage.GET_POST_LIST_SHORT_DATA_VER.getCode(), SuccessMessage.GET_POST_LIST_SHORT_DATA_VER.getMessage(), shortPostDataList);
+        return new ResponseDto(SuccessMessage.GET_POST_LIST_SHORT_DATA_VER.getCode(),
+                SuccessMessage.GET_POST_LIST_SHORT_DATA_VER.getMessage(), shortPostDataList);
     }
 
     //유저가 작성한 게시글 조회
