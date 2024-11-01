@@ -21,7 +21,8 @@ public class EmployeeSignupService {
         validateEmployee(request);
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         Employee employee = new Employee(
-                request.getEmail(), encodedPassword, request.getPhoneNumber(), request.getEmployeeName()
+                request.getEmail(), encodedPassword, request.getPhoneNumber(),
+                request.getEmployeeName(), request.getEmployeeAddress()
         );
         employeeRepository.save(employee);
     }
