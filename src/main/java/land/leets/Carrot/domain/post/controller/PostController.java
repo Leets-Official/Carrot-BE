@@ -54,4 +54,9 @@ public class PostController {
             @RequestBody GetPostedPostRequest requestBody) {
         return ResponseEntity.ok(postService.getPostedPostList(requestBody));
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<ResponseDto<ShortPostResponse>> getPostsByKeywordSearch(@RequestParam String keyword) {
+        return ResponseEntity.ok(postService.getPostByKeywordSearch(keyword));
+    }
 }
