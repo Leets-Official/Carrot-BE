@@ -13,11 +13,11 @@ public class Employee extends User {
     private String phoneNumber;
 
     @Column(nullable = false)
-    private String nickname;
+    private String employeeName;
 
-    public Employee(String email, String password, String phoneNumber, String nickname) {
+    public Employee(String email, String password, String phoneNumber, String employeeName) {
         super(email, password);
         this.phoneNumber = phoneNumber;
-        this.nickname = nickname;
+        this.employeeName = employeeName;
     }
 }
