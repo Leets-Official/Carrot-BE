@@ -35,4 +35,8 @@ public class Apply {
         this.postId = postId;
         this.userId = userId;
     }
+
+    public void setIsRecruited(boolean isRecruited){
+        this.isRecruited = isRecruited;
+    }
 }
