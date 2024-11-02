@@ -51,7 +51,7 @@ public class PostSnapshot extends BaseTimeEntity {
     private int workEndMinute;
     private boolean isNegotiable;
 
-    private long applyNumber;
+    private String applyNumber;
 
     @ElementCollection
     @Enumerated(EnumType.STRING)
@@ -88,7 +88,7 @@ public class PostSnapshot extends BaseTimeEntity {
                         int workStartHour,
                         int workStartMinute,
                         int workEndHour, int workEndMinute, boolean isNegotiable,
-                        long applyNumber,
+                        String applyNumber,
                         boolean isLastest,
                         boolean isNumberPublic) {
         this.doAreaId = doAreaId;
