@@ -58,7 +58,8 @@ public class ApplyService {
         List<Apply> applyList = applyRepository.findByPostId(postId);
 
         List<Applicant> applicantList = applyList.stream()
-                .map(applicant -> new Applicant(applicant.getEmployee().getId(), applicant.getEmployee().getEmployeeName(),
+                .map(applicant -> new Applicant(applicant.getEmployee().getId(),
+                        applicant.getEmployee().getEmployeeName(),
                         applicant.getEmployee().getEmployeeAddress(), applicant.isRecruited()))
                 .collect(Collectors.toList());
         return new ResponseDto(SuccessMessage.GET_APPLICANT_LIST_SUCCESS.getCode(),
