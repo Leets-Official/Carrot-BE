@@ -1,10 +1,14 @@
 package land.leets.Carrot.domain.apply.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.websocket.server.PathParam;
 import land.leets.Carrot.domain.apply.dto.request.ApplyRequest;
+import land.leets.Carrot.domain.apply.dto.response.GetApplicantResponse;
 import land.leets.Carrot.domain.apply.service.ApplyService;
+import land.leets.Carrot.global.common.response.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,5 +31,10 @@ public class ApplyController {
     public ResponseEntity<Void> postEmployedUser(@RequestBody ApplyRequest request){
         applyService.setStatusRecruited(request);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/post/{postId}/applicant")
+    public ResponseEntity<ResponseDto<GetApplicantResponse>> getApplicant(@PathParam("postId") Long postId){
+        return ResponseEntity.ok(applyService.getApplicant(postId));
     }
 }
