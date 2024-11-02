@@ -51,11 +51,11 @@ public class ApplyService {
     }
 
     public ResponseDto<GetApplicantResponse> getApplicant(Long postId) {
-        List<Employee> applyList = applyRepository.findByPostId(postId)
-                .stream().map(Apply::getEmployee).toList();
+        List<Apply> applyList = applyRepository.findByPostId(postId);
+
         List<Applicant> applicantList = applyList.stream()
-                .map(applicant -> new Applicant(applicant.getId(), applicant.getEmployeeName(),
-                        applicant.getEmployeeAddress()))
+                .map(applicant -> new Applicant(applicant.getEmployee().getId(), applicant.getEmployee().getEmployeeName(),
+                        applicant.getEmployee().getEmployeeAddress(), applicant.isRecruited()))
                 .collect(Collectors.toList());
         return new ResponseDto(SuccessMessage.GET_APPLICANT_LIST_SUCCESS.getCode(),
                 SuccessMessage.GET_APPLICANT_LIST_SUCCESS.getMessage(), new GetApplicantResponse(applicantList));
