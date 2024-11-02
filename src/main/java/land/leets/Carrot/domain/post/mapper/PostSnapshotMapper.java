@@ -9,10 +9,9 @@ public class PostSnapshotMapper {
     public static PostData postSnaphotToPostData(PostSnapshot postSnapshot, String doName, String siName,
                                                  String detailName, String workDays, String workType) {
         return new PostData(doName, siName, detailName, workType, postSnapshot.getTitle(), postSnapshot.getContent(),
-                postSnapshot.getPostImageUrl(),
                 postSnapshot.getPay(), postSnapshot.getWorkStartHour(), postSnapshot.getWorkStartMinute(),
                 postSnapshot.getWorkEndHour(), postSnapshot.getWorkEndMinute(), postSnapshot.isNegotiable(),
-                postSnapshot.getApplyNumber(), workDays, false, null, postSnapshot.getPayType(),
+                postSnapshot.getApplyNumber(), workDays, false, postSnapshot.getCreatedAt(), postSnapshot.getPayType(),
                 postSnapshot.isNumberPublic(), null//TODO 이미지 관련 작업 추후 진행 예정
         );
     }

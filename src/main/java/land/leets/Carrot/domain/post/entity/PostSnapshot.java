@@ -7,6 +7,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.time.LocalDateTime;
 import java.util.EnumSet;
 import java.util.Set;
 import land.leets.Carrot.global.common.domain.BaseTimeEntity;
@@ -15,6 +16,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Getter
 @Setter
@@ -38,8 +40,6 @@ public class PostSnapshot extends BaseTimeEntity {
     private String title;
 
     private String content;
-
-    private String postImageUrl;
 
     private int pay;
 
@@ -75,6 +75,9 @@ public class PostSnapshot extends BaseTimeEntity {
 
     private String payType;
 
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
     @Builder
     public PostSnapshot(int doAreaId,
                         int siAreaId,
@@ -83,7 +86,6 @@ public class PostSnapshot extends BaseTimeEntity {
                         Integer workTypeId,
                         String title,
                         String content,
-                        String postImageUrl,
                         int pay,
                         int workStartHour,
                         int workStartMinute,
@@ -99,7 +101,6 @@ public class PostSnapshot extends BaseTimeEntity {
         this.workTypeId = workTypeId;
         this.title = title;
         this.content = content;
-        this.postImageUrl = postImageUrl;
         this.pay = pay;
         this.workStartHour = workStartHour;
         this.workStartMinute = workStartMinute;
