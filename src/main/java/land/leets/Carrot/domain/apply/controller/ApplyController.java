@@ -1,0 +1,25 @@
+package land.leets.Carrot.domain.apply.controller;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
+import land.leets.Carrot.domain.apply.dto.request.PostApplyRequest;
+import land.leets.Carrot.domain.apply.service.ApplyService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@Tag(name = "ApplyController", description = "지원 관련 controller")
+@RequiredArgsConstructor
+@RequestMapping("/api/v1/apply")
+public class ApplyController {
+    private final ApplyService applyService;
+
+    @PostMapping
+    public ResponseEntity<Void> postApply(@RequestBody PostApplyRequest requestBody) {
+        applyService.postApply(requestBody);
+        return ResponseEntity.ok().build();
+    }
+}
