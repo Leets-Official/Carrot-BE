@@ -2,6 +2,8 @@ package land.leets.Carrot.domain.user.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -25,8 +27,18 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    private Integer birthYear;
+
     public User(String email, String password) {
         this.email = email;
         this.password = password;
+    }
+
+    public void updateBasicInfo(Gender gender, Integer birthYear) {
+        this.gender = gender;
+        this.birthYear = birthYear;
     }
 }
