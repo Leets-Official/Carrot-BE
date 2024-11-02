@@ -5,12 +5,16 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.time.LocalDateTime;
 import land.leets.Carrot.global.common.domain.BaseTimeEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Post extends BaseTimeEntity {
@@ -22,11 +26,21 @@ public class Post extends BaseTimeEntity {
     private long userId;
 
     @Column(name = "store_name", nullable = false)
-    private long storeName;
+    private String storeName;
 
     //조회수 기능 mvp 이후 구현
-    private Long view;
+    @Column(name = "create_at", nullable = false)
+    private LocalDateTime createAt;
 
+    //deleted, recruiting, done, illegal
     @Column(name = "status", nullable = false)
     private String status;
+
+    @Builder
+    public Post(long userId, String storeName, LocalDateTime createAt, String status) {
+        this.userId = userId;
+        this.storeName = storeName;
+        this.createAt = createAt;
+        this.status = status;
+    }
 }
