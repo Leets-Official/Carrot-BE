@@ -21,4 +21,6 @@ public class CeoSignupRequest {
     private String storeName;
     @NotNull
     private String openDate;
+    @NotNull
+    private String ceoAddress;
 }
