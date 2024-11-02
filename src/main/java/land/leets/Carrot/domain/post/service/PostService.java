@@ -91,9 +91,9 @@ public class PostService {
     }
 
     public Integer getAreaId(String areaName) {
-        return locationRepository.findByName(areaName)
-                .orElse(locationRepository.save(new DetailArea(areaName)))
-                .getAreaId();
+        DetailArea detailArea = locationRepository.findByName(areaName)
+                .orElseGet(() -> locationRepository.save(new DetailArea(areaName)));
+        return detailArea.getAreaId();
     }
 
     public ResponseDto<PostResponse> getPost(Long postId) {

@@ -1,5 +1,6 @@
 package land.leets.Carrot.domain.location.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,7 +20,9 @@ public class DetailArea {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer areaId;
 
+    @Column(unique = true)
     private String name;
+
     @Builder
     public DetailArea(String doName) {
         this.name = doName;
