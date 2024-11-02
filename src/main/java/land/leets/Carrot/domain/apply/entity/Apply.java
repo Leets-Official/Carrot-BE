@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,4 +28,11 @@ public class Apply {
     private boolean isRecruited = false;
 
     private boolean isResponsed = false;
+
+    @Builder
+    public Apply(Long postId,
+                 Long userId){
+        this.postId = postId;
+        this.userId = userId;
+    }
 }
