@@ -36,6 +36,9 @@ public class Post extends BaseTimeEntity {
     @Column(name = "status", nullable = false)
     private String status;
 
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    private Set<Apply> apply;
+
     @Builder
     public Post(long userId, String storeName, LocalDateTime createAt, String status) {
         this.userId = userId;

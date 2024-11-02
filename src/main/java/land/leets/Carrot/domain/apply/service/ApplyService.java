@@ -22,7 +22,8 @@ public class ApplyService {
     private static final String POST_STATUS_RECRUITING = "recruiting";
 
     public void postApply(ApplyRequest applyRequest) {
-        Apply apply = new Apply(applyRequest.postId(), applyRequest.userId());
+        Apply apply = new Apply(postRepository.findById(applyRequest.postId())
+                .orElseThrow(() -> new ApplyException(POST_NOT_FOUND)), applyRequest.userId());
         if (postRepository.findById(applyRequest.postId()).equals(POST_STATUS_RECRUITING)) {
             applyRepository.save(apply);
         } else {
