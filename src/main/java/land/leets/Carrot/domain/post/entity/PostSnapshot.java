@@ -90,7 +90,8 @@ public class PostSnapshot extends BaseTimeEntity {
                         int workEndHour, int workEndMinute, boolean isNegotiable,
                         String applyNumber,
                         boolean isLastest,
-                        boolean isNumberPublic) {
+                        boolean isNumberPublic,
+                        String payType) {
         this.doAreaId = doAreaId;
         this.siAreaId = siAreaId;
         this.detailAreaId = detailAreaId;
@@ -109,7 +110,7 @@ public class PostSnapshot extends BaseTimeEntity {
         this.isLastest = isLastest;
         this.isNumberPublic = isNumberPublic;
         this.selectedDays = selectedDays != null ? selectedDays : EnumSet.noneOf(DayOfWeek.class);
-
+        this.payType = payType;
     }
 
 }

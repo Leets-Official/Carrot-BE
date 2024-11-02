@@ -26,7 +26,8 @@ public class PostDataMapper {
                 .isNegotiable(postData.isNegotiable())
                 .applyNumber(postData.applyNumber())
                 .isLastest(true)
-                .isNumberPublic(postData.isNumberPublic()).build();
+                .isNumberPublic(postData.isNumberPublic())
+                .payType(postData.payType()).build();
         //TODO 선택한 날짜 enum Set 이전필요
 
     }
