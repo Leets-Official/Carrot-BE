@@ -9,9 +9,9 @@ import org.springframework.data.repository.query.Param;
 
 public interface ApplyRepository extends JpaRepository<Apply, Long> {
 
-    @Query("SELECT apply FROM Apply apply where apply.postId = :postId AND apply.userId = :userId")
-    Optional<Apply> findByPostIdAndUserID (@Param("postId") Long postId, @Param("userId") Long userId);
+    @Query("SELECT apply FROM Apply apply where apply.post.postId = :postId AND apply.userId = :userId")
+    Optional<Apply> findByPostIdAndUserID(@Param("postId") Long postId, @Param("userId") Long userId);
 
-    @Query("SELECT apply FROM Apply apply where apply.postId =:postId")
+    @Query("SELECT apply FROM Apply apply where apply.post.postId =:postId")
     List<Apply> findByPostId(@Param("postId") Long postId);
 }
