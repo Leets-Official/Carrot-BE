@@ -27,8 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/post")
 public class PostController {
-    PostService postService;
-    WorkTypeService workTypeService;
+    private final PostService postService;
+    private final WorkTypeService workTypeService;
 
     @PostMapping
     public ResponseEntity<Void> postNewPost(@RequestBody @Valid PostPostRequest requestBody) {

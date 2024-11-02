@@ -42,11 +42,11 @@ import org.springframework.stereotype.Service;
 @Transactional
 @RequiredArgsConstructor
 public class PostService {
-    PostRepository postRepository;
-    PostSnapshotRepository postSnapshotRepository;
-    LocationRepository locationRepository;
+    private final PostRepository postRepository;
+    private final PostSnapshotRepository postSnapshotRepository;
+    private final LocationRepository locationRepository;
 
-    WorkTypeRepository workTypeRepository;
+    private final WorkTypeRepository workTypeRepository;
 
     private static final String POST_STATUS_RECRUITING = "recruiting";
     private static final String POST_STATUS_DELETED = "deleted";

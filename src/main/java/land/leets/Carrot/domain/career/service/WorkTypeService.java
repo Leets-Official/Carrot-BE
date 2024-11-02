@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 @Transactional
 @RequiredArgsConstructor
 public class WorkTypeService {
-    WorkTypeRepository workTypeRepository;
+    private final WorkTypeRepository workTypeRepository;
 
     public ResponseDto<WorkTypeResponse> getWorkType() {
         List<WorkType> workTypeList = workTypeRepository.findAll();
