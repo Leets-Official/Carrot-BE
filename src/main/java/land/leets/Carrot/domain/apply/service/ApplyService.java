@@ -1,6 +1,7 @@
 package land.leets.Carrot.domain.apply.service;
 
 import static land.leets.Carrot.domain.apply.exception.ApplyErrorMessage.APPLY_NOT_FOUND;
+import static land.leets.Carrot.domain.apply.exception.ApplyErrorMessage.EMPLOYEE_NOT_FOUND;
 import static land.leets.Carrot.domain.apply.exception.ApplyErrorMessage.POST_NOT_FOUND;
 import static land.leets.Carrot.domain.apply.exception.ApplyErrorMessage.POST_NOT_RECRUITING;
 
@@ -33,8 +34,10 @@ public class ApplyService {
 
     public void postApply(ApplyRequest applyRequest) {
         Apply apply = new Apply(postRepository.findById(applyRequest.postId())
-                .orElseThrow(() -> new ApplyException(POST_NOT_FOUND)), applyRequest.userId());
-        if (postRepository.findById(applyRequest.postId()).equals(POST_STATUS_RECRUITING)) {
+                .orElseThrow(() -> new ApplyException(POST_NOT_FOUND)),
+                employeeRepository.findById(applyRequest.userId())
+                        .orElseThrow(() -> new ApplyException(EMPLOYEE_NOT_FOUND)));
+        if (postRepository.findById(applyRequest.postId()).orElseThrow().getStatus().equals(POST_STATUS_RECRUITING)) {
             applyRepository.save(apply);
         } else {
             throw new ApplyException(POST_NOT_RECRUITING);
@@ -48,13 +51,11 @@ public class ApplyService {
     }
 
     public ResponseDto<GetApplicantResponse> getApplicant(Long postId) {
-        List<Apply> applyList = applyRepository.findByPostId(postId);
-        List<Employee> employeeList = employeeRepository.findByIdIn(applyList.stream()
-                .map(Apply::getUserId)
-                .collect(Collectors.toList()));
-        List<Applicant> applicantList = employeeList.stream()
-                .map(employee -> new Applicant(employee.getId(), employee.getEmployeeName(),
-                        employee.getEmployeeAddress()))
+        List<Employee> applyList = applyRepository.findByPostId(postId)
+                .stream().map(Apply::getEmployee).toList();
+        List<Applicant> applicantList = applyList.stream()
+                .map(applicant -> new Applicant(applicant.getId(), applicant.getEmployeeName(),
+                        applicant.getEmployeeAddress()))
                 .collect(Collectors.toList());
         return new ResponseDto(SuccessMessage.GET_APPLICANT_LIST_SUCCESS.getCode(),
                 SuccessMessage.GET_APPLICANT_LIST_SUCCESS.getMessage(), new GetApplicantResponse(applicantList));

@@ -23,8 +23,6 @@ public class Apply {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private long userId;
-
     private LocalDateTime viewAt;
 
     private boolean isRecruited = false;
@@ -41,9 +39,9 @@ public class Apply {
 
     @Builder
     public Apply(Post post,
-                 Long userId) {
+                 Employee employee) {
         this.post = post;
-        this.userId = userId;
+        this.employee = employee;
     }
 
     public void setIsRecruited(boolean isRecruited) {
