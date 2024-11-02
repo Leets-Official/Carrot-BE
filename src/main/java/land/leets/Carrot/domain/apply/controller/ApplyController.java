@@ -22,4 +22,10 @@ public class ApplyController {
         applyService.postApply(requestBody);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("")
+    public ResponseEntity<Void> postEmployedUser(@RequestBody ApplyRequest request){
+        applyService.setStatusRecruited(request);
+        return ResponseEntity.ok().build();
+    }
 }
