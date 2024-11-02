@@ -68,7 +68,7 @@ public class PostService {
         Integer detailAreaId = getAreaId(postData.detailName());
 
         Integer jobTypeId = Math.toIntExact(workTypeRepository.findByType(postData.workType())
-                .orElse(workTypeRepository.save(new WorkType(postData.workType())))
+                .orElseGet(() -> workTypeRepository.save(new WorkType(postData.workType())))
                 .getId());
 
         PostSnapshot postSnapshot = PostDataMapper.postDataToPostSnapshot(postData, doAreaId, siAreaId, detailAreaId,
@@ -123,7 +123,8 @@ public class PostService {
         for (PostSnapshot postSnapshot : postSnapshotList) {
             Post post = postRepository.findById(postSnapshot.getPostId())
                     .orElseThrow(() -> new BaseException(POST_NOT_FOUND));
-            ShortPostData shortPostData = new ShortPostData(post.getPostId(), postSnapshot.getTitle(), post.getStoreName(), getAreaName
+            ShortPostData shortPostData = new ShortPostData(post.getPostId(), postSnapshot.getTitle(),
+                    post.getStoreName(), getAreaName
                     (postSnapshot.getDetailAreaId()),
                     postSnapshot.getPayType(), (long) postSnapshot.getPay(), post.getStatus(), ""//TODO 이미지 작업 추후 진행 예정
             );
@@ -150,7 +151,8 @@ public class PostService {
         for (Post post : postList) {
             PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndIsLastestTrue(post.getPostId())
                     .orElseThrow(() -> new BaseException(LATEST_SNAPSHOT_NOT_FOUND));
-            ShortPostData shortPostData = new ShortPostData(post.getPostId(), postSnapshot.getTitle(), post.getStoreName(), getAreaName(
+            ShortPostData shortPostData = new ShortPostData(post.getPostId(), postSnapshot.getTitle(),
+                    post.getStoreName(), getAreaName(
                     postSnapshot.getDetailAreaId()), postSnapshot.getPayType(), (long) postSnapshot.getPay(),
                     post.getStatus(),
                     "");    //TODO 이미지 관련 작업 차후 구현 예정
