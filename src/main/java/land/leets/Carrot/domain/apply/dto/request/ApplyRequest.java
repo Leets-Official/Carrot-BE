@@ -1,6 +1,6 @@
 package land.leets.Carrot.domain.apply.dto.request;
 
-public record PostApplyRequest(
+public record ApplyRequest(
         Long postId,
         Long userId
 
