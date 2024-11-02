@@ -38,4 +38,10 @@ public class Ceo extends User {
         this.openDate = openDate;
         this.ceoAddress = ceoAddress;
     }
+
+    public void updateCeoInfo(String ceoPhoneNumber, String ceoName, String ceoAddress) {
+        this.ceoPhoneNumber = ceoPhoneNumber;
+        this.ceoName = ceoName;
+        this.ceoAddress = ceoAddress;
+    }
 }
