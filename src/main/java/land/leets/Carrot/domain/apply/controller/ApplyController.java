@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApplyController {
     private final ApplyService applyService;
 
-    @PostMapping
+    @PostMapping()
     public ResponseEntity<Void> postApply(@RequestBody ApplyRequest requestBody) {
         applyService.postApply(requestBody);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("")
+    @PostMapping("/employ")
     public ResponseEntity<Void> postEmployedUser(@RequestBody ApplyRequest request){
         applyService.setStatusRecruited(request);
         return ResponseEntity.ok().build();
