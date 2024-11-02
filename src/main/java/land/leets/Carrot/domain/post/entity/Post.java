@@ -2,10 +2,14 @@ package land.leets.Carrot.domain.post.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
+import java.util.Set;
+import land.leets.Carrot.domain.apply.entity.Apply;
 import land.leets.Carrot.global.common.domain.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -35,6 +39,9 @@ public class Post extends BaseTimeEntity {
     //deleted, recruiting, done, illegal
     @Column(name = "status", nullable = false)
     private String status;
+
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    private Set<Apply> apply;
 
     @Builder
     public Post(long userId, String storeName, LocalDateTime createAt, String status) {
