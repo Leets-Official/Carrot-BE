@@ -14,4 +14,7 @@ public interface ApplyRepository extends JpaRepository<Apply, Long> {
 
     @Query("SELECT apply FROM Apply apply where apply.post.postId =:postId")
     List<Apply> findByPostId(@Param("postId") Long postId);
+
+    @Query("SELECT COUNT(apply) > 0 FROM Apply apply WHERE apply.post.postId =:postId AND apply.employee.id = :userId")
+    Boolean existsByPostIdAndEmployeeId(@Param("postId") Long postId, @Param("userId") Long userId);
 }
