@@ -1,5 +1,6 @@
 package land.leets.Carrot.domain.apply.service;
 
+import static land.leets.Carrot.domain.apply.exception.ApplyErrorMessage.ALREADY_APPLIED;
 import static land.leets.Carrot.domain.apply.exception.ApplyErrorMessage.APPLY_NOT_FOUND;
 import static land.leets.Carrot.domain.apply.exception.ApplyErrorMessage.EMPLOYEE_NOT_FOUND;
 import static land.leets.Carrot.domain.apply.exception.ApplyErrorMessage.POST_NOT_FOUND;
@@ -16,7 +17,6 @@ import land.leets.Carrot.domain.apply.entity.Apply;
 import land.leets.Carrot.domain.apply.exception.ApplyException;
 import land.leets.Carrot.domain.apply.repository.ApplyRepository;
 import land.leets.Carrot.domain.post.repository.PostRepository;
-import land.leets.Carrot.domain.user.entity.Employee;
 import land.leets.Carrot.domain.user.repository.EmployeeRepository;
 import land.leets.Carrot.global.common.response.ResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +33,10 @@ public class ApplyService {
     private static final String POST_STATUS_RECRUITING = "recruiting";
 
     public void postApply(ApplyRequest applyRequest) {
+        if (applyRepository.existsByPostIdAndEmployeeId(applyRequest.postId(), applyRequest.userId())) {
+            throw new ApplyException(ALREADY_APPLIED);
+        }
+
         Apply apply = new Apply(postRepository.findById(applyRequest.postId())
                 .orElseThrow(() -> new ApplyException(POST_NOT_FOUND)),
                 employeeRepository.findById(applyRequest.userId())
