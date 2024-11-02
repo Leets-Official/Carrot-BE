@@ -11,9 +11,9 @@ public interface PostSnapshotRepository extends JpaRepository<PostSnapshot, Long
     @Override
     Optional<PostSnapshot> findById(Long aLong);
 
-    Optional<PostSnapshot> findByPostIdAndLastestTrue(Long postId);
+    Optional<PostSnapshot> findByPostIdAndIsLastestTrue(Long postId);
 
     @Query("SELECT postsnapshot from PostSnapshot postsnapshot WHERE postsnapshot.title LIKE %:keyword%")
-    Optional<List<PostSnapshot>> findByKeywordAndLastestTrue(@Param("keyword") String keyword);
+    Optional<List<PostSnapshot>> findByKeywordAndIsLastestTrue(@Param("keyword") String keyword);
 
 }

@@ -79,7 +79,7 @@ public class PostService {
     @Transactional
     public void saveNewPostSnapshot(Long postId, PostPostRequest postPostRequest) {
         //기존 snapshot isLastest false로 수정
-        PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndLastestTrue(postId)
+        PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndIsLastestTrue(postId)
                 .orElseThrow(() -> new BaseException(LATEST_SNAPSHOT_NOT_FOUND.getCode(),
                         LATEST_SNAPSHOT_NOT_FOUND.getErrorMessage()));
         postSnapshot.setLastest(false);
@@ -102,7 +102,7 @@ public class PostService {
                 () -> new BaseException(ErrorMessage.POST_NOT_FOUND.getCode(),
                         ErrorMessage.POST_NOT_FOUND.getErrorMessage()));
         //스냅샷 db에서 검색
-        PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndLastestTrue(postId)
+        PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndIsLastestTrue(postId)
                 .orElseThrow(() -> new BaseException(LATEST_SNAPSHOT_NOT_FOUND));
 
         String workType = getWorkTypeName(postSnapshot.getWorkTypeId());
@@ -116,7 +116,7 @@ public class PostService {
     }
 
     public ResponseDto<ShortPostResponse> getPostByKeywordSearch(String keyword) {
-        List<PostSnapshot> postSnapshotList = postSnapshotRepository.findByKeywordAndLastestTrue(keyword)
+        List<PostSnapshot> postSnapshotList = postSnapshotRepository.findByKeywordAndIsLastestTrue(keyword)
                 .orElseThrow(() -> new BaseException(SEARCH_RESULT_NOT_FOUND));
         List<ShortPostData> shortPostDataList = new ArrayList<>();
 
@@ -148,7 +148,7 @@ public class PostService {
                 .orElseThrow(() -> new BaseException(NO_RECRUITING_POST));
         List<ShortPostData> shortPostDataList = new ArrayList<>();
         for (Post post : postList) {
-            PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndLastestTrue(post.getPostId())
+            PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndIsLastestTrue(post.getPostId())
                     .orElseThrow(() -> new BaseException(LATEST_SNAPSHOT_NOT_FOUND));
             ShortPostData shortPostData = new ShortPostData(postSnapshot.getTitle(), post.getStoreName(), getAreaName(
                     postSnapshot.getDetailAreaId()), postSnapshot.getPayType(), (long) postSnapshot.getPay(),
@@ -166,7 +166,7 @@ public class PostService {
                 .orElseThrow(() -> new BaseException(WROTE_POST_NOT_FOUND));
         List<PostedPost> postedPostDataList = new ArrayList<>();
         for (Post post : postedPostList) {
-            PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndLastestTrue(post.getPostId())
+            PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndIsLastestTrue(post.getPostId())
                     .orElseThrow(() -> new BaseException(LATEST_SNAPSHOT_NOT_FOUND));
             PostedPost postedPost = new PostedPost(post.getPostId(), postSnapshot.getTitle(),
                     getAreaName(postSnapshot.getDetailAreaId()), post.getStatus().equals(POST_STATUS_RECRUITING), "");
