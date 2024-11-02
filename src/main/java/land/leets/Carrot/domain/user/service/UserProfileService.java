@@ -16,8 +16,8 @@ public class UserProfileService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void updateBasicInfo(BasicInfoUpdateRequest request) {
-        User user = userRepository.findById(request.getUserId())
+    public void updateBasicInfo(BasicInfoUpdateRequest request, Long userId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
         // 공통 필드 업데이트
