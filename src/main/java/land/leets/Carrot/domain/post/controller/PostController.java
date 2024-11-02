@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -38,7 +37,7 @@ public class PostController {
 
 
     @PostMapping("/{postId}")
-    public ResponseEntity<Void> updatePost(@RequestParam Long postId, @RequestBody @Valid PostPostRequest requestBody) {
+    public ResponseEntity<Void> updatePost(@PathVariable Long postId, @RequestBody @Valid PostPostRequest requestBody) {
         postService.saveNewPostSnapshot(postId, requestBody);
         return ResponseEntity.ok().build();
     }
@@ -65,8 +64,8 @@ public class PostController {
         return ResponseEntity.ok(postService.getPostedPostList(requestBody));
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<ResponseDto<ShortPostResponse>> getPostsByKeywordSearch(@RequestParam String keyword) {
+    @GetMapping("/search/{keyword}")
+    public ResponseEntity<ResponseDto<ShortPostResponse>> getPostsByKeywordSearch(@PathVariable String keyword) {
         return ResponseEntity.ok(postService.getPostByKeywordSearch(keyword));
     }
 

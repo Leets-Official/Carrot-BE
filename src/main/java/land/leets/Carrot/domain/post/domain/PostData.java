@@ -10,7 +10,6 @@ public record PostData(
         String workType,
         String title,
         String content,
-        String imageUrl,
         Integer pay,
         Integer workStartHour,
         Integer workStartMinute,
@@ -20,7 +19,7 @@ public record PostData(
         String applyNumber,
         String workDays, //","로 구분해서 String 으로 받는 가정, 단기알바인 경우
         Boolean isShortTermJob,
-        LocalDateTime updatedTime,
+        LocalDateTime lastUpdatedTime,
         String payType,
         Boolean isNumberPublic,
         List<String> imageUrlList) {
