@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
-public enum ErrorMessage {
+public enum PostErrorMessage {
     POST_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "해당 글을 찾을 수 없습니다."),
     LATEST_SNAPSHOT_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "해당 게시글의 최신 버전 스냅샷을 찾을 수 없습니다"),
     SEARCH_RESULT_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "해당 키워드를 포함하는 게시글이 없습니다.."),
