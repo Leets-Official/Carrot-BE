@@ -11,7 +11,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Override
     Optional<Post> findById(Long aLong);
 
-    @Query("SELECT post FROM Post post WHERE post.status=:recuiting")
+    @Query("SELECT post FROM Post post WHERE post.status=:status")
     Optional<List<Post>> findByStatus(@Param("status") String status);
 
     @Query("SELECT post FROM Post post WHERE post.userId=:userId")
