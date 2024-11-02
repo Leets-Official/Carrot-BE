@@ -21,7 +21,6 @@ import land.leets.Carrot.domain.post.domain.PostData;
 import land.leets.Carrot.domain.post.domain.PostedPost;
 import land.leets.Carrot.domain.post.domain.ShortPostData;
 import land.leets.Carrot.domain.post.dto.request.GetPostedPostRequest;
-import land.leets.Carrot.domain.post.dto.request.PostDeleteRequest;
 import land.leets.Carrot.domain.post.dto.request.PostPostRequest;
 import land.leets.Carrot.domain.post.dto.response.PostResponse;
 import land.leets.Carrot.domain.post.dto.response.PostedPostResponse;
@@ -136,8 +135,8 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePostStatusDelete(PostDeleteRequest postDeleteRequest) {
-        Post post = postRepository.findById(postDeleteRequest.postId())
+    public void updatePostStatusDelete(Long postId) {
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new BaseException(POST_NOT_FOUND));
         post.setStatus(POST_STATUS_DELETED);
         postRepository.save(post);
