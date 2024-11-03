@@ -5,6 +5,7 @@ import static land.leets.Carrot.domain.post.exception.PostErrorMessage.LOCATION_
 import static land.leets.Carrot.domain.post.exception.PostErrorMessage.NO_RECRUITING_POST;
 import static land.leets.Carrot.domain.post.exception.PostErrorMessage.POST_NOT_FOUND;
 import static land.leets.Carrot.domain.post.exception.PostErrorMessage.SEARCH_RESULT_NOT_FOUND;
+import static land.leets.Carrot.domain.post.exception.PostErrorMessage.USER_NOT_FOUND;
 import static land.leets.Carrot.domain.post.exception.PostErrorMessage.WORK_TYPE_NOT_FOUND;
 import static land.leets.Carrot.domain.post.exception.PostErrorMessage.WROTE_POST_NOT_FOUND;
 
@@ -33,7 +34,7 @@ import land.leets.Carrot.domain.post.mapper.PostDataMapper;
 import land.leets.Carrot.domain.post.mapper.PostSnapshotMapper;
 import land.leets.Carrot.domain.post.repository.PostRepository;
 import land.leets.Carrot.domain.post.repository.PostSnapshotRepository;
-import land.leets.Carrot.global.common.exception.BaseException;
+import land.leets.Carrot.domain.user.repository.CeoRepository;
 import land.leets.Carrot.global.common.response.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -47,12 +48,15 @@ public class PostService {
     private final LocationRepository locationRepository;
 
     private final WorkTypeRepository workTypeRepository;
+    private final CeoRepository ceoRepository;
 
     private static final String POST_STATUS_RECRUITING = "recruiting";
     private static final String POST_STATUS_DELETED = "deleted";
+    private static final String POST_STATUS_DONE = "done";
 
     public void saveNewPost(PostPostRequest postPostRequest) {
-        Post post = new Post(postPostRequest.userId(), postPostRequest.storeName(), LocalDateTime.now(),
+        Post post = new Post(ceoRepository.findById(postPostRequest.userId())
+                .orElseThrow(() -> new PostException(USER_NOT_FOUND)), postPostRequest.storeName(), LocalDateTime.now(),
                 POST_STATUS_RECRUITING);
         Post savedPost = postRepository.save(post);
 
@@ -104,7 +108,8 @@ public class PostService {
                 .orElseThrow(() -> new PostException(LATEST_SNAPSHOT_NOT_FOUND));
 
         String workType = getWorkTypeName(postSnapshot.getWorkTypeId());
-        PostResponse postResponse = new PostResponse(postId, post.getUserId(), post.getStoreName(),
+        PostResponse postResponse = new PostResponse(postId, post.getCeo().getId(), post.getStoreName(),
+                post.getCeo().getCeoName(),
                 PostSnapshotMapper.postSnaphotToPostData(postSnapshot, getAreaName(postSnapshot.getDoAreaId())
                         , getAreaName(postSnapshot.getSiAreaId()), getAreaName(postSnapshot.getDetailAreaId()),
                         getWorkTypeName(postSnapshot.getWorkTypeId()), workType));

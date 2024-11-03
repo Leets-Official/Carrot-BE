@@ -14,7 +14,8 @@ public enum PostErrorMessage {
     WROTE_POST_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "작성한 게시글이 없습니다."),
 
     WORK_TYPE_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR.value(), "존재하는 업무 아이디의 업무내용을 찾을 수 없습니다."),
-    LOCATION_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR.value(), "존재하는 지역 아이디의 지역명을 찾을 수 없습니다."),;
+    LOCATION_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR.value(), "존재하는 지역 아이디의 지역명을 찾을 수 없습니다."),
+    USER_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR.value(), "작성자 유저를 찾을 수 없습니다.");
     private final Integer code;
     private final String errorMessage;
 }
