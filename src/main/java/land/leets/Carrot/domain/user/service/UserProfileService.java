@@ -2,6 +2,7 @@ package land.leets.Carrot.domain.user.service;
 
 import jakarta.transaction.Transactional;
 import land.leets.Carrot.domain.user.dto.request.BasicInfoUpdateRequest;
+import land.leets.Carrot.domain.user.dto.request.EmployeeAdditionalInfoUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.EmployeeCareerUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.EmployeeSelfIntroUpdateRequest;
 import land.leets.Carrot.domain.user.dto.response.CeoProfileResponse;
@@ -78,6 +79,25 @@ public class UserProfileService {
 
         if (user instanceof Employee employee) {
             employee.updateSelfIntro(request.getSelfIntro());
+        } else {
+            throw new InvalidUserTypeException();
+        }
+    }
+
+    @Transactional
+    public void updateAdditionalInfo(EmployeeAdditionalInfoUpdateRequest request, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+
+        if (user instanceof Employee employee) {
+            employee.updateAdditionalInfo(
+                    request.isSmoke(),
+                    request.isLongWork(),
+                    request.isCarLicense(),
+                    request.isEnglish(),
+                    request.isMilitary(),
+                    request.isCookLicense()
+            );
         } else {
             throw new InvalidUserTypeException();
         }
