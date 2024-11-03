@@ -27,8 +27,8 @@ public class UserProfileController {
     private final UserProfileService userProfileService;
 
     @GetMapping("/profile")
-    @Operation(summary = "유저 전체 프로필 조회")
-    public ResponseEntity<ResponseDto<?>> findProfile(@CurrentUser Long userId) {
+    @Operation(summary = "전체 유저 프로필 조회")
+    public ResponseEntity<ResponseDto<?>> findProfile(@Parameter(hidden = true) @CurrentUser Long userId) {
         var profileResponse = userProfileService.check(userId);
         return ResponseEntity.ok(ResponseDto.response(
                 PROFILE_CHECK_SUCCESS.getCode(),
