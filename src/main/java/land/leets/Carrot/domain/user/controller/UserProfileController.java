@@ -33,7 +33,7 @@ public class UserProfileController {
     private final UserProfileService userProfileService;
 
     @GetMapping("/profile")
-    @Operation(summary = "유저 프로필 메인 페이지")
+    @Operation(summary = "프로필 메인 페이지")
     public ResponseEntity<ResponseDto<?>> check(@Parameter(hidden = true) @CurrentUser Long userId) {
         var profileResponse = userProfileService.check(userId);
         return ResponseEntity.ok(ResponseDto.response(
@@ -55,7 +55,7 @@ public class UserProfileController {
     }
 
     @PatchMapping("/update-career")
-    @Operation(summary = "구직자 경력 정보 수정")
+    @Operation(summary = "구직자 경력 수정")
     public ResponseEntity<ResponseDto<Void>> updateCareer(@RequestBody @Valid EmployeeCareerUpdateRequest request,
                                                           @Parameter(hidden = true) @CurrentUser Long userId) {
         userProfileService.updateCareer(request, userId);
@@ -66,7 +66,7 @@ public class UserProfileController {
     }
 
     @PatchMapping("/update-self-introduction")
-    @Operation(summary = "구직자 자기소개 수정")
+    @Operation(summary = "구직자 자기 소개 수정")
     public ResponseEntity<ResponseDto<Void>> updateSelfIntro(
             @RequestBody @Valid EmployeeSelfIntroUpdateRequest request,
             @Parameter(hidden = true) @CurrentUser Long userId) {
@@ -90,7 +90,7 @@ public class UserProfileController {
     }
 
     @PatchMapping("/update-strength")
-    @Operation(summary = "구직자 장점 정보 수정")
+    @Operation(summary = "구직자 나의 장점 수정")
     public ResponseEntity<ResponseDto<Void>> updateStrength(@RequestBody @Valid EmployeeStrengthUpdateRequest request,
                                                             @Parameter(hidden = true) @CurrentUser Long userId) {
         userProfileService.updateStrength(request, userId);
