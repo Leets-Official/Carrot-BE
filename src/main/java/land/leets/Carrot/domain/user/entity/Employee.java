@@ -18,7 +18,11 @@ public class Employee extends User {
     @Column(nullable = false)
     private String employeeAddress;
 
+    @Column
     private String career;
+
+    @Column
+    private String selfIntro;
 
     public Employee(String email, String password, String phoneNumber, String employeeName, String employeeAddress) {
         super(email, password);
@@ -35,5 +39,9 @@ public class Employee extends User {
 
     public void updateCareer(String career) {
         this.career = career;
+    }
+
+    public void updateSelfIntro(String selfIntro) {
+        this.selfIntro = selfIntro;
     }
 }
