@@ -6,10 +6,13 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.Set;
 import land.leets.Carrot.domain.apply.entity.Apply;
+import land.leets.Carrot.domain.user.entity.Ceo;
 import land.leets.Carrot.global.common.domain.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -26,8 +29,9 @@ public class Post extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long postId;
 
-    @Column(name = "user_id", nullable = false)
-    private long userId;
+    @ManyToOne
+    @JoinColumn(name = "ceo_id", nullable = false)
+    private Ceo ceo;
 
     @Column(name = "store_name", nullable = false)
     private String storeName;
@@ -44,8 +48,8 @@ public class Post extends BaseTimeEntity {
     private Set<Apply> apply;
 
     @Builder
-    public Post(long userId, String storeName, LocalDateTime createAt, String status) {
-        this.userId = userId;
+    public Post(Ceo ceo, String storeName, LocalDateTime createAt, String status) {
+        this.ceo = ceo;
         this.storeName = storeName;
         this.createAt = createAt;
         this.status = status;
