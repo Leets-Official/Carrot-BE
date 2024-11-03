@@ -1,5 +1,6 @@
 package land.leets.Carrot.domain.user.controller;
 
+import static land.leets.Carrot.domain.user.controller.ResponseMessage.ADDITIONAL_INFO_UPDATE_SUCCESS;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.BASIC_INFO_UPDATE_SUCCESS;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.CAREER_UPDATE_SUCCESS;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.PROFILE_CHECK_SUCCESS;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import land.leets.Carrot.domain.user.dto.request.BasicInfoUpdateRequest;
+import land.leets.Carrot.domain.user.dto.request.EmployeeAdditionalInfoUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.EmployeeCareerUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.EmployeeSelfIntroUpdateRequest;
 import land.leets.Carrot.domain.user.service.UserProfileService;
@@ -30,7 +32,7 @@ public class UserProfileController {
 
     @GetMapping("/profile")
     @Operation(summary = "전체 유저 프로필 조회")
-    public ResponseEntity<ResponseDto<?>> findProfile(@Parameter(hidden = true) @CurrentUser Long userId) {
+    public ResponseEntity<ResponseDto<?>> check(@Parameter(hidden = true) @CurrentUser Long userId) {
         var profileResponse = userProfileService.check(userId);
         return ResponseEntity.ok(ResponseDto.response(
                 PROFILE_CHECK_SUCCESS.getCode(),
@@ -45,7 +47,8 @@ public class UserProfileController {
                                                              @Parameter(hidden = true) @CurrentUser Long userId) {
         userProfileService.updateBasicInfo(request, userId);
         return ResponseEntity.ok(
-                ResponseDto.response(BASIC_INFO_UPDATE_SUCCESS.getCode(), BASIC_INFO_UPDATE_SUCCESS.getMessage())
+                ResponseDto.response(BASIC_INFO_UPDATE_SUCCESS.getCode(),
+                        BASIC_INFO_UPDATE_SUCCESS.getMessage())
         );
     }
 
@@ -55,7 +58,8 @@ public class UserProfileController {
                                                           @Parameter(hidden = true) @CurrentUser Long userId) {
         userProfileService.updateCareer(request, userId);
         return ResponseEntity.ok(
-                ResponseDto.response(CAREER_UPDATE_SUCCESS.getCode(), CAREER_UPDATE_SUCCESS.getMessage())
+                ResponseDto.response(CAREER_UPDATE_SUCCESS.getCode(),
+                        CAREER_UPDATE_SUCCESS.getMessage())
         );
     }
 
@@ -66,7 +70,20 @@ public class UserProfileController {
             @Parameter(hidden = true) @CurrentUser Long userId) {
         userProfileService.updateSelfIntro(request, userId);
         return ResponseEntity.ok(
-                ResponseDto.response(SELF_INTRO_UPDATE_SUCCESS.getCode(), SELF_INTRO_UPDATE_SUCCESS.getMessage())
+                ResponseDto.response(SELF_INTRO_UPDATE_SUCCESS.getCode(),
+                        SELF_INTRO_UPDATE_SUCCESS.getMessage())
+        );
+    }
+
+    @PatchMapping("/update-additional-info")
+    @Operation(summary = "구직자 추가 정보 수정")
+    public ResponseEntity<ResponseDto<Void>> updateAdditionalInfo(
+            @RequestBody @Valid EmployeeAdditionalInfoUpdateRequest request,
+            @Parameter(hidden = true) @CurrentUser Long userId) {
+        userProfileService.updateAdditionalInfo(request, userId);
+        return ResponseEntity.ok(
+                ResponseDto.response(ADDITIONAL_INFO_UPDATE_SUCCESS.getCode(),
+                        ADDITIONAL_INFO_UPDATE_SUCCESS.getMessage())
         );
     }
 }
