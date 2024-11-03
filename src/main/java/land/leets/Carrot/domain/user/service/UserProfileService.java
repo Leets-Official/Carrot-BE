@@ -5,6 +5,7 @@ import land.leets.Carrot.domain.user.dto.request.BasicInfoUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.EmployeeAdditionalInfoUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.EmployeeCareerUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.EmployeeSelfIntroUpdateRequest;
+import land.leets.Carrot.domain.user.dto.request.EmployeeStrengthUpdateRequest;
 import land.leets.Carrot.domain.user.dto.response.CeoProfileResponse;
 import land.leets.Carrot.domain.user.dto.response.EmployeeProfileResponse;
 import land.leets.Carrot.domain.user.entity.Ceo;
@@ -97,6 +98,24 @@ public class UserProfileService {
                     request.isEnglish(),
                     request.isMilitary(),
                     request.isCookLicense()
+            );
+        } else {
+            throw new InvalidUserTypeException();
+        }
+    }
+
+    @Transactional
+    public void updateStrength(EmployeeStrengthUpdateRequest request, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+
+        if (user instanceof Employee employee) {
+            employee.updateStrengths(
+                    request.isDiligent(),
+                    request.isOnTime(),
+                    request.isClean(),
+                    request.isNearHome(),
+                    request.isSleepless()
             );
         } else {
             throw new InvalidUserTypeException();
