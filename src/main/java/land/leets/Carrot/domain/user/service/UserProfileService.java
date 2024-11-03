@@ -2,11 +2,13 @@ package land.leets.Carrot.domain.user.service;
 
 import jakarta.transaction.Transactional;
 import land.leets.Carrot.domain.user.dto.request.BasicInfoUpdateRequest;
+import land.leets.Carrot.domain.user.dto.request.EmployeeCareerUpdateRequest;
 import land.leets.Carrot.domain.user.dto.response.CeoProfileResponse;
 import land.leets.Carrot.domain.user.dto.response.EmployeeProfileResponse;
 import land.leets.Carrot.domain.user.entity.Ceo;
 import land.leets.Carrot.domain.user.entity.Employee;
 import land.leets.Carrot.domain.user.entity.User;
+import land.leets.Carrot.domain.user.exception.InvalidUserTypeException;
 import land.leets.Carrot.domain.user.exception.UnknownUserTypeException;
 import land.leets.Carrot.domain.user.exception.UserNotFoundException;
 import land.leets.Carrot.domain.user.repository.UserRepository;
@@ -53,6 +55,18 @@ public class UserProfileService {
                     request.getCeoName(),
                     request.getCeoAddress()
             );
+        }
+    }
+
+    @Transactional
+    public void updateCareer(EmployeeCareerUpdateRequest request, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+
+        if (user instanceof Employee employee) {
+            employee.updateCareer(request.getCareer());
+        } else {
+            throw new InvalidUserTypeException();
         }
     }
 }
