@@ -42,6 +42,22 @@ public class Employee extends User {
     @Column
     private boolean isCookLicense;
 
+    @Column
+    private boolean isDiligent = false;
+
+    @Column
+    private boolean isOnTime = false;
+
+    @Column
+    private boolean isClean = false;
+
+    @Column
+    private boolean isNearHome = false;
+
+    @Column
+    private boolean isSleepless = false;
+
+
     public Employee(String email, String password, String phoneNumber, String employeeName, String employeeAddress) {
         super(email, password);
         this.phoneNumber = phoneNumber;
@@ -71,5 +87,13 @@ public class Employee extends User {
         this.isEnglish = isEnglish;
         this.isMilitary = isMilitary;
         this.isCookLicense = isCookLicense;
+    }
+
+    public void updateStrengths(boolean diligent, boolean onTime, boolean clean, boolean nearHome, boolean sleepless) {
+        this.isDiligent = diligent;
+        this.isOnTime = onTime;
+        this.isClean = clean;
+        this.isNearHome = nearHome;
+        this.isSleepless = sleepless;
     }
 }
