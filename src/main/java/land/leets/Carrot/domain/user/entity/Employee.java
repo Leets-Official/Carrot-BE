@@ -24,6 +24,24 @@ public class Employee extends User {
     @Column
     private String selfIntro;
 
+    @Column
+    private boolean isSmoke;
+
+    @Column
+    private boolean isLongWork;
+
+    @Column
+    private boolean isCarLicense;
+
+    @Column
+    private boolean isEnglish;
+
+    @Column
+    private boolean isMilitary;
+
+    @Column
+    private boolean isCookLicense;
+
     public Employee(String email, String password, String phoneNumber, String employeeName, String employeeAddress) {
         super(email, password);
         this.phoneNumber = phoneNumber;
@@ -43,5 +61,15 @@ public class Employee extends User {
 
     public void updateSelfIntro(String selfIntro) {
         this.selfIntro = selfIntro;
+    }
+
+    public void updateAdditionalInfo(boolean isSmoke, boolean isLongWork, boolean isCarLicense,
+                                     boolean isEnglish, boolean isMilitary, boolean isCookLicense) {
+        this.isSmoke = isSmoke;
+        this.isLongWork = isLongWork;
+        this.isCarLicense = isCarLicense;
+        this.isEnglish = isEnglish;
+        this.isMilitary = isMilitary;
+        this.isCookLicense = isCookLicense;
     }
 }
