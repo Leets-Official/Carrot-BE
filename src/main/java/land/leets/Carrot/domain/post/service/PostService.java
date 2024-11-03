@@ -146,6 +146,14 @@ public class PostService {
         postRepository.save(post);
     }
 
+    @Transactional
+    public void updatePostStatusDone(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostException(POST_NOT_FOUND));
+        post.setStatus(POST_STATUS_DONE);
+        postRepository.save(post);
+    }
+
     //홈 화면에서 간략한 게시글 데이터 리스트 조회
     public ResponseDto<ShortPostResponse> getShortPostData() {
         List<Post> postList = postRepository.findByStatus(POST_STATUS_RECRUITING)
