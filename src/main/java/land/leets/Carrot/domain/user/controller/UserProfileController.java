@@ -3,12 +3,14 @@ package land.leets.Carrot.domain.user.controller;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.BASIC_INFO_UPDATE_SUCCESS;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.CAREER_UPDATE_SUCCESS;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.PROFILE_CHECK_SUCCESS;
+import static land.leets.Carrot.domain.user.controller.ResponseMessage.SELF_INTRO_UPDATE_SUCCESS;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import land.leets.Carrot.domain.user.dto.request.BasicInfoUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.EmployeeCareerUpdateRequest;
+import land.leets.Carrot.domain.user.dto.request.EmployeeSelfIntroUpdateRequest;
 import land.leets.Carrot.domain.user.service.UserProfileService;
 import land.leets.Carrot.global.auth.annotation.CurrentUser;
 import land.leets.Carrot.global.common.response.ResponseDto;
@@ -54,6 +56,17 @@ public class UserProfileController {
         userProfileService.updateCareer(request, userId);
         return ResponseEntity.ok(
                 ResponseDto.response(CAREER_UPDATE_SUCCESS.getCode(), CAREER_UPDATE_SUCCESS.getMessage())
+        );
+    }
+
+    @PatchMapping("/update-self-introduction")
+    @Operation(summary = "구직자 자기소개 수정")
+    public ResponseEntity<ResponseDto<Void>> updateSelfIntro(
+            @RequestBody @Valid EmployeeSelfIntroUpdateRequest request,
+            @Parameter(hidden = true) @CurrentUser Long userId) {
+        userProfileService.updateSelfIntro(request, userId);
+        return ResponseEntity.ok(
+                ResponseDto.response(SELF_INTRO_UPDATE_SUCCESS.getCode(), SELF_INTRO_UPDATE_SUCCESS.getMessage())
         );
     }
 }
