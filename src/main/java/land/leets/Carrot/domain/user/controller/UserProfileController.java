@@ -1,12 +1,14 @@
 package land.leets.Carrot.domain.user.controller;
 
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.BASIC_INFO_UPDATE_SUCCESS;
+import static land.leets.Carrot.domain.user.controller.ResponseMessage.CAREER_UPDATE_SUCCESS;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.PROFILE_CHECK_SUCCESS;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import land.leets.Carrot.domain.user.dto.request.BasicInfoUpdateRequest;
+import land.leets.Carrot.domain.user.dto.request.EmployeeCareerUpdateRequest;
 import land.leets.Carrot.domain.user.service.UserProfileService;
 import land.leets.Carrot.global.auth.annotation.CurrentUser;
 import land.leets.Carrot.global.common.response.ResponseDto;
@@ -42,6 +44,16 @@ public class UserProfileController {
         userProfileService.updateBasicInfo(request, userId);
         return ResponseEntity.ok(
                 ResponseDto.response(BASIC_INFO_UPDATE_SUCCESS.getCode(), BASIC_INFO_UPDATE_SUCCESS.getMessage())
+        );
+    }
+
+    @PatchMapping("/update-career")
+    @Operation(summary = "구직자 경력 정보 수정")
+    public ResponseEntity<ResponseDto<Void>> updateCareer(@RequestBody @Valid EmployeeCareerUpdateRequest request,
+                                                          @Parameter(hidden = true) @CurrentUser Long userId) {
+        userProfileService.updateCareer(request, userId);
+        return ResponseEntity.ok(
+                ResponseDto.response(CAREER_UPDATE_SUCCESS.getCode(), CAREER_UPDATE_SUCCESS.getMessage())
         );
     }
 }
