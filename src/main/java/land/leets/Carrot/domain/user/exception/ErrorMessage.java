@@ -15,8 +15,10 @@ public enum ErrorMessage {
 
     // 로그인 관련
     USER_NOT_FOUND(404, "존재하지 않는 유저입니다."),
-    INVALID_PASSWORD(401, "비밀번호가 일치하지 않습니다.");
+    INVALID_PASSWORD(401, "비밀번호가 일치하지 않습니다."),
 
+    // 유저 프로필 관련
+    UNKNOWN_USER_TYPE(500, "정의되지 않은 유저 타입입니다.");
     private final int code;
     private final String message;
 }
