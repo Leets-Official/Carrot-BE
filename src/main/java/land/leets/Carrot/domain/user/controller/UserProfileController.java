@@ -5,6 +5,7 @@ import static land.leets.Carrot.domain.user.controller.ResponseMessage.BASIC_INF
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.CAREER_UPDATE_SUCCESS;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.PROFILE_CHECK_SUCCESS;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.SELF_INTRO_UPDATE_SUCCESS;
+import static land.leets.Carrot.domain.user.controller.ResponseMessage.STRENGTH_UPDATE_SUCCESS;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -13,6 +14,7 @@ import land.leets.Carrot.domain.user.dto.request.BasicInfoUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.EmployeeAdditionalInfoUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.EmployeeCareerUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.EmployeeSelfIntroUpdateRequest;
+import land.leets.Carrot.domain.user.dto.request.EmployeeStrengthUpdateRequest;
 import land.leets.Carrot.domain.user.service.UserProfileService;
 import land.leets.Carrot.global.auth.annotation.CurrentUser;
 import land.leets.Carrot.global.common.response.ResponseDto;
@@ -31,7 +33,7 @@ public class UserProfileController {
     private final UserProfileService userProfileService;
 
     @GetMapping("/profile")
-    @Operation(summary = "전체 유저 프로필 조회")
+    @Operation(summary = "유저 프로필 메인 페이지")
     public ResponseEntity<ResponseDto<?>> check(@Parameter(hidden = true) @CurrentUser Long userId) {
         var profileResponse = userProfileService.check(userId);
         return ResponseEntity.ok(ResponseDto.response(
@@ -84,6 +86,17 @@ public class UserProfileController {
         return ResponseEntity.ok(
                 ResponseDto.response(ADDITIONAL_INFO_UPDATE_SUCCESS.getCode(),
                         ADDITIONAL_INFO_UPDATE_SUCCESS.getMessage())
+        );
+    }
+
+    @PatchMapping("/update-strength")
+    @Operation(summary = "구직자 장점 정보 수정")
+    public ResponseEntity<ResponseDto<Void>> updateStrength(@RequestBody @Valid EmployeeStrengthUpdateRequest request,
+                                                            @Parameter(hidden = true) @CurrentUser Long userId) {
+        userProfileService.updateStrength(request, userId);
+        return ResponseEntity.ok(
+                ResponseDto.response(STRENGTH_UPDATE_SUCCESS.getCode(),
+                        STRENGTH_UPDATE_SUCCESS.getMessage())
         );
     }
 }
