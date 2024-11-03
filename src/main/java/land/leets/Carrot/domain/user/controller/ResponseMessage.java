@@ -16,7 +16,8 @@ public enum ResponseMessage {
     BASIC_INFO_UPDATE_SUCCESS(200, "프로필 기본정보 수정 성공"),
     CAREER_UPDATE_SUCCESS(200, "경력 정보 수정 성공"),
     SELF_INTRO_UPDATE_SUCCESS(200, "자기소개 정보 수정 성공"),
-    ADDITIONAL_INFO_UPDATE_SUCCESS(200, "추가 정보 수정 성공");
+    ADDITIONAL_INFO_UPDATE_SUCCESS(200, "추가 정보 수정 성공"),
+    STRENGTH_UPDATE_SUCCESS(200, "장점 정보 수정 성공");
     private final int code;
     private final String message;
 
