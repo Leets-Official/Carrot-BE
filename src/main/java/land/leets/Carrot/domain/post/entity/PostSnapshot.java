@@ -114,4 +114,8 @@ public class PostSnapshot extends BaseTimeEntity {
         this.payType = payType;
     }
 
+    public void setIsLastest(boolean isLastest){
+        this.isLastest = isLastest;
+    }
+
 }
