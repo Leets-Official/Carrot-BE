@@ -2,6 +2,10 @@ package land.leets.Carrot.domain.user.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
+import java.util.Set;
+import land.leets.Carrot.domain.post.entity.Post;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,6 +31,9 @@ public class Ceo extends User {
 
     @Column(nullable = false)
     private String ceoAddress;
+
+    @OneToMany(mappedBy = "ceo", fetch = FetchType.LAZY)
+    private Set<Post> post;
 
     public Ceo(String email, String password, String ceoName, String ceoPhoneNumber, String ceoNumber, String storeName,
                String openDate, String ceoAddress) {
