@@ -18,7 +18,9 @@ public enum ErrorMessage {
     INVALID_PASSWORD(401, "비밀번호가 일치하지 않습니다."),
 
     // 유저 프로필 관련
-    UNKNOWN_USER_TYPE(500, "정의되지 않은 유저 타입입니다.");
+    UNKNOWN_USER_TYPE(400, "정의되지 않은 유저 타입입니다."),
+    INVALID_USER_TYPE(400, "경력 정보는 구직자만 수정 가능합니다.");
+
     private final int code;
     private final String message;
 }
