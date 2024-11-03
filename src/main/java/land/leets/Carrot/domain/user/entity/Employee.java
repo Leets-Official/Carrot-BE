@@ -18,6 +18,8 @@ public class Employee extends User {
     @Column(nullable = false)
     private String employeeAddress;
 
+    private String career;
+
     public Employee(String email, String password, String phoneNumber, String employeeName, String employeeAddress) {
         super(email, password);
         this.phoneNumber = phoneNumber;
@@ -29,5 +31,9 @@ public class Employee extends User {
         this.phoneNumber = phoneNumber;
         this.employeeName = employeeName;
         this.employeeAddress = employeeAddress;
+    }
+
+    public void updateCareer(String career) {
+        this.career = career;
     }
 }
