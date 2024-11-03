@@ -85,7 +85,7 @@ public class PostService {
         //기존 snapshot isLastest false로 수정
         PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndIsLastestTrue(postId)
                 .orElseThrow(() -> new PostException(LATEST_SNAPSHOT_NOT_FOUND));
-        postSnapshot.setLastest(false);
+        postSnapshot.setIsLastest(false);
         postSnapshotRepository.save(postSnapshot);
 
         //PostSnapshot 생성해서 새 PostSnapshot 저장
