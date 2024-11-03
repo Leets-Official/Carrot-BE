@@ -25,7 +25,7 @@ public class CeoSignupService {
         Ceo ceo = new Ceo(
                 request.getEmail(), encodedPassword, request.getCeoName(), request.getCeoPhoneNumber(),
                 request.getCeoNumber(),
-                request.getStoreName(), request.getOpenDate()
+                request.getStoreName(), request.getOpenDate(), request.getCeoAddress()
         );
         ceoRepository.save(ceo);
     }

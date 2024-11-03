@@ -29,17 +29,26 @@ public class Ceo extends User {
     @Column(nullable = false)
     private String openDate;
 
+    @Column(nullable = false)
+    private String ceoAddress;
+
     @OneToMany(mappedBy = "ceo", fetch = FetchType.LAZY)
     private Set<Post> post;
 
-
     public Ceo(String email, String password, String ceoName, String ceoPhoneNumber, String ceoNumber, String storeName,
-               String openDate) {
+               String openDate, String ceoAddress) {
         super(email, password);
         this.ceoName = ceoName;
         this.ceoPhoneNumber = ceoPhoneNumber;
         this.ceoNumber = ceoNumber;
         this.storeName = storeName;
         this.openDate = openDate;
+        this.ceoAddress = ceoAddress;
+    }
+
+    public void updateCeoInfo(String ceoPhoneNumber, String ceoName, String ceoAddress) {
+        this.ceoPhoneNumber = ceoPhoneNumber;
+        this.ceoName = ceoName;
+        this.ceoAddress = ceoAddress;
     }
 }
