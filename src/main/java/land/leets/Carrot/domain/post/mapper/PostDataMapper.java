@@ -1,6 +1,8 @@
 package land.leets.Carrot.domain.post.mapper;
 
+import java.util.stream.Collectors;
 import land.leets.Carrot.domain.post.domain.PostData;
+import land.leets.Carrot.domain.post.entity.DayOfWeek;
 import land.leets.Carrot.domain.post.entity.PostSnapshot;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +29,10 @@ public class PostDataMapper {
                 .applyNumber(postData.applyNumber())
                 .isLastest(true)
                 .isNumberPublic(postData.isNumberPublic())
-                .payType(postData.payType()).build();
+                .payType(postData.payType())
+                .selectedDays(
+                        postData.workDays().stream().map(day -> DayOfWeek.valueOf(day)).collect(Collectors.toSet()))
+                .build();
         //TODO 선택한 날짜 enum Set 이전필요
 
     }

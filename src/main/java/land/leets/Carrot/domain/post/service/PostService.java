@@ -26,6 +26,7 @@ import land.leets.Carrot.domain.post.dto.request.PostPostRequest;
 import land.leets.Carrot.domain.post.dto.response.PostResponse;
 import land.leets.Carrot.domain.post.dto.response.PostedPostResponse;
 import land.leets.Carrot.domain.post.dto.response.ShortPostResponse;
+import land.leets.Carrot.domain.post.entity.DayOfWeek;
 import land.leets.Carrot.domain.post.entity.Post;
 import land.leets.Carrot.domain.post.entity.PostSnapshot;
 import land.leets.Carrot.domain.post.exception.PostErrorMessage;
@@ -86,6 +87,9 @@ public class PostService {
         PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndIsLastestTrue(postId)
                 .orElseThrow(() -> new PostException(LATEST_SNAPSHOT_NOT_FOUND));
         postSnapshot.setIsLastest(false);
+        for (String day : postPostRequest.postData().workDays()) {
+            postSnapshot.selectDay(DayOfWeek.valueOf(day));
+        }
         postSnapshotRepository.save(postSnapshot);
 
         //PostSnapshot 생성해서 새 PostSnapshot 저장
@@ -112,7 +116,7 @@ public class PostService {
                 post.getCeo().getCeoName(),
                 PostSnapshotMapper.postSnaphotToPostData(postSnapshot, getAreaName(postSnapshot.getDoAreaId())
                         , getAreaName(postSnapshot.getSiAreaId()), getAreaName(postSnapshot.getDetailAreaId()),
-                        getWorkTypeName(postSnapshot.getWorkTypeId()), workType));
+                        postSnapshot.getSelectedDays(), workType));
 
         return new ResponseDto(SuccessMessage.GET_POST_DETAIL_SUCCESS.getCode(),
                 SuccessMessage.GET_POST_DETAIL_SUCCESS.getMessage(), postResponse);

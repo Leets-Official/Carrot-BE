@@ -93,7 +93,8 @@ public class PostSnapshot extends BaseTimeEntity {
                         String applyNumber,
                         boolean isLastest,
                         boolean isNumberPublic,
-                        String payType) {
+                        String payType,
+                        Set<DayOfWeek> selectedDays) {
         this.doAreaId = doAreaId;
         this.siAreaId = siAreaId;
         this.detailAreaId = detailAreaId;
