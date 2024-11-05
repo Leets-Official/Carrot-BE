@@ -3,6 +3,7 @@ package land.leets.Carrot.domain.user.controller;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.ADDITIONAL_INFO_UPDATE_SUCCESS;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.BASIC_INFO_UPDATE_SUCCESS;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.CAREER_UPDATE_SUCCESS;
+import static land.leets.Carrot.domain.user.controller.ResponseMessage.IMAGE_UPLOAD_SUCCESS;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.PROFILE_CHECK_SUCCESS;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.SELF_INTRO_UPDATE_SUCCESS;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.STRENGTH_UPDATE_SUCCESS;
@@ -10,6 +11,7 @@ import static land.leets.Carrot.domain.user.controller.ResponseMessage.STRENGTH_
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
+import land.leets.Carrot.domain.image.service.S3ImageService;
 import land.leets.Carrot.domain.user.dto.request.BasicInfoUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.EmployeeAdditionalInfoUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.EmployeeCareerUpdateRequest;
@@ -22,15 +24,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/user-profiles")
 public class UserProfileController {
     private final UserProfileService userProfileService;
+    private final S3ImageService s3ImageService;
 
     @GetMapping("/profile")
     @Operation(summary = "프로필 메인 페이지")
@@ -97,6 +103,19 @@ public class UserProfileController {
         return ResponseEntity.ok(
                 ResponseDto.response(STRENGTH_UPDATE_SUCCESS.getCode(),
                         STRENGTH_UPDATE_SUCCESS.getMessage())
+        );
+    }
+
+    @PostMapping("/upload-profile-image")
+    @Operation(summary = "프로필 이미지 업로드")
+    public ResponseEntity<ResponseDto<String>> uploadProfileImage(
+            @RequestParam("image") MultipartFile image,
+            @Parameter(hidden = true) @CurrentUser Long userId) {
+        String imageUrl = s3ImageService.uploadImage(image, "profile-images");
+        userProfileService.updateProfileImageUrl(userId, imageUrl);
+        return ResponseEntity.ok(
+                ResponseDto.response(IMAGE_UPLOAD_SUCCESS.getCode(),
+                        IMAGE_UPLOAD_SUCCESS.getMessage(), imageUrl)
         );
     }
 }
