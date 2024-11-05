@@ -21,8 +21,9 @@ public enum ResponseMessage {
 
     // 이미지 업로드 관련
     IMAGE_UPLOAD_SUCCESS(200, "이미지 업로드 성공."),
+    IMAGE_UPDATE_SUCCESS(200, "이미지 수정 성공."),
     IMAGE_DELETE_SUCCESS(200, "이미지 삭제 성공.");
-    
+
     private final int code;
     private final String message;
 
