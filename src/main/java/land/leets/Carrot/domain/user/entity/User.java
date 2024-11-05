@@ -32,6 +32,8 @@ public class User {
 
     private Integer birthYear;
 
+    private String profileImageUrl;
+
     public User(String email, String password) {
         this.email = email;
         this.password = password;
@@ -40,5 +42,9 @@ public class User {
     public void updateBasicInfo(Gender gender, Integer birthYear) {
         this.gender = gender;
         this.birthYear = birthYear;
+    }
+
+    public void updateProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
     }
 }

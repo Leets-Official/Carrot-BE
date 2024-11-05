@@ -20,3 +20,12 @@ carrot:
     refresh:
       expiration: ${REFRESH_EXP}
       header: ${REFRESH_HEAD}
+cloud:
+  aws:
+    credentials:
+      access-key: ${S3_ACCESS_KEY}
+      secret-key: ${S3_SECRET_KEY}
+    s3:
+      bucket: ${S3_BUCKET}
+    region:
+      static: ${S3_REGION}
