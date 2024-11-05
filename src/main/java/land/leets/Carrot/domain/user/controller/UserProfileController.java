@@ -3,6 +3,8 @@ package land.leets.Carrot.domain.user.controller;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.ADDITIONAL_INFO_UPDATE_SUCCESS;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.BASIC_INFO_UPDATE_SUCCESS;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.CAREER_UPDATE_SUCCESS;
+import static land.leets.Carrot.domain.user.controller.ResponseMessage.IMAGE_DELETE_SUCCESS;
+import static land.leets.Carrot.domain.user.controller.ResponseMessage.IMAGE_UPDATE_SUCCESS;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.IMAGE_UPLOAD_SUCCESS;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.PROFILE_CHECK_SUCCESS;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.SELF_INTRO_UPDATE_SUCCESS;
@@ -22,6 +24,7 @@ import land.leets.Carrot.global.auth.annotation.CurrentUser;
 import land.leets.Carrot.global.common.response.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -116,6 +119,33 @@ public class UserProfileController {
         return ResponseEntity.ok(
                 ResponseDto.response(IMAGE_UPLOAD_SUCCESS.getCode(),
                         IMAGE_UPLOAD_SUCCESS.getMessage(), imageUrl)
+        );
+    }
+
+    @PatchMapping("/update-profile-image")
+    @Operation(summary = "프로필 이미지 수정")
+    public ResponseEntity<ResponseDto<String>> updateProfileImage(
+            @RequestParam("image") MultipartFile image,
+            @RequestParam("oldFileName") String oldFileName,
+            @Parameter(hidden = true) @CurrentUser Long userId) {
+        String imageUrl = s3ImageService.updateImage(image, oldFileName, "profile-images");
+        userProfileService.updateProfileImageUrl(userId, imageUrl);
+        return ResponseEntity.ok(
+                ResponseDto.response(IMAGE_UPDATE_SUCCESS.getCode(),
+                        IMAGE_UPDATE_SUCCESS.getMessage(), imageUrl)
+        );
+    }
+
+    @DeleteMapping("/delete-profile-image")
+    @Operation(summary = "프로필 이미지 삭제")
+    public ResponseEntity<ResponseDto<Void>> deleteProfileImage(
+            @RequestParam("fileName") String fileName,
+            @Parameter(hidden = true) @CurrentUser Long userId) {
+        s3ImageService.deleteImage(fileName);
+        userProfileService.updateProfileImageUrl(userId, null);
+        return ResponseEntity.ok(
+                ResponseDto.response(IMAGE_DELETE_SUCCESS.getCode(),
+                        IMAGE_DELETE_SUCCESS.getMessage())
         );
     }
 }
