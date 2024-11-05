@@ -23,7 +23,8 @@ public enum ErrorMessage {
 
     // 이미지 업로드 관련
     INVALID_FILE_EXTENSION(400, "유효하지 않은 파일 형식입니다."),
-    FILE_CONVERSION_FAILED(500, "파일 변환에 실패했습니다.");
+    FILE_CONVERSION_FAILED(500, "파일 변환에 실패했습니다."),
+    IMAGE_DELETE_FAILED(500, "이미지 삭제에 실패했습니다.");
 
     private final int code;
     private final String message;
