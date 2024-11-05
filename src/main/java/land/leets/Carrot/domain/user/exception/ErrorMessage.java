@@ -19,7 +19,11 @@ public enum ErrorMessage {
 
     // 유저 프로필 관련
     UNKNOWN_USER_TYPE(400, "정의되지 않은 유저 타입입니다."),
-    INVALID_USER_TYPE(400, "구직자만 수정 가능한 정보입니다.");
+    INVALID_USER_TYPE(400, "구직자만 수정 가능한 정보입니다."),
+
+    // 이미지 업로드 관련
+    INVALID_FILE_EXTENSION(400, "유효하지 않은 파일 형식입니다."),
+    FILE_CONVERSION_FAILED(500, "파일 변환에 실패했습니다.");
 
     private final int code;
     private final String message;
