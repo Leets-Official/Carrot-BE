@@ -36,6 +36,8 @@ public class Post extends BaseTimeEntity {
     @Column(name = "store_name", nullable = false)
     private String storeName;
 
+    private String workPlaceAddress;
+
     //조회수 기능 mvp 이후 구현
     @Column(name = "create_at", nullable = false)
     private LocalDateTime createAt;
@@ -48,9 +50,10 @@ public class Post extends BaseTimeEntity {
     private Set<Apply> apply;
 
     @Builder
-    public Post(Ceo ceo, String storeName, LocalDateTime createAt, String status) {
+    public Post(Ceo ceo, String storeName, String workPlaceAddress, LocalDateTime createAt, String status) {
         this.ceo = ceo;
         this.storeName = storeName;
+        this.workPlaceAddress = workPlaceAddress;
         this.createAt = createAt;
         this.status = status;
     }

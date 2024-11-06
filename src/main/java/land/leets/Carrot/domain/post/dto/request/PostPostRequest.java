@@ -9,6 +9,8 @@ public record PostPostRequest(
         Long userId,
         @NotNull
         String storeName,
+        @NotNull
+        String workPlaceAddress,
         PostData postData
 
 ) {

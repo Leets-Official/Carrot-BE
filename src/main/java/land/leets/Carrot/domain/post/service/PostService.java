@@ -64,8 +64,8 @@ public class PostService {
 
     public void saveNewPost(PostPostRequest postPostRequest) {
         Post post = new Post(ceoRepository.findById(postPostRequest.userId())
-                .orElseThrow(() -> new PostException(USER_NOT_FOUND)), postPostRequest.storeName(), LocalDateTime.now(),
-                POST_STATUS_RECRUITING);
+                .orElseThrow(() -> new PostException(USER_NOT_FOUND)), postPostRequest.storeName(),
+                postPostRequest.workPlaceAddress(), LocalDateTime.now(), POST_STATUS_RECRUITING);
         Post savedPost = postRepository.save(post);
 
         PostSnapshot postSnapshot = getPostSnapshot(postPostRequest, savedPost.getPostId());
@@ -137,7 +137,7 @@ public class PostService {
 
         String workType = getWorkTypeName(postSnapshot.getWorkTypeId());
         PostResponse postResponse = new PostResponse(postId, post.getCeo().getId(), post.getStoreName(),
-                post.getCeo().getCeoName(),
+                post.getWorkPlaceAddress(), post.getCeo().getCeoName(),
                 PostSnapshotMapper.postSnaphotToPostData(postSnapshot, getAreaName(postSnapshot.getDoAreaId())
                         , getAreaName(postSnapshot.getSiAreaId()), getAreaName(postSnapshot.getDetailAreaId()),
                         postSnapshot.getSelectedDays(), workType, imageList));
