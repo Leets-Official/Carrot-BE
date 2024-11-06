@@ -11,7 +11,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class PostSnapshotMapper {
     public static PostData postSnaphotToPostData(PostSnapshot postSnapshot, String doName, String siName,
-                                                 String detailName, Set<DayOfWeek> workDays, String workType) {
+                                                 String detailName, Set<DayOfWeek> workDays, String workType,
+                                                 List<String> imageUrlList) {
         List<String> workDaysList = workDays.stream()
                 .map(Enum::name)
                 .collect(Collectors.toList());
@@ -21,7 +22,7 @@ public class PostSnapshotMapper {
                 postSnapshot.getWorkEndHour(), postSnapshot.getWorkEndMinute(), postSnapshot.isNegotiable(),
                 postSnapshot.getApplyNumber(), workDaysList, false,
                 postSnapshot.getCreatedAt(), postSnapshot.getPayType(),
-                postSnapshot.isNumberPublic(), null//TODO 이미지 관련 작업 추후 진행 예정
+                postSnapshot.isNumberPublic(), null, imageUrlList
         );
     }
 }
