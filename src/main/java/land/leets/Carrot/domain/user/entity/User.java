@@ -9,8 +9,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import java.util.Collection;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 @Getter
 @NoArgsConstructor
@@ -19,20 +23,28 @@ import lombok.NoArgsConstructor;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    protected long id;
 
     @Column(nullable = false, unique = true, length = 50)
-    private String email;
+    protected String email;
 
     @Column(nullable = false)
-    private String password;
+    protected String password;
 
     @Enumerated(EnumType.STRING)
-    private Gender gender;
+    protected Gender gender;
 
-    private Integer birthYear;
+    protected Integer birthYear;
 
-    private String profileImageUrl;
+    protected String profileImageUrl;
+
+    @Enumerated(EnumType.STRING)
+    protected UserType userType;
+
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + userType.name()));
+    }
+
 
     public User(String email, String password) {
         this.email = email;
