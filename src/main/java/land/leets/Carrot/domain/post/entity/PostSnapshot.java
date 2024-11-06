@@ -80,7 +80,7 @@ public class PostSnapshot extends BaseTimeEntity {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "postsnapshot", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "postSnapshot", fetch = FetchType.LAZY)
     private Set<PostImage> postImages;
 
     @Builder
