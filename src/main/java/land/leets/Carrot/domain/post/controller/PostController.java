@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,15 +32,15 @@ public class PostController {
     private final WorkTypeService workTypeService;
 
     @PostMapping
-    public ResponseEntity<Void> postNewPost(@RequestBody @Valid PostPostRequest requestBody) {
+    public ResponseEntity<Void> postNewPost(@ModelAttribute @Valid PostPostRequest requestBody) {
         postService.saveNewPost(requestBody);
         return ResponseEntity.ok().build();
     }
 
 
     @PostMapping("/{postId}")
-    public ResponseEntity<Void> updatePost(@PathVariable Long postId, @RequestBody @Valid PostPostRequest requestBody) {
-        postService.saveNewPostSnapshot(postId, requestBody);
+    public ResponseEntity<Void> updatePost(@PathVariable Long postId, @ModelAttribute @Valid PostPostRequest requestBody) {
+        postService.updatePost(postId, requestBody);
         return ResponseEntity.ok().build();
     }
 
