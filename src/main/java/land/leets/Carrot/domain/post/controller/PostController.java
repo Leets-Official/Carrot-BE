@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import land.leets.Carrot.domain.career.service.WorkTypeService;
 import land.leets.Carrot.domain.post.dto.request.GetPostedPostRequest;
+import land.leets.Carrot.domain.post.dto.request.PostPostImageRequest;
 import land.leets.Carrot.domain.post.dto.request.PostPostRequest;
 import land.leets.Carrot.domain.post.dto.response.PostResponse;
 import land.leets.Carrot.domain.post.dto.response.PostedPostResponse;
@@ -32,7 +33,7 @@ public class PostController {
     private final WorkTypeService workTypeService;
 
     @PostMapping
-    public ResponseEntity<Void> postNewPost(@ModelAttribute @Valid PostPostRequest requestBody) {
+    public ResponseEntity<Void> postNewPost(@RequestBody @Valid PostPostRequest requestBody) {
         postService.saveNewPost(requestBody);
         return ResponseEntity.ok().build();
     }
@@ -62,7 +63,7 @@ public class PostController {
 
     @GetMapping("/user/posted")
     public ResponseEntity<ResponseDto<PostedPostResponse>> getPostedPostList(
-            @RequestBody GetPostedPostRequest requestBody) {
+            @RequestBody @Valid GetPostedPostRequest requestBody) {
         return ResponseEntity.ok(postService.getPostedPostList(requestBody));
     }
 
@@ -79,6 +80,11 @@ public class PostController {
     @PatchMapping("/status/{postId}")
     public ResponseEntity<Void> getPostStatusDone(@PathVariable Long postId) {
         postService.updatePostStatusDone(postId);
+        return ResponseEntity.ok().build();
+    }
+    @PostMapping(consumes = {"multipart/form-data"})
+    public ResponseEntity<Void> postPostImages(@ModelAttribute PostPostImageRequest requestBody){
+        postService.getImageUrlList(requestBody);
         return ResponseEntity.ok().build();
     }
 }

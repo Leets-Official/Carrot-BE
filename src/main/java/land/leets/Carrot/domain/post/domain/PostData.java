@@ -23,7 +23,6 @@ public record PostData(
         LocalDateTime lastUpdatedTime,
         String payType,
         Boolean isNumberPublic,
-        List<MultipartFile> imageList,
         List<String> imageUrlList) {
 
 }

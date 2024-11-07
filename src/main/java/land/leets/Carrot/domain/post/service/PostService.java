@@ -24,6 +24,7 @@ import land.leets.Carrot.domain.post.domain.PostData;
 import land.leets.Carrot.domain.post.domain.PostedPost;
 import land.leets.Carrot.domain.post.domain.ShortPostData;
 import land.leets.Carrot.domain.post.dto.request.GetPostedPostRequest;
+import land.leets.Carrot.domain.post.dto.request.PostPostImageRequest;
 import land.leets.Carrot.domain.post.dto.request.PostPostRequest;
 import land.leets.Carrot.domain.post.dto.response.PostResponse;
 import land.leets.Carrot.domain.post.dto.response.PostedPostResponse;
@@ -72,16 +73,28 @@ public class PostService {
 
         PostSnapshot savedSnapshot = postSnapshotRepository.save(postSnapshot);
 
-        savePostSnapshotImage(postPostRequest.postData().imageList(), savedSnapshot);
+        savePostSnapshotImage(postPostRequest.postData().imageUrlList(), savedSnapshot);
     }
 
-    private void savePostSnapshotImage(List<MultipartFile> imageList, PostSnapshot postSnapshot) {
-        for (MultipartFile image : imageList) {
-            String imageUrl = s3ImageService.uploadImage(image, "post-images");
-            PostImage postImage = new PostImage(imageUrl, postSnapshot);
+    //db에 링크 저장하는 로직
+    private void savePostSnapshotImage(List<String> imageUrlList, PostSnapshot postSnapshot) {
+        for (String image : imageUrlList) {
+            PostImage postImage = new PostImage(image, postSnapshot);
             postImageRepository.save(postImage);
         }
     }
+
+    //실제 이미지 저장해서 List<String> 가져오는 로직
+    public List<String> getImageUrlList(PostPostImageRequest postPostImageRequest) {
+        List<MultipartFile> imageList = postPostImageRequest.imageList();
+        List<String> imageUrlList = new ArrayList<>();
+        for (MultipartFile image : imageList) {
+            String imageUrl = s3ImageService.uploadImage(image, "post-images");
+            imageUrlList.add(imageUrl);
+        }
+        return imageUrlList;
+    }
+
 
     private PostSnapshot getPostSnapshot(PostPostRequest postPostRequest, Long postId) {
         PostData postData = postPostRequest.postData();
@@ -113,7 +126,7 @@ public class PostService {
         PostSnapshot newPostSnapshot = getPostSnapshot(postPostRequest, postId);
         PostSnapshot savedPostSnapshot = postSnapshotRepository.save(newPostSnapshot);
 
-        savePostSnapshotImage(postPostRequest.postData().imageList(), savedPostSnapshot);
+        savePostSnapshotImage(postPostRequest.postData().imageUrlList(), savedPostSnapshot);
 
     }
 

@@ -5,11 +5,8 @@ import land.leets.Carrot.domain.post.domain.PostData;
 
 public record PostPostRequest(
         Long postId,
-        @NotNull
         Long userId,
-        @NotNull
         String storeName,
-        @NotNull
         String workPlaceAddress,
         PostData postData
 

@@ -22,7 +22,7 @@ public class PostSnapshotMapper {
                 postSnapshot.getWorkEndHour(), postSnapshot.getWorkEndMinute(), postSnapshot.isNegotiable(),
                 postSnapshot.getApplyNumber(), workDaysList, false,
                 postSnapshot.getCreatedAt(), postSnapshot.getPayType(),
-                postSnapshot.isNumberPublic(), null, imageUrlList
+                postSnapshot.isNumberPublic(), imageUrlList
         );
     }
 }
