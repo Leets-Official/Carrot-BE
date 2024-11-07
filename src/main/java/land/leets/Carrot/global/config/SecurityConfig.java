@@ -2,6 +2,7 @@ package land.leets.Carrot.global.config;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+import land.leets.Carrot.domain.user.repository.UserRepository;
 import land.leets.Carrot.global.auth.authentication.CustomAuthentication;
 import land.leets.Carrot.global.auth.jwt.dto.JwtFilter;
 import land.leets.Carrot.global.auth.jwt.dto.JwtProvider;
@@ -30,6 +31,7 @@ public class SecurityConfig {
 
     private final JwtProvider jwtProvider;
     private final CustomAuthentication customAuthentication;
+    private final UserRepository userRepository;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -70,7 +72,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtFilter jwtFilter() {
-        return new JwtFilter(jwtProvider);
+        return new JwtFilter(jwtProvider, userRepository);
     }
 
     @Bean

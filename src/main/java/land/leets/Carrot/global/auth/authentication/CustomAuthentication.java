@@ -4,12 +4,16 @@ import static land.leets.Carrot.global.auth.exception.ErrorMessage.INVALID_TOKEN
 import static land.leets.Carrot.global.auth.exception.ErrorMessage.UNAUTHORIZED;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import land.leets.Carrot.global.common.response.ResponseDto;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -21,17 +25,41 @@ public class CustomAuthentication implements AuthenticationEntryPoint {
     private static final String LOG_FORMAT = "Class : {}, Code : {}, Message : {}"; // 로그 포맷 형식 정의
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, // 인증 실패시 호출됨
-                         AuthenticationException authException) throws IOException, ServletException {
-        Integer exceptionCode = (Integer) request.getAttribute(
-                "jwtException"); // jwt 유효하지 않은 경우 jwtException 값 가져오기(jwt 필터)
+    public void commence(HttpServletRequest request, HttpServletResponse response,
+                         AuthenticationException authException) throws IOException {
+        Integer exceptionCode = (Integer) request.getAttribute("jwtException");
 
         if (exceptionCode != null) { // JWT 예외 처리
             log.info("Authentication failed: JWT Exception with code {}", exceptionCode);
             setResponse(response, INVALID_TOKEN.getCode(), INVALID_TOKEN.getMessage());
-        } else { // 그 외 인증 정보 누락 처리
-            log.info("Authentication failed: Unauthorized access.");
-            setResponse(response, UNAUTHORIZED.getCode(), UNAUTHORIZED.getMessage());
+        } else {
+            // 세부적인 인증 실패 케이스 분류
+            if (exceptionCode != null) { // JWT 예외 처리
+                log.info("인증 실패: JWT 예외 발생 코드 {}", exceptionCode);
+                setResponse(response, INVALID_TOKEN.getCode(), INVALID_TOKEN.getMessage());
+            } else {
+                // 세부적인 인증 실패 케이스 분류
+                if (authException instanceof CredentialsExpiredException) {
+                    log.error("인증 실패: 인증 자격 증명이 만료되었습니다.");
+                    setResponse(response, UNAUTHORIZED.getCode(), "인증 자격 증명이 만료되었습니다. 다시 로그인 해주세요.");
+                } else if (authException instanceof DisabledException) {
+                    log.error("인증 실패: 계정이 비활성화되었습니다.");
+                    setResponse(response, UNAUTHORIZED.getCode(), "계정이 비활성화되었습니다.");
+                } else if (authException instanceof LockedException) {
+                    log.error("인증 실패: 계정이 잠겼습니다.");
+                    setResponse(response, UNAUTHORIZED.getCode(), "계정이 잠겼습니다.");
+                } else if (authException instanceof BadCredentialsException) {
+                    log.error("인증 실패: 잘못된 자격 증명입니다.");
+                    setResponse(response, UNAUTHORIZED.getCode(), "잘못된 자격 증명입니다.");
+                } else if (authException instanceof InsufficientAuthenticationException) {
+                    log.error("인증 실패: 인증 정보가 불충분합니다. 자세한 메시지: {}",
+                            authException.getMessage());
+                    setResponse(response, UNAUTHORIZED.getCode(), "인증 정보가 불충분합니다.");
+                } else {
+                    log.error("인증 실패: 권한 없는 접근 시도.");
+                    setResponse(response, UNAUTHORIZED.getCode(), "권한이 없는 접근입니다.");
+                }
+            }
         }
     }
 

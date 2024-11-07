@@ -1,7 +1,6 @@
 package land.leets.Carrot.domain.image.service;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import java.io.File;
@@ -88,8 +87,7 @@ public class S3ImageService {
 
     // S3에 업로드 및 URL 반환
     private String uploadToS3(File uploadFile, String fileName) {
-        amazonS3.putObject(new PutObjectRequest(bucketName, fileName, uploadFile)
-                .withCannedAcl(CannedAccessControlList.PublicRead));
+        amazonS3.putObject(new PutObjectRequest(bucketName, fileName, uploadFile));
         return amazonS3.getUrl(bucketName, fileName).toString();
     }
 

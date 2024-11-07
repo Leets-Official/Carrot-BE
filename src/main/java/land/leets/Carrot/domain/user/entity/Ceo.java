@@ -44,6 +44,7 @@ public class Ceo extends User {
         this.storeName = storeName;
         this.openDate = openDate;
         this.ceoAddress = ceoAddress;
+        this.userType = UserType.CEO;
     }
 
     public void updateCeoInfo(String ceoPhoneNumber, String ceoName, String ceoAddress) {
