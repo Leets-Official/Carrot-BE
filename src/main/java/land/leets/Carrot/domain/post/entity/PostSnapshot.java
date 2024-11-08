@@ -4,11 +4,13 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.EnumSet;
 import java.util.Set;
@@ -82,6 +84,9 @@ public class PostSnapshot extends BaseTimeEntity {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @OneToMany(mappedBy = "postSnapshot", fetch = FetchType.LAZY)
+    private Set<PostImage> postImages;
+
     @Builder
     public PostSnapshot(int doAreaId,
                         int siAreaId,
@@ -97,7 +102,8 @@ public class PostSnapshot extends BaseTimeEntity {
                         String applyNumber,
                         boolean isLastest,
                         boolean isNumberPublic,
-                        String payType) {
+                        String payType,
+                        Set<DayOfWeek> selectedDays) {
         this.doAreaId = doAreaId;
         this.siAreaId = siAreaId;
         this.detailAreaId = detailAreaId;

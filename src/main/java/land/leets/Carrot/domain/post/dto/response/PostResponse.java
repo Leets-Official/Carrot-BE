@@ -9,6 +9,7 @@ public record PostResponse(
         Long userId,
         @NotNull
         String storeName,
+        String workPlaceAddress,
         String writerNickname,
         PostData postData
 

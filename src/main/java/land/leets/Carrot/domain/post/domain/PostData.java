@@ -17,7 +17,7 @@ public record PostData(
         Integer workEndTimeMinute,
         Boolean isNegotiable,
         String applyNumber,
-        String workDays, //","로 구분해서 String 으로 받는 가정, 단기알바인 경우
+        List<String> workDays, //근무 요일
         Boolean isShortTermJob,
         LocalDateTime lastUpdatedTime,
         String payType,
