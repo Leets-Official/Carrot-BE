@@ -7,6 +7,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 import java.util.EnumSet;
 import java.util.Set;
@@ -27,13 +29,15 @@ public class PostSnapshot extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @ManyToOne
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
+
     private int doAreaId;
 
     private int siAreaId;
 
     private int detailAreaId;
-
-    private long postId;
 
     private Integer workTypeId;
 
@@ -82,7 +86,7 @@ public class PostSnapshot extends BaseTimeEntity {
     public PostSnapshot(int doAreaId,
                         int siAreaId,
                         int detailAreaId,
-                        long postId,
+                        Post post,
                         Integer workTypeId,
                         String title,
                         String content,
@@ -97,7 +101,7 @@ public class PostSnapshot extends BaseTimeEntity {
         this.doAreaId = doAreaId;
         this.siAreaId = siAreaId;
         this.detailAreaId = detailAreaId;
-        this.postId = postId;
+        this.post = post;
         this.workTypeId = workTypeId;
         this.title = title;
         this.content = content;
@@ -114,7 +118,7 @@ public class PostSnapshot extends BaseTimeEntity {
         this.payType = payType;
     }
 
-    public void setIsLastest(boolean isLastest){
+    public void setIsLastest(boolean isLastest) {
         this.isLastest = isLastest;
     }
 

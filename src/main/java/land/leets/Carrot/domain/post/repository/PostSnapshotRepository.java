@@ -8,12 +8,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface PostSnapshotRepository extends JpaRepository<PostSnapshot, Long> {
-    @Override
-    Optional<PostSnapshot> findById(Long aLong);
 
+    @Query("SELECT postSnapshot FROM PostSnapshot postSnapshot WHERE postSnapshot.post.postId = :postId")
     Optional<PostSnapshot> findByPostIdAndIsLastestTrue(Long postId);
 
-    @Query("SELECT postsnapshot from PostSnapshot postsnapshot WHERE postsnapshot.title LIKE %:keyword%")
+    @Query("SELECT postSnapshot from PostSnapshot postSnapshot WHERE postSnapshot.title LIKE %:keyword% AND postSnapshot.isLastest = true ")
     Optional<List<PostSnapshot>> findByKeywordAndIsLastestTrue(@Param("keyword") String keyword);
 
 }
