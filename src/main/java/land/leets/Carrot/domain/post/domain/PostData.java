@@ -2,7 +2,6 @@ package land.leets.Carrot.domain.post.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import org.springframework.web.multipart.MultipartFile;
 
 public record PostData(
         String doName,
