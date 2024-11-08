@@ -107,8 +107,12 @@ public class PostService {
                 .getId());
 
         PostSnapshot postSnapshot = PostDataMapper.postDataToPostSnapshot(postData, doAreaId, siAreaId, detailAreaId,
-                jobTypeId, postId);
+                jobTypeId, getPost(postId));
         return postSnapshot;
+    }
+
+    private Post getPost(Long postId) {
+        return postRepository.findById(postId).orElseThrow(() -> new PostException(POST_NOT_FOUND));
     }
 
     @Transactional
@@ -136,7 +140,7 @@ public class PostService {
         return detailArea.getAreaId();
     }
 
-    public ResponseDto<PostResponse> getPost(Long postId) {
+    public ResponseDto<PostResponse> getDetailPost(Long postId) {
         //존재 여부 조회
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new PostException(PostErrorMessage.POST_NOT_FOUND));
@@ -165,8 +169,8 @@ public class PostService {
         List<ShortPostData> shortPostDataList = new ArrayList<>();
 
         for (PostSnapshot postSnapshot : postSnapshotList) {
-            Post post = postRepository.findById(postSnapshot.getPostId())
-                    .orElseThrow(() -> new PostException(POST_NOT_FOUND));
+            Post post = postSnapshot.getPost();
+
             ShortPostData shortPostData = new ShortPostData(post.getPostId(), postSnapshot.getTitle(),
                     post.getStoreName(), getAreaName
                     (postSnapshot.getDetailAreaId()),
@@ -182,16 +186,14 @@ public class PostService {
 
     @Transactional
     public void updatePostStatusDelete(Long postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new PostException(POST_NOT_FOUND));
+        Post post = getPost(postId);
         post.setStatus(POST_STATUS_DELETED);
         postRepository.save(post);
     }
 
     @Transactional
     public void updatePostStatusDone(Long postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new PostException(POST_NOT_FOUND));
+        Post post = getPost(postId);
         post.setStatus(POST_STATUS_DONE);
         postRepository.save(post);
     }

@@ -60,6 +60,7 @@ public class SecurityConfig {
                                         .requestMatchers("/api/v1/users/employeeSignup").permitAll() // 회원가입
                                         .requestMatchers("/api/v1/users/ceoSignup").permitAll() // 회원가입
                                         .requestMatchers("/api/v1/protected-resource").permitAll()
+                                        .requestMatchers("/api/v1/users/check-email-duplicate").permitAll()
                                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)

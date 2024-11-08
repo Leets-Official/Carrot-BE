@@ -27,7 +27,11 @@ import lombok.Setter;
 public class Post extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "post_id", nullable = false)
     private long postId;
+
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    private Set<PostSnapshot> postSnapshot;
 
     @ManyToOne
     @JoinColumn(name = "ceo_id", nullable = false)

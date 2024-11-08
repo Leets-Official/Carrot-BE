@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum ResponseMessage {
 
     //로그인 회원가입 관련
+    EMAIL_CHECK_SUCCESS(200, "이메일 중복 체크 성공."),
     USER_SAVE_SUCCESS(201, "회원가입 성공."),
     LOGIN_SUCCESS(200, "로그인 성공."),
 
