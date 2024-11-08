@@ -1,5 +1,6 @@
 package land.leets.Carrot.domain.user.controller;
 
+import static land.leets.Carrot.domain.user.controller.ResponseMessage.EMAIL_CHECK_SUCCESS;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.LOGIN_SUCCESS;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.USER_SAVE_SUCCESS;
 import static land.leets.Carrot.global.common.response.ResponseDto.response;
@@ -42,7 +43,7 @@ public class UserController {
     public ResponseEntity<ResponseDto<Void>> checkEmailDuplicate(@RequestParam String email) {
         userService.checkEmailDuplicate(email);
         return ResponseEntity.ok(
-                response(USER_SAVE_SUCCESS.getCode(), USER_SAVE_SUCCESS.getMessage())
+                response(EMAIL_CHECK_SUCCESS.getCode(), EMAIL_CHECK_SUCCESS.getMessage())
         );
     }
 
