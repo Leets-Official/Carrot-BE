@@ -112,20 +112,20 @@ public class UserProfileController {
 
     @PostMapping("/upload-profile-image")
     @Operation(summary = "프로필 이미지 업로드")
-    public ResponseEntity<ResponseDto<String>> uploadProfileImage(
+    public ResponseEntity<ResponseDto<Void>> uploadProfileImage(
             @RequestParam("image") MultipartFile image,
             @Parameter(hidden = true) @CurrentUser Long userId) {
         String imageUrl = s3ImageService.uploadImage(image, "profile-images");
         userProfileService.updateProfileImageUrl(userId, imageUrl);
         return ResponseEntity.ok(
                 ResponseDto.response(IMAGE_UPLOAD_SUCCESS.getCode(),
-                        IMAGE_UPLOAD_SUCCESS.getMessage(), imageUrl)
+                        IMAGE_UPLOAD_SUCCESS.getMessage())
         );
     }
 
     @PatchMapping("/update-profile-image")
     @Operation(summary = "프로필 이미지 수정")
-    public ResponseEntity<ResponseDto<String>> updateProfileImage(
+    public ResponseEntity<ResponseDto<Void>> updateProfileImage(
             @RequestParam("image") MultipartFile image,
             @RequestParam("oldFileName") String oldFileName,
             @Parameter(hidden = true) @CurrentUser Long userId) {
@@ -133,7 +133,7 @@ public class UserProfileController {
         userProfileService.updateProfileImageUrl(userId, imageUrl);
         return ResponseEntity.ok(
                 ResponseDto.response(IMAGE_UPDATE_SUCCESS.getCode(),
-                        IMAGE_UPDATE_SUCCESS.getMessage(), imageUrl)
+                        IMAGE_UPDATE_SUCCESS.getMessage())
         );
     }
 
