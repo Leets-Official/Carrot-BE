@@ -17,4 +17,6 @@ public interface PostSnapshotRepository extends JpaRepository<PostSnapshot, Long
     @Query("SELECT postSnapshot from PostSnapshot postSnapshot WHERE postSnapshot.title LIKE %:keyword% AND postSnapshot.isLastest = true ")
     Optional<List<PostSnapshot>> findByKeywordAndIsLastestTrue(@Param("keyword") String keyword);
 
+    @Query("SELECT postsnapshot from PostSnapshot postsnapshot WHERE postsnapshot.post.postId IN :postIdList AND postsnapshot.isLastest = true")
+    List<PostSnapshot> findByPostIdListAndIsLastest(@Param("postIdList") List<Long> postIdList);
 }
