@@ -15,6 +15,8 @@ import land.leets.Carrot.domain.user.dto.request.EmployeeAdditionalInfoUpdateReq
 import land.leets.Carrot.domain.user.dto.request.EmployeeCareerUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.EmployeeSelfIntroUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.EmployeeStrengthUpdateRequest;
+import land.leets.Carrot.domain.user.dto.response.GetCeoInfoResponse;
+import land.leets.Carrot.domain.user.service.CeoInfoService;
 import land.leets.Carrot.domain.user.service.UserProfileService;
 import land.leets.Carrot.global.auth.annotation.CurrentUser;
 import land.leets.Carrot.global.common.response.ResponseDto;
@@ -22,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/user-profiles")
 public class UserProfileController {
     private final UserProfileService userProfileService;
+    private final CeoInfoService ceoInfoService;
 
     @GetMapping("/profile")
     @Operation(summary = "프로필 메인 페이지")
@@ -98,5 +102,10 @@ public class UserProfileController {
                 ResponseDto.response(STRENGTH_UPDATE_SUCCESS.getCode(),
                         STRENGTH_UPDATE_SUCCESS.getMessage())
         );
+    }
+
+    @GetMapping("/ceo-info/{ceoId}")
+    public ResponseEntity<ResponseDto<GetCeoInfoResponse>> getCeoInfo(@PathVariable("ceoId") Long ceoId) {
+        return ResponseEntity.ok(ceoInfoService.getCeoInfo(ceoId));
     }
 }
