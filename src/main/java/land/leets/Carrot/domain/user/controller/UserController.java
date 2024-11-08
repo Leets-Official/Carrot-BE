@@ -14,12 +14,15 @@ import land.leets.Carrot.domain.user.dto.request.LoginRequest;
 import land.leets.Carrot.domain.user.service.CeoSignupService;
 import land.leets.Carrot.domain.user.service.EmployeeSignupService;
 import land.leets.Carrot.domain.user.service.LoginService;
+import land.leets.Carrot.domain.user.service.UserService;
 import land.leets.Carrot.global.common.response.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "UserController", description = "사용자 관련 컨트롤러")
@@ -31,6 +34,17 @@ public class UserController {
     private final EmployeeSignupService employeeSignupService;
     private final CeoSignupService ceoSignupService;
     private final LoginService loginService;
+    private final UserService userService;
+
+
+    @GetMapping("/check-email-duplicate")
+    @Operation(summary = "회원가입 이메일 중복검사")
+    public ResponseEntity<ResponseDto<Void>> checkEmailDuplicate(@RequestParam String email) {
+        userService.checkEmailDuplicate(email);
+        return ResponseEntity.ok(
+                response(USER_SAVE_SUCCESS.getCode(), USER_SAVE_SUCCESS.getMessage())
+        );
+    }
 
     @PostMapping("/employeeSignup")
     @Operation(summary = "구직자 회원가입")

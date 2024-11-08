@@ -2,8 +2,10 @@ package land.leets.Carrot.domain.post.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import land.leets.Carrot.domain.apply.dto.response.GetAppliedListResponse;
 import land.leets.Carrot.domain.career.service.WorkTypeService;
 import land.leets.Carrot.domain.post.dto.request.GetPostedPostRequest;
+import land.leets.Carrot.domain.post.dto.request.PostPostImageRequest;
 import land.leets.Carrot.domain.post.dto.request.PostPostRequest;
 import land.leets.Carrot.domain.post.dto.response.PostResponse;
 import land.leets.Carrot.domain.post.dto.response.PostedPostResponse;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -39,13 +42,13 @@ public class PostController {
 
     @PostMapping("/{postId}")
     public ResponseEntity<Void> updatePost(@PathVariable Long postId, @RequestBody @Valid PostPostRequest requestBody) {
-        postService.saveNewPostSnapshot(postId, requestBody);
+        postService.updatePost(postId, requestBody);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{postId}")
     public ResponseEntity<ResponseDto<PostResponse>> getPost(@PathVariable Long postId) {
-        return ResponseEntity.ok(postService.getPost(postId));
+        return ResponseEntity.ok(postService.getDetailPost(postId));
     }
 
     @DeleteMapping("/{postId}")
@@ -61,7 +64,7 @@ public class PostController {
 
     @GetMapping("/user/posted")
     public ResponseEntity<ResponseDto<PostedPostResponse>> getPostedPostList(
-            @RequestBody GetPostedPostRequest requestBody) {
+            @RequestBody @Valid GetPostedPostRequest requestBody) {
         return ResponseEntity.ok(postService.getPostedPostList(requestBody));
     }
 
@@ -79,5 +82,17 @@ public class PostController {
     public ResponseEntity<Void> getPostStatusDone(@PathVariable Long postId) {
         postService.updatePostStatusDone(postId);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(value = "/images", consumes = "multipart/form-data")
+    public ResponseEntity<Void> postPostImages(@RequestPart PostPostImageRequest requestBody){
+        postService.getImageUrlList(requestBody);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/post/applied/{userId}")
+    public ResponseEntity<ResponseDto<GetAppliedListResponse>> getAppliedList(
+            @PathVariable Long userId){
+        return ResponseEntity.ok(postService.getAppliedList(userId));
     }
 }

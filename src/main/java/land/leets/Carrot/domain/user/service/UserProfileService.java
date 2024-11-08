@@ -67,7 +67,12 @@ public class UserProfileService {
                 .orElseThrow(UserNotFoundException::new);
 
         if (user instanceof Employee employee) {
-            employee.updateCareer(request.getCareer());
+            employee.updateCareer(
+                    request.getWorkplace(),
+                    request.getWorkType(),
+                    request.getWorkYear(),
+                    request.getWorkPeriod()
+            );
         } else {
             throw new InvalidUserTypeException();
         }
@@ -120,5 +125,12 @@ public class UserProfileService {
         } else {
             throw new InvalidUserTypeException();
         }
+    }
+
+    @Transactional
+    public void updateProfileImageUrl(Long userId, String imageUrl) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+        user.updateProfileImageUrl(imageUrl);  // 새로운 메서드를 통한 업데이트
     }
 }

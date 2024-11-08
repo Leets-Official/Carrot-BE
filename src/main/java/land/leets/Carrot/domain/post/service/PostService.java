@@ -13,8 +13,14 @@ import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import land.leets.Carrot.domain.apply.domain.AppliedPost;
+import land.leets.Carrot.domain.apply.dto.response.GetAppliedListResponse;
+import land.leets.Carrot.domain.apply.entity.Apply;
+import land.leets.Carrot.domain.apply.repository.ApplyRepository;
 import land.leets.Carrot.domain.career.entity.WorkType;
 import land.leets.Carrot.domain.career.repository.WorkTypeRepository;
+import land.leets.Carrot.domain.image.service.S3ImageService;
 import land.leets.Carrot.domain.location.entity.DetailArea;
 import land.leets.Carrot.domain.location.repository.LocationRepository;
 import land.leets.Carrot.domain.post.controller.SuccessMessage;
@@ -22,22 +28,27 @@ import land.leets.Carrot.domain.post.domain.PostData;
 import land.leets.Carrot.domain.post.domain.PostedPost;
 import land.leets.Carrot.domain.post.domain.ShortPostData;
 import land.leets.Carrot.domain.post.dto.request.GetPostedPostRequest;
+import land.leets.Carrot.domain.post.dto.request.PostPostImageRequest;
 import land.leets.Carrot.domain.post.dto.request.PostPostRequest;
 import land.leets.Carrot.domain.post.dto.response.PostResponse;
 import land.leets.Carrot.domain.post.dto.response.PostedPostResponse;
 import land.leets.Carrot.domain.post.dto.response.ShortPostResponse;
+import land.leets.Carrot.domain.post.entity.DayOfWeek;
 import land.leets.Carrot.domain.post.entity.Post;
+import land.leets.Carrot.domain.post.entity.PostImage;
 import land.leets.Carrot.domain.post.entity.PostSnapshot;
 import land.leets.Carrot.domain.post.exception.PostErrorMessage;
 import land.leets.Carrot.domain.post.exception.PostException;
 import land.leets.Carrot.domain.post.mapper.PostDataMapper;
 import land.leets.Carrot.domain.post.mapper.PostSnapshotMapper;
+import land.leets.Carrot.domain.post.repository.PostImageRepository;
 import land.leets.Carrot.domain.post.repository.PostRepository;
 import land.leets.Carrot.domain.post.repository.PostSnapshotRepository;
 import land.leets.Carrot.domain.user.repository.CeoRepository;
 import land.leets.Carrot.global.common.response.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
@@ -49,6 +60,9 @@ public class PostService {
 
     private final WorkTypeRepository workTypeRepository;
     private final CeoRepository ceoRepository;
+    private final S3ImageService s3ImageService;
+    private final PostImageRepository postImageRepository;
+    private final ApplyRepository applyRepository;
 
     private static final String POST_STATUS_RECRUITING = "recruiting";
     private static final String POST_STATUS_DELETED = "deleted";
@@ -56,14 +70,36 @@ public class PostService {
 
     public void saveNewPost(PostPostRequest postPostRequest) {
         Post post = new Post(ceoRepository.findById(postPostRequest.userId())
-                .orElseThrow(() -> new PostException(USER_NOT_FOUND)), postPostRequest.storeName(), LocalDateTime.now(),
-                POST_STATUS_RECRUITING);
+                .orElseThrow(() -> new PostException(USER_NOT_FOUND)), postPostRequest.storeName(),
+                postPostRequest.workPlaceAddress(), LocalDateTime.now(), POST_STATUS_RECRUITING);
         Post savedPost = postRepository.save(post);
 
         PostSnapshot postSnapshot = getPostSnapshot(postPostRequest, savedPost.getPostId());
 
-        postSnapshotRepository.save(postSnapshot);
+        PostSnapshot savedSnapshot = postSnapshotRepository.save(postSnapshot);
+
+        savePostSnapshotImage(postPostRequest.postData().imageUrlList(), savedSnapshot);
     }
+
+    //db에 링크 저장하는 로직
+    private void savePostSnapshotImage(List<String> imageUrlList, PostSnapshot postSnapshot) {
+        for (String image : imageUrlList) {
+            PostImage postImage = new PostImage(image, postSnapshot);
+            postImageRepository.save(postImage);
+        }
+    }
+
+    //실제 이미지 저장해서 List<String> 가져오는 로직
+    public List<String> getImageUrlList(PostPostImageRequest postPostImageRequest) {
+        List<MultipartFile> imageList = postPostImageRequest.imageList();
+        List<String> imageUrlList = new ArrayList<>();
+        for (MultipartFile image : imageList) {
+            String imageUrl = s3ImageService.uploadImage(image, "post-images");
+            imageUrlList.add(imageUrl);
+        }
+        return imageUrlList;
+    }
+
 
     private PostSnapshot getPostSnapshot(PostPostRequest postPostRequest, Long postId) {
         PostData postData = postPostRequest.postData();
@@ -76,21 +112,31 @@ public class PostService {
                 .getId());
 
         PostSnapshot postSnapshot = PostDataMapper.postDataToPostSnapshot(postData, doAreaId, siAreaId, detailAreaId,
-                jobTypeId, postId);
+                jobTypeId, getPost(postId));
         return postSnapshot;
     }
 
+    private Post getPost(Long postId) {
+        return postRepository.findById(postId).orElseThrow(() -> new PostException(POST_NOT_FOUND));
+    }
+
     @Transactional
-    public void saveNewPostSnapshot(Long postId, PostPostRequest postPostRequest) {
+    public void updatePost(Long postId, PostPostRequest postPostRequest) {
         //기존 snapshot isLastest false로 수정
         PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndIsLastestTrue(postId)
                 .orElseThrow(() -> new PostException(LATEST_SNAPSHOT_NOT_FOUND));
         postSnapshot.setIsLastest(false);
+        for (String day : postPostRequest.postData().workDays()) {
+            postSnapshot.selectDay(DayOfWeek.valueOf(day));
+        }
         postSnapshotRepository.save(postSnapshot);
 
         //PostSnapshot 생성해서 새 PostSnapshot 저장
         PostSnapshot newPostSnapshot = getPostSnapshot(postPostRequest, postId);
-        postSnapshotRepository.save(newPostSnapshot);
+        PostSnapshot savedPostSnapshot = postSnapshotRepository.save(newPostSnapshot);
+
+        savePostSnapshotImage(postPostRequest.postData().imageUrlList(), savedPostSnapshot);
+
     }
 
     public Integer getAreaId(String areaName) {
@@ -99,7 +145,7 @@ public class PostService {
         return detailArea.getAreaId();
     }
 
-    public ResponseDto<PostResponse> getPost(Long postId) {
+    public ResponseDto<PostResponse> getDetailPost(Long postId) {
         //존재 여부 조회
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new PostException(PostErrorMessage.POST_NOT_FOUND));
@@ -107,12 +153,16 @@ public class PostService {
         PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndIsLastestTrue(postId)
                 .orElseThrow(() -> new PostException(LATEST_SNAPSHOT_NOT_FOUND));
 
+        List<String> imageList = postImageRepository.findByPostSnapshotId(postSnapshot.getId())
+                .stream()
+                .map(image -> image.getImageUrl()).collect(Collectors.toList());
+
         String workType = getWorkTypeName(postSnapshot.getWorkTypeId());
         PostResponse postResponse = new PostResponse(postId, post.getCeo().getId(), post.getStoreName(),
-                post.getCeo().getCeoName(),
+                post.getWorkPlaceAddress(), post.getCeo().getCeoName(),
                 PostSnapshotMapper.postSnaphotToPostData(postSnapshot, getAreaName(postSnapshot.getDoAreaId())
                         , getAreaName(postSnapshot.getSiAreaId()), getAreaName(postSnapshot.getDetailAreaId()),
-                        getWorkTypeName(postSnapshot.getWorkTypeId()), workType));
+                        postSnapshot.getSelectedDays(), workType, imageList));
 
         return new ResponseDto(SuccessMessage.GET_POST_DETAIL_SUCCESS.getCode(),
                 SuccessMessage.GET_POST_DETAIL_SUCCESS.getMessage(), postResponse);
@@ -124,12 +174,13 @@ public class PostService {
         List<ShortPostData> shortPostDataList = new ArrayList<>();
 
         for (PostSnapshot postSnapshot : postSnapshotList) {
-            Post post = postRepository.findById(postSnapshot.getPostId())
-                    .orElseThrow(() -> new PostException(POST_NOT_FOUND));
+            Post post = postSnapshot.getPost();
+
             ShortPostData shortPostData = new ShortPostData(post.getPostId(), postSnapshot.getTitle(),
                     post.getStoreName(), getAreaName
                     (postSnapshot.getDetailAreaId()),
-                    postSnapshot.getPayType(), (long) postSnapshot.getPay(), post.getStatus(), ""//TODO 이미지 작업 추후 진행 예정
+                    postSnapshot.getPayType(), (long) postSnapshot.getPay(), post.getStatus(),
+                    getFirstImageUrl(postSnapshot.getId())
             );
             shortPostDataList.add(shortPostData);
         }
@@ -140,16 +191,14 @@ public class PostService {
 
     @Transactional
     public void updatePostStatusDelete(Long postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new PostException(POST_NOT_FOUND));
+        Post post = getPost(postId);
         post.setStatus(POST_STATUS_DELETED);
         postRepository.save(post);
     }
 
     @Transactional
     public void updatePostStatusDone(Long postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new PostException(POST_NOT_FOUND));
+        Post post = getPost(postId);
         post.setStatus(POST_STATUS_DONE);
         postRepository.save(post);
     }
@@ -162,11 +211,13 @@ public class PostService {
         for (Post post : postList) {
             PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndIsLastestTrue(post.getPostId())
                     .orElseThrow(() -> new PostException(LATEST_SNAPSHOT_NOT_FOUND));
+            getFirstImageUrl(postSnapshot.getId());
+
             ShortPostData shortPostData = new ShortPostData(post.getPostId(), postSnapshot.getTitle(),
                     post.getStoreName(), getAreaName(
                     postSnapshot.getDetailAreaId()), postSnapshot.getPayType(), (long) postSnapshot.getPay(),
                     post.getStatus(),
-                    "");    //TODO 이미지 관련 작업 차후 구현 예정
+                    getFirstImageUrl(postSnapshot.getId()));
             shortPostDataList.add(shortPostData);
         }
         return new ResponseDto(SuccessMessage.GET_POST_LIST_SHORT_DATA_VER.getCode(),
@@ -182,11 +233,38 @@ public class PostService {
             PostSnapshot postSnapshot = postSnapshotRepository.findByPostIdAndIsLastestTrue(post.getPostId())
                     .orElseThrow(() -> new PostException(LATEST_SNAPSHOT_NOT_FOUND));
             PostedPost postedPost = new PostedPost(post.getPostId(), postSnapshot.getTitle(),
-                    getAreaName(postSnapshot.getDetailAreaId()), post.getStatus().equals(POST_STATUS_RECRUITING), "");
+                    getAreaName(postSnapshot.getDetailAreaId()), post.getStatus().equals(POST_STATUS_RECRUITING),
+                    getFirstImageUrl(postSnapshot.getId()));
             postedPostDataList.add(postedPost);
         }
         return new ResponseDto(SuccessMessage.GET_POSTED_POST_LIST_SUCCESS.getCode(),
                 SuccessMessage.GET_POSTED_POST_LIST_SUCCESS.getMessage(), new PostedPostResponse(postedPostDataList));
+    }
+
+    public ResponseDto<GetAppliedListResponse> getAppliedList(Long userId) {
+        List<Apply> applyList = applyRepository.findByUserId(userId);
+        List<Long> postIdList = applyList.stream().map(apply -> apply.getPost().getPostId()).collect(
+                Collectors.toList());
+        List<PostSnapshot> postSnapshotList = postSnapshotRepository.findByPostIdListAndIsLastest(postIdList);
+
+        List<AppliedPost> appliedPostList = applyList.stream()
+                .flatMap(apply -> postSnapshotList.stream()
+                        .filter(postSnapshot -> postSnapshot.getPost().getPostId() == apply.getPost().getPostId())
+                        .map(postSnapshot -> new AppliedPost(apply.getPost().getPostId(), postSnapshot.getTitle(),
+                                postSnapshot.getPost().getStoreName(),
+                                postImageRepository.findByPostSnapshotId(postSnapshot.getId()).get(0).getImageUrl(),
+                                apply.isRecruited(), postSnapshot.getPost().getStatus().equals("done"))))
+                .collect(Collectors.toList());
+
+        return new ResponseDto(
+                land.leets.Carrot.domain.apply.controller.SuccessMessage.GET_APPLIED_POST_LIST_SUCCESS.getCode(),
+                land.leets.Carrot.domain.apply.controller.SuccessMessage.GET_APPLIED_POST_LIST_SUCCESS.getMessage(),
+                appliedPostList);
+    }
+
+
+    private String getFirstImageUrl(Long postSnapshotId) {
+        return postImageRepository.findByPostSnapshotId(postSnapshotId).get(0).getImageUrl();
     }
 
 

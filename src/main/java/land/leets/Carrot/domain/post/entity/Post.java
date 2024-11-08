@@ -27,7 +27,11 @@ import lombok.Setter;
 public class Post extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "post_id", nullable = false)
     private long postId;
+
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    private Set<PostSnapshot> postSnapshot;
 
     @ManyToOne
     @JoinColumn(name = "ceo_id", nullable = false)
@@ -35,6 +39,8 @@ public class Post extends BaseTimeEntity {
 
     @Column(name = "store_name", nullable = false)
     private String storeName;
+
+    private String workPlaceAddress;
 
     //조회수 기능 mvp 이후 구현
     @Column(name = "create_at", nullable = false)
@@ -48,9 +54,10 @@ public class Post extends BaseTimeEntity {
     private Set<Apply> apply;
 
     @Builder
-    public Post(Ceo ceo, String storeName, LocalDateTime createAt, String status) {
+    public Post(Ceo ceo, String storeName, String workPlaceAddress, LocalDateTime createAt, String status) {
         this.ceo = ceo;
         this.storeName = storeName;
+        this.workPlaceAddress = workPlaceAddress;
         this.createAt = createAt;
         this.status = status;
     }

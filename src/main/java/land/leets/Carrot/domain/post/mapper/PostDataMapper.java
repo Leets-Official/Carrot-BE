@@ -1,6 +1,9 @@
 package land.leets.Carrot.domain.post.mapper;
 
+import java.util.stream.Collectors;
 import land.leets.Carrot.domain.post.domain.PostData;
+import land.leets.Carrot.domain.post.entity.Post;
+import land.leets.Carrot.domain.post.entity.DayOfWeek;
 import land.leets.Carrot.domain.post.entity.PostSnapshot;
 import org.springframework.stereotype.Component;
 
@@ -8,12 +11,12 @@ import org.springframework.stereotype.Component;
 public class PostDataMapper {
     //단기 알바인 경우는 미반영, 일단 장기 알바만을 고려 isShortTerm 은 아직 고려안함
     public static PostSnapshot postDataToPostSnapshot(PostData postData, Integer doAreaId, Integer siAreaId,
-                                                      Integer detailAreaId, Integer jobTypeId, Long postId) {
+                                                      Integer detailAreaId, Integer jobTypeId, Post post) {
         return PostSnapshot.builder()
                 .doAreaId(doAreaId)
                 .siAreaId(siAreaId)
                 .detailAreaId(detailAreaId)
-                .postId(postId)
+                .post(post)
                 .workTypeId(jobTypeId)
                 .title(postData.title())
                 .content(postData.content())
@@ -27,8 +30,9 @@ public class PostDataMapper {
                 .applyNumber(postData.applyNumber())
                 .isLastest(true)
                 .isNumberPublic(postData.isNumberPublic())
-                .payType(postData.payType()).build();
-        //TODO 선택한 날짜 enum Set 이전필요
-
+                .payType(postData.payType())
+                .selectedDays(
+                        postData.workDays().stream().map(day -> DayOfWeek.valueOf(day)).collect(Collectors.toSet()))
+                .build();
     }
 }

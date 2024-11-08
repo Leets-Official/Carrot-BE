@@ -4,9 +4,13 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.EnumSet;
 import java.util.Set;
@@ -27,13 +31,15 @@ public class PostSnapshot extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @ManyToOne
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
+
     private int doAreaId;
 
     private int siAreaId;
 
     private int detailAreaId;
-
-    private long postId;
 
     private Integer workTypeId;
 
@@ -78,11 +84,14 @@ public class PostSnapshot extends BaseTimeEntity {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @OneToMany(mappedBy = "postSnapshot", fetch = FetchType.LAZY)
+    private Set<PostImage> postImages;
+
     @Builder
     public PostSnapshot(int doAreaId,
                         int siAreaId,
                         int detailAreaId,
-                        long postId,
+                        Post post,
                         Integer workTypeId,
                         String title,
                         String content,
@@ -93,11 +102,12 @@ public class PostSnapshot extends BaseTimeEntity {
                         String applyNumber,
                         boolean isLastest,
                         boolean isNumberPublic,
-                        String payType) {
+                        String payType,
+                        Set<DayOfWeek> selectedDays) {
         this.doAreaId = doAreaId;
         this.siAreaId = siAreaId;
         this.detailAreaId = detailAreaId;
-        this.postId = postId;
+        this.post = post;
         this.workTypeId = workTypeId;
         this.title = title;
         this.content = content;
@@ -114,7 +124,7 @@ public class PostSnapshot extends BaseTimeEntity {
         this.payType = payType;
     }
 
-    public void setIsLastest(boolean isLastest){
+    public void setIsLastest(boolean isLastest) {
         this.isLastest = isLastest;
     }
 
