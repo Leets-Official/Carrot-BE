@@ -14,6 +14,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import land.leets.Carrot.domain.apply.domain.AppliedPost;
+import land.leets.Carrot.domain.apply.dto.response.GetAppliedListResponse;
+import land.leets.Carrot.domain.apply.entity.Apply;
+import land.leets.Carrot.domain.apply.repository.ApplyRepository;
 import land.leets.Carrot.domain.career.entity.WorkType;
 import land.leets.Carrot.domain.career.repository.WorkTypeRepository;
 import land.leets.Carrot.domain.image.service.S3ImageService;
@@ -58,6 +62,7 @@ public class PostService {
     private final CeoRepository ceoRepository;
     private final S3ImageService s3ImageService;
     private final PostImageRepository postImageRepository;
+    private final ApplyRepository applyRepository;
 
     private static final String POST_STATUS_RECRUITING = "recruiting";
     private static final String POST_STATUS_DELETED = "deleted";
@@ -235,6 +240,28 @@ public class PostService {
         return new ResponseDto(SuccessMessage.GET_POSTED_POST_LIST_SUCCESS.getCode(),
                 SuccessMessage.GET_POSTED_POST_LIST_SUCCESS.getMessage(), new PostedPostResponse(postedPostDataList));
     }
+
+    public ResponseDto<GetAppliedListResponse> getAppliedList(Long userId) {
+        List<Apply> applyList = applyRepository.findByUserId(userId);
+        List<Long> postIdList = applyList.stream().map(apply -> apply.getPost().getPostId()).collect(
+                Collectors.toList());
+        List<PostSnapshot> postSnapshotList = postSnapshotRepository.findByPostIdListAndIsLastest(postIdList);
+
+        List<AppliedPost> appliedPostList = applyList.stream()
+                .flatMap(apply -> postSnapshotList.stream()
+                        .filter(postSnapshot -> postSnapshot.getPost().getPostId() == apply.getPost().getPostId())
+                        .map(postSnapshot -> new AppliedPost(apply.getPost().getPostId(), postSnapshot.getTitle(),
+                                postSnapshot.getPost().getStoreName(),
+                                postImageRepository.findByPostSnapshotId(postSnapshot.getId()).get(0).getImageUrl(),
+                                apply.isRecruited(), postSnapshot.getPost().getStatus().equals("done"))))
+                .collect(Collectors.toList());
+
+        return new ResponseDto(
+                land.leets.Carrot.domain.apply.controller.SuccessMessage.GET_APPLIED_POST_LIST_SUCCESS.getCode(),
+                land.leets.Carrot.domain.apply.controller.SuccessMessage.GET_APPLIED_POST_LIST_SUCCESS.getMessage(),
+                appliedPostList);
+    }
+
 
     private String getFirstImageUrl(Long postSnapshotId) {
         return postImageRepository.findByPostSnapshotId(postSnapshotId).get(0).getImageUrl();
