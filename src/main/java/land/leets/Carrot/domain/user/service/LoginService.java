@@ -1,6 +1,7 @@
 package land.leets.Carrot.domain.user.service;
 
 import jakarta.servlet.http.HttpServletResponse;
+import land.leets.Carrot.domain.user.dto.response.LoginResponse;
 import land.leets.Carrot.domain.user.entity.User;
 import land.leets.Carrot.domain.user.exception.InvalidPasswordException;
 import land.leets.Carrot.domain.user.exception.UserNotFoundException;
@@ -20,14 +21,16 @@ public class LoginService {
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
 
-    public void authenticate(String email, String password, HttpServletResponse response) {
+    public LoginResponse authenticate(String email, String password, HttpServletResponse response) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(UserNotFoundException::new);
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new InvalidPasswordException();
         }
-        String token = jwtProvider.generateAccessToken(user.getEmail(), user.getId());
+        String token = jwtProvider.generateAccessToken(user.getEmail(), user.getId(), user.getUserType());
         response.setHeader("Authorization", "Bearer " + token);
+
+        return new LoginResponse(user.getId(), user.getUserType());
     }
 }
