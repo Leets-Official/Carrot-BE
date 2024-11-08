@@ -2,6 +2,7 @@ package land.leets.Carrot.domain.post.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import land.leets.Carrot.domain.apply.dto.response.GetAppliedListResponse;
 import land.leets.Carrot.domain.career.service.WorkTypeService;
 import land.leets.Carrot.domain.post.dto.request.GetPostedPostRequest;
 import land.leets.Carrot.domain.post.dto.request.PostPostImageRequest;
@@ -87,5 +88,11 @@ public class PostController {
     public ResponseEntity<Void> postPostImages(@RequestPart PostPostImageRequest requestBody){
         postService.getImageUrlList(requestBody);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/post/applied/{userId}")
+    public ResponseEntity<ResponseDto<GetAppliedListResponse>> getAppliedList(
+            @PathVariable Long userId){
+        return ResponseEntity.ok(postService.getAppliedList(userId));
     }
 }
