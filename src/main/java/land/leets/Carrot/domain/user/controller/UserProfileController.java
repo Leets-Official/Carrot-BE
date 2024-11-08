@@ -19,6 +19,7 @@ import land.leets.Carrot.domain.user.dto.request.EmployeeAdditionalInfoUpdateReq
 import land.leets.Carrot.domain.user.dto.request.EmployeeCareerUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.EmployeeSelfIntroUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.EmployeeStrengthUpdateRequest;
+import land.leets.Carrot.domain.user.dto.response.ProfileResponse;
 import land.leets.Carrot.domain.user.service.UserProfileService;
 import land.leets.Carrot.global.auth.annotation.CurrentUser;
 import land.leets.Carrot.global.common.response.ResponseDto;
@@ -43,8 +44,8 @@ public class UserProfileController {
 
     @GetMapping("/profile")
     @Operation(summary = "프로필 메인 페이지")
-    public ResponseEntity<ResponseDto<?>> check(@Parameter(hidden = true) @CurrentUser Long userId) {
-        var profileResponse = userProfileService.check(userId);
+    public ResponseEntity<ResponseDto<ProfileResponse>> check(@Parameter(hidden = true) @CurrentUser Long userId) {
+        ProfileResponse profileResponse = userProfileService.check(userId);
         return ResponseEntity.ok(ResponseDto.response(
                 PROFILE_CHECK_SUCCESS.getCode(),
                 PROFILE_CHECK_SUCCESS.getMessage(),
