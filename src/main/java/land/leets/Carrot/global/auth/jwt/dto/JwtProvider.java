@@ -1,44 +1,40 @@
 package land.leets.Carrot.global.auth.jwt.dto;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.annotation.PostConstruct;
-import java.util.Collections;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.Optional;
 import javax.crypto.spec.SecretKeySpec;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtProvider {
-    @Value("${carrot.jwt.key}") // 환경변수 JWT_KEY
-    private String jwtSecret; // JWT 서명 키
+    @Value("${carrot.jwt.key}")
+    private String jwtSecret;
 
-    @Value("${carrot.jwt.access.expiration}") // 환경변수 ACCESS_EXP
-    private long accessTokenExpirationTime; // 액세스 토큰 유효기간
+    @Value("${carrot.jwt.access.expiration}")
+    private long accessTokenExpirationTime;
 
-    private SecretKeySpec key; // JWT 키
+    private SecretKeySpec key;
 
     @PostConstruct
     public void init() {
-        // jwtSecret 주입된 후 SecretKeySpec 생성하여 초기화함
+        // jwtSecret 주입 후 SecretKeySpec 생성하여 초기화
         this.key = new SecretKeySpec(jwtSecret.getBytes(), SignatureAlgorithm.HS256.getJcaName());
     }
 
-    // 액세스 토큰 생성 메소드
-    public String generateAccessToken(String email) { // 이메일 기반으로 jwt 생성함
-        final Date now = new Date();
-        final Date expiration = new Date(now.getTime() + accessTokenExpirationTime * 1000); // 액세스 토큰 유효기간 밀리초로 변환
+    public String generateAccessToken(String email) {
+        Date now = new Date();
+        Date expiration = new Date(now.getTime() + accessTokenExpirationTime * 1000);
+
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(now)
@@ -47,38 +43,45 @@ public class JwtProvider {
                 .compact();
     }
 
-    // 토큰 검증 메소드
-    public void validateToken(String token) { // 토큰 검증
+    public boolean isTokenValid(String token) {
         try {
-            parseToken(token);
-        } catch (ExpiredJwtException e) {
-            log.warn("JwtProvider: Expired token");
-            throw e;
-        } catch (UnsupportedJwtException e) {
-            log.warn("JwtProvider: Unsupported token");
-            throw e;
-        } catch (MalformedJwtException e) {
-            log.warn("JwtProvider: Malformed token");
-            throw e;
-        } catch (IllegalArgumentException e) {
-            log.warn("JwtProvider: IllegalArgumentException");
-            throw e;
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            log.warn("Invalid token: {}", e.getMessage());
+            return false;
         }
     }
 
-    private Claims parseToken(String token) {  // Claims(jwt에 저장된 사용자 정보를 포함)를 가져옴
-        return Jwts.parser()
+    public Optional<String> extractEmail(String token) {  // 반환 타입을 Optional<String>으로 변경
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            return Optional.ofNullable(claims.getSubject());  // 주제로 설정된 email을 반환
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    // Request에서 Access Token을 추출하는 메서드
+    public Optional<String> extractAccessToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return Optional.of(bearerToken.substring(7)); // "Bearer " 이후의 토큰 값만 반환
+        }
+        return Optional.empty();
+    }
+
+    // Claims를 가져오는 메서드 (다른 메서드에서 재사용 가능)
+    private Claims parseToken(String token) {
+        return Jwts.parserBuilder()
                 .setSigningKey(key)
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
 
-    // 인증 정보를 가져오는 메소드
-    public Authentication getAuthentication(String token) {
-        Claims claims = parseToken(token);
-        String email = claims.getSubject(); // 이메일 추출
-
-        // 이메일로 UsernamePasswordAuthenticationToken 반환하여 인증 정보를 생성함
-        return new UsernamePasswordAuthenticationToken(email, null, Collections.emptyList());
-    }
 }

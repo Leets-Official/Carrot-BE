@@ -1,5 +1,6 @@
 package land.leets.Carrot.global.auth.resolver;
 
+import land.leets.Carrot.domain.user.entity.User;
 import land.leets.Carrot.global.auth.annotation.CurrentUser;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
@@ -21,9 +22,10 @@ public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolve
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return null;
+        if (authentication != null && authentication.isAuthenticated()) {
+            User user = (User) authentication.getPrincipal();
+            return user.getId(); // ID를 반환
         }
-        return authentication.getPrincipal();
+        return null;
     }
 }

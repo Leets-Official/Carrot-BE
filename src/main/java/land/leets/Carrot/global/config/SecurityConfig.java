@@ -2,6 +2,7 @@ package land.leets.Carrot.global.config;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+import land.leets.Carrot.domain.user.repository.UserRepository;
 import land.leets.Carrot.global.auth.authentication.CustomAuthentication;
 import land.leets.Carrot.global.auth.jwt.dto.JwtFilter;
 import land.leets.Carrot.global.auth.jwt.dto.JwtProvider;
@@ -30,6 +31,7 @@ public class SecurityConfig {
 
     private final JwtProvider jwtProvider;
     private final CustomAuthentication customAuthentication;
+    private final UserRepository userRepository;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -58,6 +60,7 @@ public class SecurityConfig {
                                         .requestMatchers("/api/v1/users/employeeSignup").permitAll() // 회원가입
                                         .requestMatchers("/api/v1/users/ceoSignup").permitAll() // 회원가입
                                         .requestMatchers("/api/v1/protected-resource").permitAll()
+                                        .requestMatchers("/api/v1/users/check-email-duplicate").permitAll()
                                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
@@ -70,7 +73,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtFilter jwtFilter() {
-        return new JwtFilter(jwtProvider);
+        return new JwtFilter(jwtProvider, userRepository);
     }
 
     @Bean
@@ -89,6 +92,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.addAllowedOriginPattern("http://localhost:8080");
+        configuration.addAllowedOriginPattern("http://localhost:5178");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*"); // 모든 요청 허용 GET, POST, PUT, DELETE
         configuration.addExposedHeader("Authorization"); // 허용되는 응답 헤더 Authorization

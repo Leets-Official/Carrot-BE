@@ -69,6 +69,7 @@ public class Employee extends User {
         this.phoneNumber = phoneNumber;
         this.employeeName = employeeName;
         this.employeeAddress = employeeAddress;
+        this.userType = UserType.EMPLOYEE;
     }
 
     public void updateEmployeeInfo(String phoneNumber, String employeeName, String employeeAddress) {
