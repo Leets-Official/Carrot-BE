@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -82,8 +83,9 @@ public class PostController {
         postService.updatePostStatusDone(postId);
         return ResponseEntity.ok().build();
     }
-    @PostMapping(consumes = {"multipart/form-data"})
-    public ResponseEntity<Void> postPostImages(@ModelAttribute PostPostImageRequest requestBody){
+
+    @PostMapping(value = "/images", consumes = "multipart/form-data")
+    public ResponseEntity<Void> postPostImages(@RequestPart PostPostImageRequest requestBody){
         postService.getImageUrlList(requestBody);
         return ResponseEntity.ok().build();
     }
