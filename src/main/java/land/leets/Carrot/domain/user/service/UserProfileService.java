@@ -8,6 +8,7 @@ import land.leets.Carrot.domain.user.dto.request.EmployeeSelfIntroUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.EmployeeStrengthUpdateRequest;
 import land.leets.Carrot.domain.user.dto.response.CeoProfileResponse;
 import land.leets.Carrot.domain.user.dto.response.EmployeeProfileResponse;
+import land.leets.Carrot.domain.user.dto.response.ProfileResponse;
 import land.leets.Carrot.domain.user.entity.Ceo;
 import land.leets.Carrot.domain.user.entity.Employee;
 import land.leets.Carrot.domain.user.entity.User;
@@ -24,7 +25,7 @@ public class UserProfileService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Object check(Long userId) {
+    public ProfileResponse check(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
