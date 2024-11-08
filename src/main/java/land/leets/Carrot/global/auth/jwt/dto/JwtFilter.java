@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Slf4j
@@ -60,13 +61,18 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private void saveAuthentication(User user) {
-        // 인증 정보를 SecurityContext에 설정
+        UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
+                .username(user.getEmail())
+                .password(user.getPassword())
+                .roles(user.getUserType().name())
+                .build();
+
         UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
         log.info("유효한 JWT로 인증되었습니다: {}", user.getEmail());
-        log.info("User: {}", user);
-        log.info("Authorities: {}", user.getAuthorities());
         log.info("Authentication set in SecurityContext: {}", SecurityContextHolder.getContext().getAuthentication());
     }
 }

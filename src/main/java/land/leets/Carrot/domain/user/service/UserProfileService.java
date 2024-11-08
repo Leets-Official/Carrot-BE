@@ -67,7 +67,12 @@ public class UserProfileService {
                 .orElseThrow(UserNotFoundException::new);
 
         if (user instanceof Employee employee) {
-            employee.updateCareer(request.getCareer());
+            employee.updateCareer(
+                    request.getWorkplace(),
+                    request.getWorkType(),
+                    request.getWorkYear(),
+                    request.getWorkPeriod()
+            );
         } else {
             throw new InvalidUserTypeException();
         }
