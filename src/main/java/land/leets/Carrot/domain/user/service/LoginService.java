@@ -27,7 +27,7 @@ public class LoginService {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new InvalidPasswordException();
         }
-        String token = jwtProvider.generateAccessToken(user.getEmail());
+        String token = jwtProvider.generateAccessToken(user.getEmail(), user.getId());
         response.setHeader("Authorization", "Bearer " + token);
     }
 }

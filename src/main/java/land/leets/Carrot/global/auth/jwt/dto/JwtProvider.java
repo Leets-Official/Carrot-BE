@@ -31,12 +31,13 @@ public class JwtProvider {
         this.key = new SecretKeySpec(jwtSecret.getBytes(), SignatureAlgorithm.HS256.getJcaName());
     }
 
-    public String generateAccessToken(String email) {
+    public String generateAccessToken(String email, Long userId) {
         Date now = new Date();
         Date expiration = new Date(now.getTime() + accessTokenExpirationTime * 1000);
 
         return Jwts.builder()
                 .setSubject(email)
+                .claim("id", userId)
                 .setIssuedAt(now)
                 .setExpiration(expiration)
                 .signWith(key)
@@ -62,6 +63,22 @@ public class JwtProvider {
                     .getBody();
             return Optional.ofNullable(claims.getSubject());  // 주제로 설정된 email을 반환
         } catch (Exception e) {
+            log.error("액세스 토큰이 유효하지 않습니다.");
+            return Optional.empty();
+        }
+    }
+
+    public Optional<Long> extractId(String token) {
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(key) // JJWT 방식으로 서명 검증
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            // 클레임에서 ID를 Long 타입으로 반환
+            return Optional.ofNullable(claims.get("id", Long.class));
+        } catch (Exception e) {
+            log.error("액세스 토큰이 유효하지 않습니다: {}", e.getMessage());
             return Optional.empty();
         }
     }

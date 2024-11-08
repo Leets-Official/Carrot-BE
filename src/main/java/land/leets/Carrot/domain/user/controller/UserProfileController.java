@@ -19,6 +19,7 @@ import land.leets.Carrot.domain.user.dto.request.EmployeeAdditionalInfoUpdateReq
 import land.leets.Carrot.domain.user.dto.request.EmployeeCareerUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.EmployeeSelfIntroUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.EmployeeStrengthUpdateRequest;
+import land.leets.Carrot.domain.user.dto.response.ProfileResponse;
 import land.leets.Carrot.domain.user.dto.response.GetCeoInfoResponse;
 import land.leets.Carrot.domain.user.service.CeoInfoService;
 import land.leets.Carrot.domain.user.service.UserProfileService;
@@ -47,8 +48,8 @@ public class UserProfileController {
 
     @GetMapping("/profile")
     @Operation(summary = "프로필 메인 페이지")
-    public ResponseEntity<ResponseDto<?>> check(@Parameter(hidden = true) @CurrentUser Long userId) {
-        var profileResponse = userProfileService.check(userId);
+    public ResponseEntity<ResponseDto<ProfileResponse>> check(@Parameter(hidden = true) @CurrentUser Long userId) {
+        ProfileResponse profileResponse = userProfileService.check(userId);
         return ResponseEntity.ok(ResponseDto.response(
                 PROFILE_CHECK_SUCCESS.getCode(),
                 PROFILE_CHECK_SUCCESS.getMessage(),
@@ -115,20 +116,20 @@ public class UserProfileController {
 
     @PostMapping("/upload-profile-image")
     @Operation(summary = "프로필 이미지 업로드")
-    public ResponseEntity<ResponseDto<String>> uploadProfileImage(
+    public ResponseEntity<ResponseDto<Void>> uploadProfileImage(
             @RequestParam("image") MultipartFile image,
             @Parameter(hidden = true) @CurrentUser Long userId) {
         String imageUrl = s3ImageService.uploadImage(image, "profile-images");
         userProfileService.updateProfileImageUrl(userId, imageUrl);
         return ResponseEntity.ok(
                 ResponseDto.response(IMAGE_UPLOAD_SUCCESS.getCode(),
-                        IMAGE_UPLOAD_SUCCESS.getMessage(), imageUrl)
+                        IMAGE_UPLOAD_SUCCESS.getMessage())
         );
     }
 
     @PatchMapping("/update-profile-image")
     @Operation(summary = "프로필 이미지 수정")
-    public ResponseEntity<ResponseDto<String>> updateProfileImage(
+    public ResponseEntity<ResponseDto<Void>> updateProfileImage(
             @RequestParam("image") MultipartFile image,
             @RequestParam("oldFileName") String oldFileName,
             @Parameter(hidden = true) @CurrentUser Long userId) {
@@ -136,7 +137,7 @@ public class UserProfileController {
         userProfileService.updateProfileImageUrl(userId, imageUrl);
         return ResponseEntity.ok(
                 ResponseDto.response(IMAGE_UPDATE_SUCCESS.getCode(),
-                        IMAGE_UPDATE_SUCCESS.getMessage(), imageUrl)
+                        IMAGE_UPDATE_SUCCESS.getMessage())
         );
     }
 
@@ -152,7 +153,6 @@ public class UserProfileController {
                         IMAGE_DELETE_SUCCESS.getMessage())
         );
     }
-
     @GetMapping("/ceo-info/{ceoId}")
     public ResponseEntity<ResponseDto<GetCeoInfoResponse>> getCeoInfo(@PathVariable("ceoId") Long ceoId) {
         return ResponseEntity.ok(ceoInfoService.getCeoInfo(ceoId));
