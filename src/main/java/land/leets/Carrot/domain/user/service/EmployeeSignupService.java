@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 public class EmployeeSignupService {
     private final EmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
 
     @Transactional
     public void employeeSignup(EmployeeSignupRequest request) {
@@ -34,5 +35,9 @@ public class EmployeeSignupService {
         if (employeeRepository.existsByPhoneNumber(request.getPhoneNumber())) {
             throw new TelAlreadyExistsException();
         }
+    }
+
+    public void checkEmailDuplicate(String email) {
+        userService.checkEmailDuplicate(email);
     }
 }

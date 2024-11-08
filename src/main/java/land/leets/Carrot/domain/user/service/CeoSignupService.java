@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class CeoSignupService {
     private final CeoRepository ceoRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
 
     @Transactional
     public void ceoSignup(CeoSignupRequest request) {
@@ -43,5 +44,9 @@ public class CeoSignupService {
         if (ceoRepository.existsByCeoName(request.getCeoName())) {
             throw new CeoNameAlreadyExistsException();
         }
+    }
+
+    public void checkEmailDuplicate(String email) {
+        userService.checkEmailDuplicate(email);
     }
 }
