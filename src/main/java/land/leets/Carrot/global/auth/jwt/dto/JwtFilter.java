@@ -1,13 +1,10 @@
 package land.leets.Carrot.global.auth.jwt.dto;
 
-import static land.leets.Carrot.global.auth.exception.ErrorMessage.INVALID_TOKEN;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Optional;
 import land.leets.Carrot.domain.user.entity.User;
 import land.leets.Carrot.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,35 +24,22 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String token = jwtProvider.extractAccessToken(request).orElse(null);
-
-        try {
-            if (token != null && jwtProvider.isTokenValid(token)) {
-                Optional<String> emailOpt = jwtProvider.extractEmail(token);
-                if (emailOpt.isPresent()) {
-                    String email = emailOpt.get();
-                    log.info("Extracted userId from token: {}", email);
-
-                    userRepository.findByEmail(email)
-                            .ifPresentOrElse(user -> {
-                                log.info("User found: {}", user.getEmail());
-                                saveAuthentication(user);
-                            }, () -> {
-                                log.warn("User not found for userId: {}", email);
-                                request.setAttribute("jwtException", INVALID_TOKEN.getCode());
-                            });
-                } else {
-                    log.warn("email could not be extracted from token.");
-                    request.setAttribute("jwtException", INVALID_TOKEN.getCode());
-                }
-            } else {
-                log.warn("Token is invalid or not present.");
-                request.setAttribute("jwtException", INVALID_TOKEN.getCode());
-            }
-        } catch (Exception e) {
-            log.error("JWT 처리 중 예외 발생: {}", e.getMessage());
-            request.setAttribute("jwtException", INVALID_TOKEN.getCode());
+        if (request.getRequestURI().equals("/api/v1/users/login")) {
+            filterChain.doFilter(request, response);
+            return;
         }
+
+        checkAccessToken(request, response, filterChain);
+    }
+
+    public void checkAccessToken(HttpServletRequest request, HttpServletResponse response,
+                                 FilterChain filterChain) throws ServletException, IOException {
+        log.info("checkAccessTokenAndAuthentication() 호출");
+        jwtProvider.extractAccessToken(request)
+                .filter(jwtProvider::isTokenValid)
+                .ifPresent(accessToken -> jwtProvider.extractEmail(accessToken)
+                        .ifPresent(email -> userRepository.findByEmail(email)
+                                .ifPresent(this::saveAuthentication)));
 
         filterChain.doFilter(request, response);
     }
