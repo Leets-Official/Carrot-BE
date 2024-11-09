@@ -30,6 +30,7 @@ import land.leets.Carrot.domain.post.domain.ShortPostData;
 import land.leets.Carrot.domain.post.dto.request.GetPostedPostRequest;
 import land.leets.Carrot.domain.post.dto.request.PostPostImageRequest;
 import land.leets.Carrot.domain.post.dto.request.PostPostRequest;
+import land.leets.Carrot.domain.post.dto.response.PostImageUrlResponse;
 import land.leets.Carrot.domain.post.dto.response.PostResponse;
 import land.leets.Carrot.domain.post.dto.response.PostedPostResponse;
 import land.leets.Carrot.domain.post.dto.response.ShortPostResponse;
@@ -90,14 +91,14 @@ public class PostService {
     }
 
     //실제 이미지 저장해서 List<String> 가져오는 로직
-    public List<String> getImageUrlList(PostPostImageRequest postPostImageRequest) {
+    public PostImageUrlResponse getImageUrlList(PostPostImageRequest postPostImageRequest) {
         List<MultipartFile> imageList = postPostImageRequest.imageList();
         List<String> imageUrlList = new ArrayList<>();
         for (MultipartFile image : imageList) {
             String imageUrl = s3ImageService.uploadImage(image, "post-images");
             imageUrlList.add(imageUrl);
         }
-        return imageUrlList;
+        return new PostImageUrlResponse(imageUrlList);
     }
 
 
