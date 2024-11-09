@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.Optional;
 import javax.crypto.spec.SecretKeySpec;
+import land.leets.Carrot.domain.user.entity.UserType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,13 +32,14 @@ public class JwtProvider {
         this.key = new SecretKeySpec(jwtSecret.getBytes(), SignatureAlgorithm.HS256.getJcaName());
     }
 
-    public String generateAccessToken(String email, Long userId) {
+    public String generateAccessToken(String email, Long userId, UserType userType) {
         Date now = new Date();
         Date expiration = new Date(now.getTime() + accessTokenExpirationTime * 1000);
 
         return Jwts.builder()
                 .setSubject(email)
                 .claim("id", userId)
+                .claim("type", userType.name())
                 .setIssuedAt(now)
                 .setExpiration(expiration)
                 .signWith(key)

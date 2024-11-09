@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import land.leets.Carrot.domain.user.dto.request.CeoSignupRequest;
 import land.leets.Carrot.domain.user.dto.request.EmployeeSignupRequest;
 import land.leets.Carrot.domain.user.dto.request.LoginRequest;
+import land.leets.Carrot.domain.user.dto.response.LoginResponse;
 import land.leets.Carrot.domain.user.service.CeoSignupService;
 import land.leets.Carrot.domain.user.service.EmployeeSignupService;
 import land.leets.Carrot.domain.user.service.LoginService;
@@ -67,10 +68,11 @@ public class UserController {
 
     @PostMapping("/login")
     @Operation(summary = "구직자, 고용자 로그인")
-    public ResponseEntity<ResponseDto<Void>> login(@RequestBody LoginRequest request, HttpServletResponse response) {
-        loginService.authenticate(request.getEmail(), request.getPassword(), response);
+    public ResponseEntity<ResponseDto<LoginResponse>> login(@RequestBody LoginRequest request,
+                                                            HttpServletResponse response) {
+        LoginResponse loginResponse = loginService.authenticate(request.getEmail(), request.getPassword(), response);
         return ResponseEntity.ok(
-                ResponseDto.response(LOGIN_SUCCESS.getCode(), LOGIN_SUCCESS.getMessage())
+                ResponseDto.response(LOGIN_SUCCESS.getCode(), LOGIN_SUCCESS.getMessage(), loginResponse)
         );
     }
 }
