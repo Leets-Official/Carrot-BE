@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.Optional;
 import javax.crypto.spec.SecretKeySpec;
-import land.leets.Carrot.domain.user.entity.UserType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,14 +31,14 @@ public class JwtProvider {
         this.key = new SecretKeySpec(jwtSecret.getBytes(), SignatureAlgorithm.HS256.getJcaName());
     }
 
-    public String generateAccessToken(String email, Long userId, UserType userType) {
+    public String generateAccessToken(Long userId, String email) {
         Date now = new Date();
         Date expiration = new Date(now.getTime() + accessTokenExpirationTime * 1000);
 
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject("AccessToken")
                 .claim("id", userId)
-                .claim("type", userType.name())
+                .claim("email", email)
                 .setIssuedAt(now)
                 .setExpiration(expiration)
                 .signWith(key)
@@ -63,7 +62,7 @@ public class JwtProvider {
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-            return Optional.ofNullable(claims.getSubject());  // 주제로 설정된 email을 반환
+            return Optional.ofNullable(claims.get("email", String.class));  // 주제로 설정된 email을 반환
         } catch (Exception e) {
             log.error("액세스 토큰이 유효하지 않습니다.");
             return Optional.empty();
