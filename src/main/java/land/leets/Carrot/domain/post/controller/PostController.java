@@ -7,6 +7,7 @@ import land.leets.Carrot.domain.career.service.WorkTypeService;
 import land.leets.Carrot.domain.post.dto.request.GetPostedPostRequest;
 import land.leets.Carrot.domain.post.dto.request.PostPostImageRequest;
 import land.leets.Carrot.domain.post.dto.request.PostPostRequest;
+import land.leets.Carrot.domain.post.dto.response.PostImageUrlResponse;
 import land.leets.Carrot.domain.post.dto.response.PostResponse;
 import land.leets.Carrot.domain.post.dto.response.PostedPostResponse;
 import land.leets.Carrot.domain.post.dto.response.ShortPostResponse;
@@ -85,9 +86,8 @@ public class PostController {
     }
 
     @PostMapping(value = "/images", consumes = "multipart/form-data")
-    public ResponseEntity<Void> postPostImages(@RequestPart PostPostImageRequest requestBody){
-        postService.getImageUrlList(requestBody);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<PostImageUrlResponse> postPostImages(@RequestPart PostPostImageRequest requestBody){
+        return ResponseEntity.ok(postService.getImageUrlList(requestBody));
     }
 
     @GetMapping("/post/applied/{userId}")
