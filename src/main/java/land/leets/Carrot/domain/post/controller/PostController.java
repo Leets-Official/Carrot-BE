@@ -106,7 +106,7 @@ public class PostController {
     public ResponseEntity<ResponseDto<PostAImageUrlResponse>> uploadProfileImage(
             @RequestParam("image") MultipartFile image,
             @Parameter(hidden = true) @CurrentUser Long userId) {
-        String imageUrl = s3ImageService.uploadImage(image, "profile-images");
+        String imageUrl = s3ImageService.uploadImage(image, "post-images");
 
         return ResponseEntity.ok(
                 ResponseDto.response(IMAGE_UPLOAD_SUCCESS.getCode(),
