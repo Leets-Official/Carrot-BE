@@ -21,7 +21,9 @@ public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolve
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(CurrentUser.class);
+        boolean hasAnnotation = parameter.hasParameterAnnotation(CurrentUser.class);
+        boolean parameterType = Long.class.isAssignableFrom(parameter.getParameterType());
+        return hasAnnotation && parameterType;
     }
 
     @Override
@@ -33,10 +35,8 @@ public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolve
         }
 
         String token = Optional.ofNullable(webRequest.getHeader("Authorization"))
-                .map(accessToken -> accessToken.replace("Bearer ", ""))
-                .orElseThrow(() -> new IllegalArgumentException("Authorization 헤더가 누락되었습니다."));
+                .map(accessToken -> accessToken.replace("Bearer ", "")).get();
 
-        return jwtProvider.extractId(token)
-                .orElseThrow(() -> new IllegalStateException("유효하지 않은 토큰이거나 토큰에 ID 정보가 없습니다."));
+        return jwtProvider.extractId(token).get();
     }
 }
