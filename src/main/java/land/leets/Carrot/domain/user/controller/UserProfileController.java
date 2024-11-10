@@ -19,8 +19,9 @@ import land.leets.Carrot.domain.user.dto.request.EmployeeAdditionalInfoUpdateReq
 import land.leets.Carrot.domain.user.dto.request.EmployeeCareerUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.EmployeeSelfIntroUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.EmployeeStrengthUpdateRequest;
+import land.leets.Carrot.domain.user.dto.response.EmployeeProfileResponse;
 import land.leets.Carrot.domain.user.dto.response.GetCeoInfoResponse;
-import land.leets.Carrot.domain.user.dto.response.ProfileResponse;
+import land.leets.Carrot.domain.user.dto.response.UserBasicInfoResponse;
 import land.leets.Carrot.domain.user.service.CeoInfoService;
 import land.leets.Carrot.domain.user.service.UserProfileService;
 import land.leets.Carrot.global.auth.annotation.CurrentUser;
@@ -46,14 +47,18 @@ public class UserProfileController {
     private final S3ImageService s3ImageService;
     private final CeoInfoService ceoInfoService;
 
+    /*
+       공통 필드
+     */
     @GetMapping("/profile")
     @Operation(summary = "프로필 기본정보 조회")
-    public ResponseEntity<ResponseDto<ProfileResponse>> check(@Parameter(hidden = true) @CurrentUser Long userId) {
-        ProfileResponse profileResponse = userProfileService.check(userId);
+    public ResponseEntity<ResponseDto<UserBasicInfoResponse>> check(
+            @Parameter(hidden = true) @CurrentUser Long userId) {
+        UserBasicInfoResponse userBasicInfoResponse = userProfileService.check(userId);
         return ResponseEntity.ok(ResponseDto.response(
                 PROFILE_CHECK_SUCCESS.getCode(),
                 PROFILE_CHECK_SUCCESS.getMessage(),
-                profileResponse
+                userBasicInfoResponse
         ));
     }
 
@@ -68,10 +73,60 @@ public class UserProfileController {
         );
     }
 
+    @PostMapping("/upload-profile-image")
+    @Operation(summary = "프로필 이미지 업로드")
+    public ResponseEntity<ResponseDto<Void>> uploadProfileImage(
+            @RequestParam("image") MultipartFile image,
+            @Parameter(hidden = true) @CurrentUser Long userId) {
+        String imageUrl = s3ImageService.uploadImage(image, "profile-images");
+        userProfileService.updateProfileImageUrl(userId, imageUrl);
+        return ResponseEntity.ok(
+                ResponseDto.response(IMAGE_UPLOAD_SUCCESS.getCode(),
+                        IMAGE_UPLOAD_SUCCESS.getMessage())
+        );
+    }
+
+    @PatchMapping("/update-profile-image")
+    @Operation(summary = "프로필 이미지 수정")
+    public ResponseEntity<ResponseDto<Void>> updateProfileImage(
+            @RequestParam("image") MultipartFile image,
+            @RequestParam("oldFileName") String oldFileName,
+            @Parameter(hidden = true) @CurrentUser Long userId) {
+        String imageUrl = s3ImageService.updateImage(image, oldFileName, "profile-images");
+        userProfileService.updateProfileImageUrl(userId, imageUrl);
+        return ResponseEntity.ok(
+                ResponseDto.response(IMAGE_UPDATE_SUCCESS.getCode(),
+                        IMAGE_UPDATE_SUCCESS.getMessage())
+        );
+    }
+
+    @DeleteMapping("/delete-profile-image")
+    @Operation(summary = "프로필 이미지 삭제")
+    public ResponseEntity<ResponseDto<Void>> deleteProfileImage(
+            @RequestParam("fileName") String fileName,
+            @Parameter(hidden = true) @CurrentUser Long userId) {
+        s3ImageService.deleteImage(fileName);
+        userProfileService.updateProfileImageUrl(userId, null);
+        return ResponseEntity.ok(
+                ResponseDto.response(IMAGE_DELETE_SUCCESS.getCode(),
+                        IMAGE_DELETE_SUCCESS.getMessage())
+        );
+    }
+
     /*
-       employee(구직자 프로필 관련)
+             employee(구직자 프로필 관련)
      */
-    @GetMapping("/")
+    @GetMapping("/employee-main-profile")
+    @Operation(summary = "내 지원서 관리")
+    public ResponseEntity<ResponseDto<EmployeeProfileResponse>> employeeAll(
+            @Parameter(hidden = true) @CurrentUser Long userId) {
+        EmployeeProfileResponse employeeProfileResponse = userProfileService.employeeAll(userId);
+        return ResponseEntity.ok(ResponseDto.response(
+                PROFILE_CHECK_SUCCESS.getCode(),
+                PROFILE_CHECK_SUCCESS.getMessage(),
+                employeeProfileResponse
+        ));
+    }
 
     @PatchMapping("/update-career")
     @Operation(summary = "구직자 경력사항 추가")
@@ -119,46 +174,9 @@ public class UserProfileController {
         );
     }
 
-    @PostMapping("/upload-profile-image")
-    @Operation(summary = "프로필 이미지 업로드")
-    public ResponseEntity<ResponseDto<Void>> uploadProfileImage(
-            @RequestParam("image") MultipartFile image,
-            @Parameter(hidden = true) @CurrentUser Long userId) {
-        String imageUrl = s3ImageService.uploadImage(image, "profile-images");
-        userProfileService.updateProfileImageUrl(userId, imageUrl);
-        return ResponseEntity.ok(
-                ResponseDto.response(IMAGE_UPLOAD_SUCCESS.getCode(),
-                        IMAGE_UPLOAD_SUCCESS.getMessage())
-        );
-    }
-
-    @PatchMapping("/update-profile-image")
-    @Operation(summary = "프로필 이미지 수정")
-    public ResponseEntity<ResponseDto<Void>> updateProfileImage(
-            @RequestParam("image") MultipartFile image,
-            @RequestParam("oldFileName") String oldFileName,
-            @Parameter(hidden = true) @CurrentUser Long userId) {
-        String imageUrl = s3ImageService.updateImage(image, oldFileName, "profile-images");
-        userProfileService.updateProfileImageUrl(userId, imageUrl);
-        return ResponseEntity.ok(
-                ResponseDto.response(IMAGE_UPDATE_SUCCESS.getCode(),
-                        IMAGE_UPDATE_SUCCESS.getMessage())
-        );
-    }
-
-    @DeleteMapping("/delete-profile-image")
-    @Operation(summary = "프로필 이미지 삭제")
-    public ResponseEntity<ResponseDto<Void>> deleteProfileImage(
-            @RequestParam("fileName") String fileName,
-            @Parameter(hidden = true) @CurrentUser Long userId) {
-        s3ImageService.deleteImage(fileName);
-        userProfileService.updateProfileImageUrl(userId, null);
-        return ResponseEntity.ok(
-                ResponseDto.response(IMAGE_DELETE_SUCCESS.getCode(),
-                        IMAGE_DELETE_SUCCESS.getMessage())
-        );
-    }
-
+    /*
+           ceo(고용자 프로필 관련)
+    */
     @GetMapping("/ceo-info/{ceoId}")
     public ResponseEntity<ResponseDto<GetCeoInfoResponse>> getCeoInfo(@PathVariable("ceoId") Long ceoId) {
         return ResponseEntity.ok(ceoInfoService.getCeoInfo(ceoId));
