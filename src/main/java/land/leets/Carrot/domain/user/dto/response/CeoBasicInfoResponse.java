@@ -7,6 +7,7 @@ public record CeoBasicInfoResponse(
         String ceoName,
         String ceoPhoneNumber,
         String ceoAddress,
+        String profileImageUrl,
         Gender gender,
         Integer birthYear
 ) implements UserBasicInfoResponse {
@@ -15,6 +16,7 @@ public record CeoBasicInfoResponse(
                 ceo.getCeoName(),
                 ceo.getCeoPhoneNumber(),
                 ceo.getCeoAddress(),
+                ceo.getProfileImageUrl(),
                 ceo.getGender(),
                 ceo.getBirthYear()
         );
