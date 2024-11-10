@@ -1,15 +1,23 @@
 package land.leets.Carrot.domain.user.dto.response;
 
+import land.leets.Carrot.domain.user.entity.Ceo;
+import land.leets.Carrot.domain.user.entity.Employee;
 import land.leets.Carrot.domain.user.entity.Gender;
-import lombok.Getter;
+import land.leets.Carrot.domain.user.entity.User;
+import land.leets.Carrot.domain.user.exception.UnknownUserTypeException;
 
-@Getter
-public abstract class ProfileResponse {
-    private final Gender gender;
-    private final Integer birthYear;
+public sealed interface ProfileResponse permits CeoProfileResponse, EmployeeProfileResponse {
+    Gender gender();
 
-    protected ProfileResponse(Gender gender, Integer birthYear) {
-        this.gender = gender;
-        this.birthYear = birthYear;
+    Integer birthYear();
+
+    static ProfileResponse from(User user) {
+        if (user instanceof Employee employee) {
+            return EmployeeProfileResponse.from(employee);
+        } else if (user instanceof Ceo ceo) {
+            return CeoProfileResponse.from(ceo);
+        } else {
+            throw new UnknownUserTypeException();
+        }
     }
 }
