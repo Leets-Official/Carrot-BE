@@ -1,16 +1,22 @@
 package land.leets.Carrot.domain.user.dto.response;
 
 import land.leets.Carrot.domain.user.entity.Ceo;
-import lombok.Getter;
+import land.leets.Carrot.domain.user.entity.Gender;
 
-@Getter
-public class CeoProfileResponse extends ProfileResponse {
-    private final String ceoName;
-    private final String ceoPhoneNumber;
-
-    public CeoProfileResponse(Ceo ceo) {
-        super(ceo.getGender(), ceo.getBirthYear());
-        this.ceoName = ceo.getCeoName();
-        this.ceoPhoneNumber = ceo.getCeoPhoneNumber();
+public record CeoProfileResponse(
+        String ceoName,
+        String ceoPhoneNumber,
+        String ceoAddress,
+        Gender gender,
+        Integer birthYear
+) implements ProfileResponse {
+    public static CeoProfileResponse from(Ceo ceo) {
+        return new CeoProfileResponse(
+                ceo.getCeoName(),
+                ceo.getCeoPhoneNumber(),
+                ceo.getCeoAddress(),
+                ceo.getGender(),
+                ceo.getBirthYear()
+        );
     }
 }
