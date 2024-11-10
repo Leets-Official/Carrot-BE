@@ -70,7 +70,7 @@ public class UserController {
     @Operation(summary = "구직자, 고용자 로그인")
     public ResponseEntity<ResponseDto<LoginResponse>> login(@RequestBody LoginRequest request,
                                                             HttpServletResponse response) {
-        LoginResponse loginResponse = loginService.authenticate(request.getEmail(), request.getPassword(), response);
+        LoginResponse loginResponse = loginService.authenticate(request.email(), request.password(), response);
         return ResponseEntity.ok(
                 ResponseDto.response(LOGIN_SUCCESS.getCode(), LOGIN_SUCCESS.getMessage(), loginResponse)
         );

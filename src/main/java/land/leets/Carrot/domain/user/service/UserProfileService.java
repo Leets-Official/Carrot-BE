@@ -1,11 +1,11 @@
 package land.leets.Carrot.domain.user.service;
 
 import jakarta.transaction.Transactional;
+import land.leets.Carrot.domain.user.dto.request.AdditionalInfoUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.BasicInfoUpdateRequest;
-import land.leets.Carrot.domain.user.dto.request.EmployeeAdditionalInfoUpdateRequest;
-import land.leets.Carrot.domain.user.dto.request.EmployeeCareerUpdateRequest;
-import land.leets.Carrot.domain.user.dto.request.EmployeeSelfIntroUpdateRequest;
-import land.leets.Carrot.domain.user.dto.request.EmployeeStrengthUpdateRequest;
+import land.leets.Carrot.domain.user.dto.request.CareerUpdateRequest;
+import land.leets.Carrot.domain.user.dto.request.SelfIntroUpdateRequest;
+import land.leets.Carrot.domain.user.dto.request.StrengthUpdateRequest;
 import land.leets.Carrot.domain.user.dto.response.EmployeeProfileResponse;
 import land.leets.Carrot.domain.user.dto.response.UserBasicInfoResponse;
 import land.leets.Carrot.domain.user.entity.Ceo;
@@ -36,35 +36,35 @@ public class UserProfileService {
                 .orElseThrow(UserNotFoundException::new);
 
         // 공통 필드 업데이트
-        user.updateBasicInfo(request.getGender(), request.getBirthYear());
+        user.updateBasicInfo(request.gender(), request.birthYear());
 
         // Employee와 Ceo에 따라 분리
         if (user instanceof Employee employee) {
             employee.updateEmployeeInfo(
-                    request.getPhoneNumber(),
-                    request.getEmployeeName(),
-                    request.getEmployeeAddress()
+                    request.phoneNumber(),
+                    request.employeeName(),
+                    request.employeeAddress()
             );
         } else if (user instanceof Ceo ceo) {
             ceo.updateCeoInfo(
-                    request.getCeoPhoneNumber(),
-                    request.getCeoName(),
-                    request.getCeoAddress()
+                    request.ceoPhoneNumber(),
+                    request.ceoName(),
+                    request.ceoAddress()
             );
         }
     }
 
     @Transactional
-    public void updateCareer(EmployeeCareerUpdateRequest request, Long userId) {
+    public void updateCareer(CareerUpdateRequest request, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
         if (user instanceof Employee employee) {
             employee.updateCareer(
-                    request.getWorkplace(),
-                    request.getWorkType(),
-                    request.getWorkYear(),
-                    request.getWorkPeriod()
+                    request.workplace(),
+                    request.workType(),
+                    request.workYear(),
+                    request.workPeriod()
             );
         } else {
             throw new InvalidUserTypeException();
@@ -72,19 +72,19 @@ public class UserProfileService {
     }
 
     @Transactional
-    public void updateSelfIntro(EmployeeSelfIntroUpdateRequest request, Long userId) {
+    public void updateSelfIntro(SelfIntroUpdateRequest request, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
         if (user instanceof Employee employee) {
-            employee.updateSelfIntro(request.getSelfIntro());
+            employee.updateSelfIntro(request.selfIntro());
         } else {
             throw new InvalidUserTypeException();
         }
     }
 
     @Transactional
-    public void updateAdditionalInfo(EmployeeAdditionalInfoUpdateRequest request, Long userId) {
+    public void updateAdditionalInfo(AdditionalInfoUpdateRequest request, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
@@ -103,7 +103,7 @@ public class UserProfileService {
     }
 
     @Transactional
-    public void updateStrength(EmployeeStrengthUpdateRequest request, Long userId) {
+    public void updateStrength(StrengthUpdateRequest request, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 

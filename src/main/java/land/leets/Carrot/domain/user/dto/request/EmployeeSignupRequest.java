@@ -1,20 +1,10 @@
 package land.leets.Carrot.domain.user.dto.request;
 
-import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-@Getter
-@NoArgsConstructor
-public class EmployeeSignupRequest {
-    @NotNull
-    private String email;
-    @NotNull
-    private String password;
-    @NotNull
-    private String phoneNumber;
-    @NotNull
-    private String employeeName;
-    @NotNull
-    private String employeeAddress;
+public record EmployeeSignupRequest(
+        String email,
+        String password,
+        String phoneNumber,
+        String employeeName,
+        String employeeAddress
+) {
 }

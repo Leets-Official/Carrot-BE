@@ -14,11 +14,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import land.leets.Carrot.domain.image.service.S3ImageService;
+import land.leets.Carrot.domain.user.dto.request.AdditionalInfoUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.BasicInfoUpdateRequest;
-import land.leets.Carrot.domain.user.dto.request.EmployeeAdditionalInfoUpdateRequest;
-import land.leets.Carrot.domain.user.dto.request.EmployeeCareerUpdateRequest;
-import land.leets.Carrot.domain.user.dto.request.EmployeeSelfIntroUpdateRequest;
-import land.leets.Carrot.domain.user.dto.request.EmployeeStrengthUpdateRequest;
+import land.leets.Carrot.domain.user.dto.request.CareerUpdateRequest;
+import land.leets.Carrot.domain.user.dto.request.SelfIntroUpdateRequest;
+import land.leets.Carrot.domain.user.dto.request.StrengthUpdateRequest;
 import land.leets.Carrot.domain.user.dto.response.EmployeeProfileResponse;
 import land.leets.Carrot.domain.user.dto.response.GetCeoInfoResponse;
 import land.leets.Carrot.domain.user.dto.response.UserBasicInfoResponse;
@@ -130,7 +130,7 @@ public class UserProfileController {
 
     @PatchMapping("/update-career")
     @Operation(summary = "구직자 경력사항 추가")
-    public ResponseEntity<ResponseDto<Void>> updateCareer(@RequestBody @Valid EmployeeCareerUpdateRequest request,
+    public ResponseEntity<ResponseDto<Void>> updateCareer(@RequestBody @Valid CareerUpdateRequest request,
                                                           @Parameter(hidden = true) @CurrentUser Long userId) {
         userProfileService.updateCareer(request, userId);
         return ResponseEntity.ok(
@@ -142,7 +142,7 @@ public class UserProfileController {
     @PatchMapping("/update-self-introduction")
     @Operation(summary = "구직자 자기 소개 수정")
     public ResponseEntity<ResponseDto<Void>> updateSelfIntro(
-            @RequestBody @Valid EmployeeSelfIntroUpdateRequest request,
+            @RequestBody @Valid SelfIntroUpdateRequest request,
             @Parameter(hidden = true) @CurrentUser Long userId) {
         userProfileService.updateSelfIntro(request, userId);
         return ResponseEntity.ok(
@@ -154,7 +154,7 @@ public class UserProfileController {
     @PatchMapping("/update-additional-info")
     @Operation(summary = "구직자 추가 정보 수정")
     public ResponseEntity<ResponseDto<Void>> updateAdditionalInfo(
-            @RequestBody @Valid EmployeeAdditionalInfoUpdateRequest request,
+            @RequestBody @Valid AdditionalInfoUpdateRequest request,
             @Parameter(hidden = true) @CurrentUser Long userId) {
         userProfileService.updateAdditionalInfo(request, userId);
         return ResponseEntity.ok(
@@ -165,7 +165,7 @@ public class UserProfileController {
 
     @PatchMapping("/update-strength")
     @Operation(summary = "구직자 나의 장점 수정")
-    public ResponseEntity<ResponseDto<Void>> updateStrength(@RequestBody @Valid EmployeeStrengthUpdateRequest request,
+    public ResponseEntity<ResponseDto<Void>> updateStrength(@RequestBody @Valid StrengthUpdateRequest request,
                                                             @Parameter(hidden = true) @CurrentUser Long userId) {
         userProfileService.updateStrength(request, userId);
         return ResponseEntity.ok(
