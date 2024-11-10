@@ -20,19 +20,19 @@ public class EmployeeSignupService {
     @Transactional
     public void employeeSignup(EmployeeSignupRequest request) {
         validateEmployee(request);
-        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        String encodedPassword = passwordEncoder.encode(request.password());
         Employee employee = new Employee(
-                request.getEmail(), encodedPassword, request.getPhoneNumber(),
-                request.getEmployeeName(), request.getEmployeeAddress()
+                request.email(), encodedPassword, request.phoneNumber(),
+                request.employeeName(), request.employeeAddress()
         );
         employeeRepository.save(employee);
     }
 
     private void validateEmployee(EmployeeSignupRequest request) {
-        if (employeeRepository.existsByEmail(request.getEmail())) {
+        if (employeeRepository.existsByEmail(request.email())) {
             throw new EmailAlreadyExistsException();
         }
-        if (employeeRepository.existsByPhoneNumber(request.getPhoneNumber())) {
+        if (employeeRepository.existsByPhoneNumber(request.phoneNumber())) {
             throw new TelAlreadyExistsException();
         }
     }
