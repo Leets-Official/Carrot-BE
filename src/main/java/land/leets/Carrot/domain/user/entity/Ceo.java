@@ -6,8 +6,10 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import java.util.Set;
 import land.leets.Carrot.domain.post.entity.Post;
+import land.leets.Carrot.domain.user.dto.request.CeoSignupRequest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Getter
 @NoArgsConstructor
@@ -45,6 +47,19 @@ public class Ceo extends User {
         this.openDate = openDate;
         this.ceoAddress = ceoAddress;
         this.userType = UserType.CEO;
+    }
+
+    public static Ceo fromSignupRequest(CeoSignupRequest request, PasswordEncoder encoder) {
+        return new Ceo(
+                request.email(),
+                encoder.encode(request.password()),
+                request.ceoName(),
+                request.ceoPhoneNumber(),
+                request.ceoNumber(),
+                request.storeName(),
+                request.openDate(),
+                request.ceoAddress()
+        );
     }
 
     public void updateCeoInfo(String ceoPhoneNumber, String ceoName, String ceoAddress) {

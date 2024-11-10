@@ -22,31 +22,22 @@ public class CeoSignupService {
     @Transactional
     public void ceoSignup(CeoSignupRequest request) {
         validateCeo(request);
-        String encodedPassword = passwordEncoder.encode(request.getPassword());
-        Ceo ceo = new Ceo(
-                request.getEmail(), encodedPassword, request.getCeoName(), request.getCeoPhoneNumber(),
-                request.getCeoNumber(),
-                request.getStoreName(), request.getOpenDate(), request.getCeoAddress()
-        );
+        Ceo ceo = Ceo.fromSignupRequest(request, passwordEncoder);
         ceoRepository.save(ceo);
     }
 
     private void validateCeo(CeoSignupRequest request) {
-        if (ceoRepository.existsByEmail(request.getEmail())) {
+        if (ceoRepository.existsByEmail(request.email())) {
             throw new EmailAlreadyExistsException();
         }
-        if (ceoRepository.existsByCeoPhoneNumber(request.getCeoPhoneNumber())) {
+        if (ceoRepository.existsByCeoPhoneNumber(request.ceoPhoneNumber())) {
             throw new TelAlreadyExistsException();
         }
-        if (ceoRepository.existsByCeoNumber(request.getCeoNumber())) {
+        if (ceoRepository.existsByCeoNumber(request.ceoNumber())) {
             throw new CeoNumberAlreadyExistsException();
         }
-        if (ceoRepository.existsByCeoName(request.getCeoName())) {
+        if (ceoRepository.existsByCeoName(request.ceoName())) {
             throw new CeoNameAlreadyExistsException();
         }
-    }
-
-    public void checkEmailDuplicate(String email) {
-        userService.checkEmailDuplicate(email);
     }
 }
