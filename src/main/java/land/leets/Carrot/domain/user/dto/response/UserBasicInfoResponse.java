@@ -6,16 +6,16 @@ import land.leets.Carrot.domain.user.entity.Gender;
 import land.leets.Carrot.domain.user.entity.User;
 import land.leets.Carrot.domain.user.exception.UnknownUserTypeException;
 
-public sealed interface ProfileResponse permits CeoProfileResponse, EmployeeProfileResponse {
+public sealed interface UserBasicInfoResponse permits CeoBasicInfoResponse, EmployeeBasicInfoResponse {
     Gender gender();
 
     Integer birthYear();
 
-    static ProfileResponse from(User user) {
+    static UserBasicInfoResponse from(User user) {
         if (user instanceof Employee employee) {
-            return EmployeeProfileResponse.from(employee);
+            return EmployeeBasicInfoResponse.from(employee);
         } else if (user instanceof Ceo ceo) {
-            return CeoProfileResponse.from(ceo);
+            return CeoBasicInfoResponse.from(ceo);
         } else {
             throw new UnknownUserTypeException();
         }
