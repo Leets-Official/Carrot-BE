@@ -1,18 +1,22 @@
 package land.leets.Carrot.domain.user.dto.response;
 
 import land.leets.Carrot.domain.user.entity.Employee;
-import lombok.Getter;
+import land.leets.Carrot.domain.user.entity.Gender;
 
-@Getter
-public class EmployeeProfileResponse extends ProfileResponse {
-    private final String employeeName;
-    private final String employeeAddress;
-    private final String phoneNumber;
-
-    public EmployeeProfileResponse(Employee employee) {
-        super(employee.getGender(), employee.getBirthYear());
-        this.employeeName = employee.getEmployeeName();
-        this.employeeAddress = employee.getEmployeeAddress();
-        this.phoneNumber = employee.getPhoneNumber();
+public record EmployeeProfileResponse(
+        String employeeName,
+        String employeeAddress,
+        String phoneNumber,
+        Gender gender,
+        Integer birthYear
+) implements ProfileResponse {
+    public static EmployeeProfileResponse from(Employee employee) {
+        return new EmployeeProfileResponse(
+                employee.getEmployeeName(),
+                employee.getEmployeeAddress(),
+                employee.getPhoneNumber(),
+                employee.getGender(),
+                employee.getBirthYear()
+        );
     }
 }
