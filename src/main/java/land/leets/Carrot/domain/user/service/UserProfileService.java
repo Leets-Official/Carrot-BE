@@ -1,6 +1,7 @@
 package land.leets.Carrot.domain.user.service;
 
 import jakarta.transaction.Transactional;
+import land.leets.Carrot.domain.image.service.S3ImageService;
 import land.leets.Carrot.domain.user.dto.request.AdditionalInfoUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.BasicInfoUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.CareerUpdateRequest;
@@ -15,12 +16,20 @@ import land.leets.Carrot.domain.user.exception.InvalidUserTypeException;
 import land.leets.Carrot.domain.user.exception.UserNotFoundException;
 import land.leets.Carrot.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
 public class UserProfileService {
     private final UserRepository userRepository;
+    private final S3ImageService s3ImageService;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucketName;
+
+    @Value("${cloud.aws.region.static}")
+    private String region;
 
     @Transactional
     public UserBasicInfoResponse check(Long userId) {
@@ -125,6 +134,36 @@ public class UserProfileService {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
         user.updateProfileImageUrl(imageUrl);  // 새로운 메서드를 통한 업데이트
+    }
+
+    @Transactional
+    public String updateProfileImage(MultipartFile image, Long userId) {
+        // 사용자 정보 조회
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+
+        // 기존 프로필 이미지 URL 가져오기
+        String priorUrl = user.getProfileImageUrl();
+
+        // 새로운 이미지 업로드
+        String newImageUrl = s3ImageService.uploadImage(image, "profile-images");
+
+        // 사용자 엔티티에 새로운 프로필 이미지 URL 업데이트
+        user.updateProfileImage(newImageUrl);
+        userRepository.save(user);
+
+        // 기존 이미지 삭제 (priorUrl이 존재할 경우)
+        if (priorUrl != null) {
+            String priorFileName = extractFileNameFromUrl(priorUrl, "profile-images");
+            s3ImageService.deleteImage(priorFileName);
+        }
+
+        return newImageUrl;
+    }
+
+    private String extractFileNameFromUrl(String url, String dirName) {
+        String baseUrl = String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, dirName);
+        return url.replace(baseUrl, ""); // URL에서 파일 이름만 추출
     }
 
     @Transactional

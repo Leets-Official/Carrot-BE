@@ -103,8 +103,4 @@ public class S3ImageService {
             log.warn("Failed to delete local file: {}", file.getName());
         }
     }
-
-    private String generateFileUrl(String fileName) {
-        return String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, fileName);
-    }
 }
