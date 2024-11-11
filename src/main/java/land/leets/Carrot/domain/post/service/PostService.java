@@ -155,8 +155,11 @@ public class PostService {
                 .orElseThrow(() -> new PostException(LATEST_SNAPSHOT_NOT_FOUND));
 
         List<String> imageList = postImageRepository.findByPostSnapshotId(postSnapshot.getId())
-                .stream()
-                .map(image -> image.getImageUrl()).collect(Collectors.toList());
+                .filter(list -> !list.isEmpty())
+                .map(list -> list.stream()
+                        .map(imageRow -> imageRow.getImageUrl())
+                        .collect(Collectors.toList()))
+                .orElse(null);
 
         String workType = getWorkTypeName(postSnapshot.getWorkTypeId());
         PostResponse postResponse = new PostResponse(postId, post.getCeo().getId(), post.getStoreName(),
@@ -253,7 +256,7 @@ public class PostService {
                         .filter(postSnapshot -> postSnapshot.getPost().getPostId() == apply.getPost().getPostId())
                         .map(postSnapshot -> new AppliedPost(apply.getPost().getPostId(), postSnapshot.getTitle(),
                                 postSnapshot.getPost().getStoreName(),
-                                postImageRepository.findByPostSnapshotId(postSnapshot.getId()).get(0).getImageUrl(),
+                                getFirstImageUrl(postSnapshot.getId()),
                                 apply.isRecruited(), postSnapshot.getPost().getStatus().equals("done"))))
                 .collect(Collectors.toList());
 
@@ -265,7 +268,10 @@ public class PostService {
 
 
     private String getFirstImageUrl(Long postSnapshotId) {
-        return postImageRepository.findByPostSnapshotId(postSnapshotId).get(0).getImageUrl();
+        return postImageRepository.findByPostSnapshotId(postSnapshotId)
+                .filter(list -> !list.isEmpty())
+                .map(list -> list.get(0).getImageUrl())
+                .orElse(null);
     }
 
 
