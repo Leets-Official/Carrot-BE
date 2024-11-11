@@ -27,6 +27,9 @@ public class S3ImageService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
+    @Value("${cloud.aws.region.static}")
+    private String region;
+
     // 단일 이미지 업로드 메서드
     public String uploadImage(MultipartFile image, String dirName) {
         validateImageFileExtension(image.getOriginalFilename());
@@ -88,7 +91,8 @@ public class S3ImageService {
     // S3에 업로드 및 URL 반환
     private String uploadToS3(File uploadFile, String fileName) {
         amazonS3.putObject(new PutObjectRequest(bucketName, fileName, uploadFile));
-        return amazonS3.getUrl(bucketName, fileName).toString();
+        log.info("File uploaded to S3: {}", fileName);
+        return String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, fileName);
     }
 
     // 로컬 파일 삭제
@@ -100,4 +104,7 @@ public class S3ImageService {
         }
     }
 
+    private String generateFileUrl(String fileName) {
+        return String.format("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, fileName);
+    }
 }
