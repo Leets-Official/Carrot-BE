@@ -101,9 +101,7 @@ public class UserProfileController {
     @DeleteMapping("/delete-profile-image")
     @Operation(summary = "프로필 이미지 삭제")
     public ResponseEntity<ResponseDto<Void>> deleteProfileImage(
-            @RequestParam("fileName") String fileName,
             @Parameter(hidden = true) @CurrentUser Long userId) {
-        s3ImageService.deleteImage(fileName);
         userProfileService.updateProfileImageUrl(userId, null);
         return ResponseEntity.ok(
                 ResponseDto.response(IMAGE_DELETE_SUCCESS.getCode(),
