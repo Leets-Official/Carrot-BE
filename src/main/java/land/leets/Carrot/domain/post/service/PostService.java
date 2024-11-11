@@ -155,8 +155,11 @@ public class PostService {
                 .orElseThrow(() -> new PostException(LATEST_SNAPSHOT_NOT_FOUND));
 
         List<String> imageList = postImageRepository.findByPostSnapshotId(postSnapshot.getId())
-                .stream()
-                .map(image -> image.getImageUrl()).collect(Collectors.toList());
+                .filter(list -> !list.isEmpty())
+                .map(list -> list.stream()
+                        .map(imageRow -> imageRow.getImageUrl())
+                        .collect(Collectors.toList()))
+                .orElse(null);
 
         String workType = getWorkTypeName(postSnapshot.getWorkTypeId());
         PostResponse postResponse = new PostResponse(postId, post.getCeo().getId(), post.getStoreName(),
