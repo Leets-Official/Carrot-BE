@@ -1,9 +1,12 @@
 package land.leets.Carrot.domain.user.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import land.leets.Carrot.domain.apply.entity.Apply;
 import lombok.Getter;
@@ -61,6 +64,9 @@ public class Employee extends User {
     @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
     private Set<Apply> apply;
 
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Career> careers = new ArrayList<>();
+
     public Employee(String email, String password, String phoneNumber, String employeeName, String employeeAddress) {
         super(email, password);
         this.phoneNumber = phoneNumber;
@@ -95,5 +101,14 @@ public class Employee extends User {
         this.isClean = clean;
         this.isNearHome = nearHome;
         this.isSleepless = sleepless;
+    }
+
+    public void addCareer(String workplace, String workType, String workYear, String workPeriod) {
+        Career career = new Career(workplace, workType, workYear, workPeriod, this);
+        this.careers.add(career);
+    }
+
+    public void deleteCareer(Long careerId) {
+        this.careers.removeIf(career -> career.getId().equals(careerId));
     }
 }
