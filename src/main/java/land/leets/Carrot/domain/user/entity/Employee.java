@@ -65,7 +65,7 @@ public class Employee extends User {
     private Set<Apply> apply;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Career> careers = new ArrayList<>();
+    private List<CareerDetails> careerDetails = new ArrayList<>();
 
     public Employee(String email, String password, String phoneNumber, String employeeName, String employeeAddress) {
         super(email, password);
@@ -104,11 +104,11 @@ public class Employee extends User {
     }
 
     public void addCareer(String workplace, String workType, String workYear, String workPeriod) {
-        Career career = new Career(workplace, workType, workYear, workPeriod, this);
-        this.careers.add(career);
+        CareerDetails careerDetails = new CareerDetails(this, workplace, workType, workYear, workPeriod);
+        this.careerDetails.add(careerDetails);
     }
 
     public void deleteCareer(Long careerId) {
-        this.careers.removeIf(career -> career.getId().equals(careerId));
+        this.careerDetails.removeIf(careerDetails -> careerDetails.getId().equals(careerId));
     }
 }
