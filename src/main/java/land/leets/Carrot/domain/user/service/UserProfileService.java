@@ -4,7 +4,8 @@ import jakarta.transaction.Transactional;
 import land.leets.Carrot.domain.image.service.S3ImageService;
 import land.leets.Carrot.domain.user.dto.request.AdditionalInfoUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.BasicInfoUpdateRequest;
-import land.leets.Carrot.domain.user.dto.request.CareerUpdateRequest;
+import land.leets.Carrot.domain.user.dto.request.CareerAddRequest;
+import land.leets.Carrot.domain.user.dto.request.CareerDeleteRequest;
 import land.leets.Carrot.domain.user.dto.request.SelfIntroUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.StrengthUpdateRequest;
 import land.leets.Carrot.domain.user.dto.response.EmployeeProfileResponse;
@@ -64,17 +65,29 @@ public class UserProfileService {
     }
 
     @Transactional
-    public void updateCareer(CareerUpdateRequest request, Long userId) {
+    public void addCareer(CareerAddRequest request, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
         if (user instanceof Employee employee) {
-            employee.updateCareer(
+            employee.addCareer(
                     request.workplace(),
                     request.workType(),
                     request.workYear(),
                     request.workPeriod()
             );
+        } else {
+            throw new InvalidUserTypeException();
+        }
+    }
+
+    @Transactional
+    public void deleteCareer(CareerDeleteRequest request, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+
+        if (user instanceof Employee employee) {
+            employee.deleteCareer(request.careerId());
         } else {
             throw new InvalidUserTypeException();
         }

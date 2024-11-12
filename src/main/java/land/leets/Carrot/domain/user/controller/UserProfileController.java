@@ -2,7 +2,8 @@ package land.leets.Carrot.domain.user.controller;
 
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.ADDITIONAL_INFO_UPDATE_SUCCESS;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.BASIC_INFO_UPDATE_SUCCESS;
-import static land.leets.Carrot.domain.user.controller.ResponseMessage.CAREER_UPDATE_SUCCESS;
+import static land.leets.Carrot.domain.user.controller.ResponseMessage.CAREER_ADD_SUCCESS;
+import static land.leets.Carrot.domain.user.controller.ResponseMessage.CAREER_DELETE_SUCCESS;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.IMAGE_DELETE_SUCCESS;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.IMAGE_UPDATE_SUCCESS;
 import static land.leets.Carrot.domain.user.controller.ResponseMessage.IMAGE_UPLOAD_SUCCESS;
@@ -16,7 +17,8 @@ import jakarta.validation.Valid;
 import land.leets.Carrot.domain.image.service.S3ImageService;
 import land.leets.Carrot.domain.user.dto.request.AdditionalInfoUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.BasicInfoUpdateRequest;
-import land.leets.Carrot.domain.user.dto.request.CareerUpdateRequest;
+import land.leets.Carrot.domain.user.dto.request.CareerAddRequest;
+import land.leets.Carrot.domain.user.dto.request.CareerDeleteRequest;
 import land.leets.Carrot.domain.user.dto.request.SelfIntroUpdateRequest;
 import land.leets.Carrot.domain.user.dto.request.StrengthUpdateRequest;
 import land.leets.Carrot.domain.user.dto.response.EmployeeProfileResponse;
@@ -27,6 +29,7 @@ import land.leets.Carrot.domain.user.service.UserProfileService;
 import land.leets.Carrot.global.auth.annotation.CurrentUser;
 import land.leets.Carrot.global.common.response.ResponseDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,6 +42,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/user-profiles")
@@ -124,14 +128,26 @@ public class UserProfileController {
         ));
     }
 
-    @PatchMapping("/update-career")
+    @PostMapping("/add-career")
     @Operation(summary = "구직자 경력사항 추가")
-    public ResponseEntity<ResponseDto<Void>> updateCareer(@RequestBody @Valid CareerUpdateRequest request,
-                                                          @Parameter(hidden = true) @CurrentUser Long userId) {
-        userProfileService.updateCareer(request, userId);
+    public ResponseEntity<ResponseDto<Void>> addCareer(@RequestBody @Valid CareerAddRequest request,
+                                                       @Parameter(hidden = true) @CurrentUser Long userId) {
+        log.info("CareerAddRequest: {}", request);
+        userProfileService.addCareer(request, userId);
         return ResponseEntity.ok(
-                ResponseDto.response(CAREER_UPDATE_SUCCESS.getCode(),
-                        CAREER_UPDATE_SUCCESS.getMessage())
+                ResponseDto.response(CAREER_ADD_SUCCESS.getCode(),
+                        CAREER_ADD_SUCCESS.getMessage())
+        );
+    }
+
+    @DeleteMapping("/delete-career")
+    @Operation(summary = "구직자 경력사항 삭제")
+    public ResponseEntity<ResponseDto<Void>> deleteCareer(@RequestBody @Valid CareerDeleteRequest request,
+                                                          @Parameter(hidden = true) @CurrentUser Long userId) {
+        userProfileService.deleteCareer(request, userId);
+        return ResponseEntity.ok(
+                ResponseDto.response(CAREER_DELETE_SUCCESS.getCode(),
+                        CAREER_DELETE_SUCCESS.getMessage())
         );
     }
 

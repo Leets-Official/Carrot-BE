@@ -1,9 +1,12 @@
 package land.leets.Carrot.domain.user.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import land.leets.Carrot.domain.apply.entity.Apply;
 import lombok.Getter;
@@ -21,18 +24,6 @@ public class Employee extends User {
 
     @Column(nullable = false)
     private String employeeAddress;
-
-    @Column
-    private String workplace;
-
-    @Column
-    private String workType;
-
-    @Column
-    private String workYear;
-
-    @Column
-    private String workPeriod;
 
     @Column
     private String selfIntro;
@@ -73,6 +64,9 @@ public class Employee extends User {
     @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
     private Set<Apply> apply;
 
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CareerDetails> careerDetails = new ArrayList<>();
+
     public Employee(String email, String password, String phoneNumber, String employeeName, String employeeAddress) {
         super(email, password);
         this.phoneNumber = phoneNumber;
@@ -85,13 +79,6 @@ public class Employee extends User {
         this.phoneNumber = phoneNumber;
         this.employeeName = employeeName;
         this.employeeAddress = employeeAddress;
-    }
-
-    public void updateCareer(String workplace, String workType, String workYear, String workPeriod) {
-        this.workplace = workplace;
-        this.workType = workType;
-        this.workYear = workYear;
-        this.workPeriod = workPeriod;
     }
 
     public void updateSelfIntro(String selfIntro) {
@@ -114,5 +101,14 @@ public class Employee extends User {
         this.isClean = clean;
         this.isNearHome = nearHome;
         this.isSleepless = sleepless;
+    }
+
+    public void addCareer(String workplace, String workType, String workYear, String workPeriod) {
+        CareerDetails careerDetails = new CareerDetails(this, workplace, workType, workYear, workPeriod);
+        this.careerDetails.add(careerDetails);
+    }
+
+    public void deleteCareer(Long careerId) {
+        this.careerDetails.removeIf(careerDetails -> careerDetails.getId().equals(careerId));
     }
 }
