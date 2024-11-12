@@ -6,8 +6,8 @@ import land.leets.Carrot.domain.user.entity.Gender;
 public record EmployeeBasicInfoResponse(
         String employeeName,
         String employeeAddress,
-        String profileImageUrl,
         String phoneNumber,
+        String profileImageUrl,
         Gender gender,
         Integer birthYear
 ) implements UserBasicInfoResponse {
