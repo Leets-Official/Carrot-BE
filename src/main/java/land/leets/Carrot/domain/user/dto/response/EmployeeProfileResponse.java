@@ -1,5 +1,7 @@
 package land.leets.Carrot.domain.user.dto.response;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import land.leets.Carrot.domain.user.entity.Employee;
 import land.leets.Carrot.domain.user.entity.Gender;
 
@@ -7,10 +9,7 @@ public record EmployeeProfileResponse(
         String phoneNumber,
         String employeeName,
         String employeeAddress,
-        String workplace,
-        String workType,
-        String workYear,
-        String workPeriod,
+        List<CareerResponse> careers,
         String selfIntro,
         boolean isSmoke,
         boolean isLongWork,
@@ -32,10 +31,9 @@ public record EmployeeProfileResponse(
                 employee.getPhoneNumber(),
                 employee.getEmployeeName(),
                 employee.getEmployeeAddress(),
-                employee.getWorkplace(),
-                employee.getWorkType(),
-                employee.getWorkYear(),
-                employee.getWorkPeriod(),
+                employee.getCareerDetails().stream()
+                        .map(CareerResponse::from)
+                        .collect(Collectors.toList()),
                 employee.getSelfIntro(),
                 employee.isSmoke(),
                 employee.isLongWork(),
