@@ -229,8 +229,8 @@ public class PostService {
     }
 
     //유저가 작성한 게시글 조회
-    public ResponseDto<PostedPostResponse> getPostedPostList(GetPostedPostRequest getPostedPostRequest) {
-        List<Post> postedPostList = postRepository.findByWriterId(getPostedPostRequest.userId())
+    public ResponseDto<PostedPostResponse> getPostedPostList(Integer userId) {
+        List<Post> postedPostList = postRepository.findByWriterId(userId)
                 .orElseThrow(() -> new PostException(WROTE_POST_NOT_FOUND));
         List<PostedPost> postedPostDataList = new ArrayList<>();
         for (Post post : postedPostList) {

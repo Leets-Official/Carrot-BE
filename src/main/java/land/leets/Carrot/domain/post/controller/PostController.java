@@ -9,7 +9,6 @@ import jakarta.validation.Valid;
 import land.leets.Carrot.domain.apply.dto.response.GetAppliedListResponse;
 import land.leets.Carrot.domain.career.service.WorkTypeService;
 import land.leets.Carrot.domain.image.service.S3ImageService;
-import land.leets.Carrot.domain.post.dto.request.GetPostedPostRequest;
 import land.leets.Carrot.domain.post.dto.request.PostPostImageRequest;
 import land.leets.Carrot.domain.post.dto.request.PostPostRequest;
 import land.leets.Carrot.domain.post.dto.response.PostAImageUrlResponse;
@@ -75,8 +74,8 @@ public class PostController {
 
     @GetMapping("/user/posted")
     public ResponseEntity<ResponseDto<PostedPostResponse>> getPostedPostList(
-            @RequestBody @Valid GetPostedPostRequest requestBody) {
-        return ResponseEntity.ok(postService.getPostedPostList(requestBody));
+            @RequestParam Integer userId) {
+        return ResponseEntity.ok(postService.getPostedPostList(userId));
     }
 
     @GetMapping("/search/{keyword}")
@@ -116,7 +115,7 @@ public class PostController {
 
     @GetMapping("/post/applied/{userId}")
     public ResponseEntity<ResponseDto<GetAppliedListResponse>> getAppliedList(
-            @PathVariable Long userId){
+            @PathVariable Long userId) {
         return ResponseEntity.ok(postService.getAppliedList(userId));
     }
 }

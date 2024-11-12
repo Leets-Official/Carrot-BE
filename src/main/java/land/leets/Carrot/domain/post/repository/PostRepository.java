@@ -15,5 +15,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Optional<List<Post>> findByStatus(@Param("status") String status);
 
     @Query("SELECT post FROM Post post WHERE post.ceo.id=:userId")
-    Optional<List<Post>> findByWriterId(@Param("userId") Long userId);
+    Optional<List<Post>> findByWriterId(@Param("userId") Integer userId);
 }
