@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Career {
+public class CareerDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,12 +27,12 @@ public class Career {
     @JoinColumn(name = "user_id")
     private Employee employee;
 
-    public Career(String workplace, String workType, String workYear, String workPeriod, Employee employee) {
+    public CareerDetails(Employee employee, String workplace, String workType, String workYear, String workPeriod) {
+        this.employee = employee;
         this.workplace = workplace;
         this.workType = workType;
         this.workYear = workYear;
         this.workPeriod = workPeriod;
-        this.employee = employee;
     }
 
     public void update(String workplace, String workType, String workYear, String workPeriod) {
