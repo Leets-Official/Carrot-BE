@@ -23,18 +23,6 @@ public class Employee extends User {
     private String employeeAddress;
 
     @Column
-    private String workplace;
-
-    @Column
-    private String workType;
-
-    @Column
-    private String workYear;
-
-    @Column
-    private String workPeriod;
-
-    @Column
     private String selfIntro;
 
     @Column
@@ -85,13 +73,6 @@ public class Employee extends User {
         this.phoneNumber = phoneNumber;
         this.employeeName = employeeName;
         this.employeeAddress = employeeAddress;
-    }
-
-    public void updateCareer(String workplace, String workType, String workYear, String workPeriod) {
-        this.workplace = workplace;
-        this.workType = workType;
-        this.workYear = workYear;
-        this.workPeriod = workPeriod;
     }
 
     public void updateSelfIntro(String selfIntro) {
