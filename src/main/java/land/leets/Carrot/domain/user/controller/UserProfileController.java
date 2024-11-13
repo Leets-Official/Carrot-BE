@@ -132,7 +132,6 @@ public class UserProfileController {
     @Operation(summary = "구직자 경력사항 추가")
     public ResponseEntity<ResponseDto<Void>> addCareer(@RequestBody @Valid CareerAddRequest request,
                                                        @Parameter(hidden = true) @CurrentUser Long userId) {
-        log.info("CareerAddRequest: {}", request);
         userProfileService.addCareer(request, userId);
         return ResponseEntity.ok(
                 ResponseDto.response(CAREER_ADD_SUCCESS.getCode(),
