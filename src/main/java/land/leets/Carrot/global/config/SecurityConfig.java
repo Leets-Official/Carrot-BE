@@ -93,6 +93,7 @@ public class SecurityConfig {
 
         configuration.addAllowedOriginPattern("http://localhost:8080");
         configuration.addAllowedOriginPattern("http://localhost:5178");
+        configuration.addAllowedOriginPattern("https://carrot-fe.vercel.app/");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*"); // 모든 요청 허용 GET, POST, PUT, DELETE
         configuration.addExposedHeader("Authorization"); // 허용되는 응답 헤더 Authorization
